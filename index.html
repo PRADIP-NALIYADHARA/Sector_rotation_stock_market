@@ -46,6 +46,7 @@
           <select id="periodSelect"></select>
         </label>
         <span class="bm-return" id="bmReturn">—</span>
+        <span class="bm-range dim" id="bmRange"></span>
       </div>
     </div>
 
@@ -71,6 +72,7 @@
         <button class="chip active" data-filter="all">All</button>
         <button class="chip" data-filter="bull">Outperforming</button>
         <button class="chip" data-filter="bear">Underperforming</button>
+        <button class="chip" data-filter="breakout" title="At its own 52-week high while the benchmark still isn't">⚡ Leading breakout</button>
       </div>
       <label class="sort-control">
         Rank by
@@ -132,9 +134,11 @@
           <tr>
             <th>Symbol</th>
             <th>Company</th>
-            <th class="right">Prev Close</th>
             <th class="right">Close</th>
             <th class="right">% Change</th>
+            <th class="right">52w high</th>
+            <th class="right">From high</th>
+            <th>High set</th>
           </tr>
         </thead>
         <tbody id="stockBody"></tbody>

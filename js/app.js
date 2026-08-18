@@ -215,11 +215,21 @@ function render() {
 }
 
 function renderBenchmarkStrip() {
+  const bm = state.data.benchmark;
   const r = benchmarkReturn();
   const node = el('bmReturn');
-  if (r === null) { node.textContent = 'no data for this window'; node.style.color = ''; return; }
-  node.textContent = `${state.data.benchmark.name} ${signedPct(r)} over ${state.period}`;
-  node.style.color = colourFor(r).fg;
+  if (r === null) { node.textContent = 'no data for this window'; node.style.color = ''; }
+  else {
+    node.textContent = `${bm.name} ${signedPct(r)} over ${state.period}`;
+    node.style.color = colourFor(r).fg;
+  }
+
+  // Where the benchmark itself sits in its 52-week range decides whether a
+  // sector at its own high is genuinely leading or just moving with the market.
+  const rp = bm.rangePos;
+  el('bmRange').textContent = rp === null || rp === undefined
+    ? ''
+    : `· ${bm.name} is ${rp}% up its own 52-week range (${signedPct(bm.fromHigh)} from its high)`;
 }
 
 function visibleSectors() {
@@ -228,6 +238,7 @@ function visibleSectors() {
     const rs = rsOf(s);
     if (state.filter === 'bull' && !(rs > 0)) return false;
     if (state.filter === 'bear' && !(rs < 0)) return false;
+    if (state.filter === 'breakout' && !(s.lead && s.lead.breakingOut)) return false;
     if (state.search) {
       const q = state.search;
       if (!s.name.toLowerCase().includes(q) && !s.indexName.toLowerCase().includes(q)) return false;
@@ -293,10 +304,11 @@ function sectorCard(s) {
   const total = adv + dec || 1;
   const picked = state.selected.includes(s.indexName);
   const verdict = rs === null ? 'no data' : rs > 0 ? 'above' : rs < 0 ? 'below' : 'level';
+  const lead = s.lead || {};
 
   return `
-    <div class="sector-card ${s.isBenchmark ? 'is-benchmark' : ''}" data-sector="${s.indexName}"
-         style="border-left-color:${c.border}">
+    <div class="sector-card ${s.isBenchmark ? 'is-benchmark' : ''} ${lead.breakingOut ? 'breaking-out' : ''}"
+         data-sector="${s.indexName}" style="border-left-color:${c.border}">
       <div class="sector-card-top">
         <div>
           <div class="sector-name">${s.name}</div>
@@ -305,6 +317,7 @@ function sectorCard(s) {
         <button class="compare-toggle ${picked ? 'on' : ''}" data-sector="${s.indexName}"
                 title="Add to comparison">${picked ? '✓' : '+'}</button>
       </div>
+      ${lead.breakingOut ? '<div class="breakout-badge">⚡ Leading breakout</div>' : ''}
       <div class="sector-figures">
         <span class="sector-value" style="color:${c.fg}">${signedPct(rs)}</span>
         <span class="rs-tag" style="color:${c.fg}">${verdict} benchmark</span>
@@ -313,6 +326,7 @@ function sectorCard(s) {
         <span>${state.period} return <b>${signedPct(ret)}</b></span>
         <span>today <b>${signedPct(s.pChange)}</b></span>
       </div>
+      ${rangeBar(lead)}
       <div class="breadth">
         <div class="breadth-adv" style="width:${(adv / total) * 100}%"></div>
         <div class="breadth-dec" style="width:${(dec / total) * 100}%"></div>
@@ -320,6 +334,26 @@ function sectorCard(s) {
       <div class="sector-foot">
         <span>${adv} adv · ${dec} dec</span>
         <span>${s.stocks.length} stocks →</span>
+      </div>
+    </div>`;
+}
+
+// Where the sector sits in its own 52-week range, with the benchmark's position
+// marked on the same bar — the gap between the two is the leadership.
+function rangeBar(lead) {
+  if (lead.rangePos === null || lead.rangePos === undefined) return '';
+  const bmPos = state.data.benchmark.rangePos;
+  const near = lead.nearHighPct;
+  return `
+    <div class="range-block">
+      <div class="range-bar" title="0% = at 52-week low, 100% = at 52-week high">
+        <div class="range-fill" style="width:${lead.rangePos}%"></div>
+        ${bmPos === null || bmPos === undefined ? ''
+          : `<div class="range-bm" style="left:${bmPos}%" title="Benchmark at ${bmPos}%"></div>`}
+      </div>
+      <div class="range-caption">
+        <span>${lead.rangePos}% of 52w range</span>
+        ${near === null || near === undefined ? '' : `<span>${near}% of stocks near high</span>`}
       </div>
     </div>`;
 }
@@ -369,16 +403,23 @@ function renderDetail() {
     return st.symbol.toLowerCase().includes(q) || st.company.toLowerCase().includes(q);
   });
 
-  el('stockCount').textContent = `${stocks.length} of ${s.stocks.length} stocks`;
+  const near = s.stocks.filter(st => st.nearHigh).length;
+  el('stockCount').textContent =
+    `${stocks.length} of ${s.stocks.length} stocks · ${near} within 5% of a 52-week high`;
+
   el('stockBody').innerHTML = stocks.map(st => {
     const c = colourFor(st.pChange);
+    const fh = colourFor(st.fromHigh === null ? null : st.fromHigh + 5);  // near high reads green
+    const fresh = st.daysSinceHigh !== null && st.daysSinceHigh !== undefined && st.daysSinceHigh <= 10;
     return `
-      <tr style="border-left:3px solid ${c.border}">
-        <td class="sym">${st.symbol}</td>
+      <tr class="${st.nearHigh ? 'near-high' : ''}" style="border-left:3px solid ${c.border}">
+        <td class="sym">${st.symbol}${st.nearHigh ? ' <span class="near-flag">⚡</span>' : ''}</td>
         <td>${st.company}</td>
-        <td class="right">${fmt(st.prevClose)}</td>
         <td class="right">${fmt(st.close)}</td>
         <td class="pchange" style="color:${c.fg}">${signedPct(st.pChange)}</td>
+        <td class="right">${fmt(st.high52)}</td>
+        <td class="right" style="color:${fh.fg};font-weight:700">${signedPct(st.fromHigh)}</td>
+        <td class="${fresh ? 'fresh-high' : 'dim'}">${st.highDate || '—'}</td>
       </tr>`;
   }).join('');
 }

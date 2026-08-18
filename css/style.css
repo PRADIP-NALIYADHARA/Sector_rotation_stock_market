@@ -130,6 +130,7 @@ main { max-width: 1240px; margin: 0 auto; padding: 2rem; }
 .bm-controls { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
 
 .bm-return { font-size: 0.85rem; font-weight: 700; }
+.bm-range { font-size: 0.78rem; }
 
 /* ----------------------------------------------------------- colour scale */
 
@@ -355,6 +356,60 @@ main { max-width: 1240px; margin: 0 auto; padding: 2rem; }
 }
 
 .trend-row b { font-weight: 700; }
+
+/* 52-week range position, with the benchmark marked on the same bar */
+.range-block { margin-bottom: 0.7rem; }
+
+.range-bar {
+  position: relative;
+  height: 7px;
+  border-radius: 4px;
+  background: var(--bg-elev2);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  margin-bottom: 0.3rem;
+}
+
+.range-fill {
+  height: 100%;
+  background: linear-gradient(90deg, hsl(0 65% 48%), hsl(50 75% 52%), hsl(145 60% 45%));
+  background-size: 400% 100%;
+  background-position: left center;
+}
+
+.range-bm {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+  background: var(--text);
+  opacity: 0.85;
+  overflow: visible;
+}
+
+.range-caption {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+  font-size: 0.68rem;
+  color: var(--text-dim);
+}
+
+.breakout-badge {
+  display: inline-block;
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #f0b90b;
+  background: rgba(240, 185, 11, 0.13);
+  border: 1px solid #f0b90b;
+  border-radius: 5px;
+  padding: 0.18rem 0.45rem;
+  margin-bottom: 0.7rem;
+}
+
+.sector-card.breaking-out { box-shadow: 0 0 0 1px rgba(240, 185, 11, 0.35); }
 
 .breadth {
   display: flex;
@@ -587,6 +642,14 @@ main { max-width: 1240px; margin: 0 auto; padding: 2rem; }
 
 .sym { font-weight: 700; }
 .pchange { font-weight: 700; text-align: right; }
+
+/* Only the company name should wrap; numbers and dates stay on one line. */
+.stock-table td { white-space: nowrap; }
+.stock-table td:nth-child(2) { white-space: normal; min-width: 150px; }
+
+.stock-table tbody tr.near-high { background: rgba(240, 185, 11, 0.06); }
+.near-flag { color: #f0b90b; }
+.fresh-high { color: #f0b90b; font-weight: 600; }
 
 /* ------------------------------------------------------------- compare */
 

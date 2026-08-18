@@ -57,7 +57,14 @@ LOOKBACKS = [
 ]
 DEFAULT_PERIOD = "1M"
 
-UNIVERSE_CSVS = ["ind_nifty500list.csv", "ind_niftytotalmarketlist.csv"]
+# Widest list NSE publishes (~750 names) so industry groups cover small caps too.
+UNIVERSE_CSVS = ["ind_niftytotalmarket_list.csv", "ind_nifty500list.csv"]
+
+# "Near its 52-week high" tolerance, and how range-bound the benchmark must be
+# for a sector clearing its own high to count as leading the market.
+NEAR_HIGH_PCT = 5.0
+BREAKOUT_RANGE_POS = 90.0
+BENCHMARK_RANGEBOUND_POS = 80.0
 
 # A few official indices publish no constituent CSV. Where an industry bucket is
 # an honest stand-in, borrow its members so the card is still drillable.
@@ -89,6 +96,7 @@ HEADERS = {
 NSE_REFERER = {"Referer": "https://www.nseindia.com/market-data/live-equity-market"}
 ARCHIVE = "https://nsearchives.nseindia.com/content/indices/{}"
 BHAV_URL = "https://nsearchives.nseindia.com/products/content/sec_bhavdata_full_{}.csv"
+WK52_URL = "https://nsearchives.nseindia.com/content/CM_52_wk_High_low_{}.csv"
 
 
 # --------------------------------------------------------------------- helpers
@@ -174,6 +182,69 @@ def stock_closes_on(day, max_back=8):
     return {}, {}, None
 
 
+def week52_on(day, max_back=8):
+    """
+    Adjusted 52-week high/low per stock, with the dates they were set.
+
+    The date matters: a high set last week means the stock is breaking out now,
+    while one from eleven months ago means it has been drifting since.
+    """
+    for back in range(max_back):
+        d = day - timedelta(days=back)
+        try:
+            r = requests.get(WK52_URL.format(d.strftime("%d%m%Y")), headers=HEADERS, timeout=30)
+        except requests.RequestException:
+            continue
+        if r.status_code != 200 or "SYMBOL" not in r.text[:2000]:
+            continue
+
+        text = r.text
+        start = text.index('"SYMBOL"')          # skip the disclaimer preamble
+        levels = {}
+        for row in csv.DictReader(io.StringIO(text[start:])):
+            if row.get("SERIES", "").strip() != "EQ":
+                continue
+
+            def num(key):
+                raw = (row.get(key) or "").strip()
+                try:
+                    return float(raw)
+                except ValueError:
+                    return None
+
+            def when(key):
+                raw = (row.get(key) or "").strip()
+                try:
+                    return datetime.strptime(raw, "%d-%b-%Y")
+                except ValueError:
+                    return None
+
+            high, low = num("Adjusted_52_Week_High"), num("Adjusted_52_Week_Low")
+            if high is None or low is None:
+                continue
+            levels[row["SYMBOL"].strip()] = {
+                "high": high,
+                "low": low,
+                "highDate": when("52_Week_High_Date"),
+                "lowDate": when("52_Week_Low_DT"),
+            }
+        return levels, d
+    return {}, None
+
+
+def range_position(last, high, low):
+    """Where price sits in its 52-week range: 0 = at the low, 100 = at the high."""
+    if None in (last, high, low) or high <= low:
+        return None
+    return round((last - low) / (high - low) * 100, 1)
+
+
+def pct_from_high(last, high):
+    if None in (last, high) or not high:
+        return None
+    return round((last - high) / high * 100, 2)
+
+
 def fetch_all_indices(session):
     r = session.get("https://www.nseindia.com/api/allIndices", timeout=20, headers=NSE_REFERER)
     r.raise_for_status()
@@ -202,11 +273,16 @@ def fetch_universe():
 
 # ------------------------------------------------------------------- assembly
 
-def build_stocks(members, closes, prev_closes):
+def build_stocks(members, closes, prev_closes, week52, today):
     stocks = []
     for m in members:
         close = closes.get(m["symbol"])
         prev = prev_closes.get(m["symbol"])
+        levels = week52.get(m["symbol"], {})
+        high, low = levels.get("high"), levels.get("low")
+        high_date = levels.get("highDate")
+        from_high = pct_from_high(close, high)
+
         stocks.append({
             "symbol": m["symbol"],
             "company": m["company"],
@@ -214,6 +290,13 @@ def build_stocks(members, closes, prev_closes):
             "close": close,
             "prevClose": prev,
             "pChange": pct_change(close, prev),
+            "high52": high,
+            "low52": low,
+            "rangePos": range_position(close, high, low),
+            "fromHigh": from_high,
+            "highDate": high_date.strftime("%d-%b-%Y") if high_date else None,
+            "daysSinceHigh": (today - high_date).days if high_date else None,
+            "nearHigh": from_high is not None and from_high >= -NEAR_HIGH_PCT,
         })
     stocks.sort(key=lambda s: (s["pChange"] is None, -(s["pChange"] or 0)))
     return stocks
@@ -225,9 +308,41 @@ def breadth(stocks):
     return adv, dec, len(stocks) - adv - dec
 
 
-def average(values):
+def average(values, digits=2):
     rated = [v for v in values if v is not None]
-    return round(sum(rated) / len(rated), 2) if rated else None
+    return round(sum(rated) / len(rated), digits) if rated else None
+
+
+def leadership(range_pos, stocks, benchmark_range_pos):
+    """
+    Is this sector clearing its own 52-week high while the market is still stuck
+    in its range? That is the setup where a sector turns up before the index
+    does -- strength showing before the benchmark confirms it.
+
+    Breadth is the honest half of it: one heavyweight at a high can drag an index
+    up on its own, so the share of constituents near their own highs matters.
+    """
+    near = [s for s in stocks if s["nearHigh"]]
+    rated = [s for s in stocks if s["fromHigh"] is not None]
+    near_pct = round(len(near) / len(rated) * 100) if rated else None
+
+    fresh = [s["daysSinceHigh"] for s in near if s["daysSinceHigh"] is not None]
+    breaking_out = (
+        range_pos is not None
+        and range_pos >= BREAKOUT_RANGE_POS
+        and (benchmark_range_pos is None or benchmark_range_pos < BENCHMARK_RANGEBOUND_POS)
+    )
+
+    return {
+        "rangePos": range_pos,
+        "nearHighPct": near_pct,
+        "nearHighCount": len(near),
+        "ratedCount": len(rated),
+        "medianDaysSinceHigh": min(fresh) if fresh else None,
+        "leadGap": None if range_pos is None or benchmark_range_pos is None
+                   else round(range_pos - benchmark_range_pos, 1),
+        "breakingOut": breaking_out,
+    }
 
 
 def relative_strength(returns, benchmark_returns):
@@ -304,6 +419,7 @@ def main():
     with ThreadPoolExecutor(max_workers=6) as pool:
         idx_now_future = pool.submit(index_closes_on, today)
         stk_now_future = pool.submit(stock_closes_on, today)
+        wk52_future = pool.submit(week52_on, today)
         idx_hist_futures = {
             label: pool.submit(index_closes_on, today - timedelta(days=days))
             for label, days in LOOKBACKS
@@ -315,6 +431,7 @@ def main():
 
         index_now, index_date = idx_now_future.result()
         stock_now, stock_prev, bhav_date = stk_now_future.result()
+        week52, wk52_date = wk52_future.result()
         index_hist = {label: f.result()[0] for label, f in idx_hist_futures.items()}
         stock_hist = {label: f.result()[0] for label, f in stk_hist_futures.items()}
 
@@ -339,6 +456,12 @@ def main():
     print(f"Benchmark {BENCHMARK}: "
           + ", ".join(f"{k} {v}%" for k, v in benchmark_returns.items() if v is not None),
           file=sys.stderr)
+
+    bm_idx = indices.get(BENCHMARK, {})
+    benchmark_range_pos = range_position(
+        bm_idx.get("last"), bm_idx.get("yearHigh"), bm_idx.get("yearLow"))
+    print(f"  52-week range position: {benchmark_range_pos}% "
+          f"({len(week52)} stocks have 52-week levels)", file=sys.stderr)
 
     index_map = {}
     if MAP_FILE.exists():
@@ -376,11 +499,13 @@ def main():
 
     for index_name, entry in wanted:
         idx = indices[index_name]
-        stocks = build_stocks(members_by_index.get(index_name, []), stock_now, stock_prev)
+        stocks = build_stocks(members_by_index.get(index_name, []), stock_now, stock_prev,
+                              week52, today)
         adv, dec, unch = breadth(stocks)
         returns = index_returns(index_name)
+        range_pos = range_position(idx.get("last"), idx.get("yearHigh"), idx.get("yearLow"))
 
-        sectors.append({
+        sector = {
             "name": pretty_name(index_name),
             "indexName": index_name,
             "group": entry.get("group", "Sectoral"),
@@ -388,13 +513,21 @@ def main():
             "isBenchmark": index_name == BENCHMARK,
             "last": idx.get("last"),
             "pChange": idx.get("percentChange"),
+            "high52": idx.get("yearHigh"),
+            "low52": idx.get("yearLow"),
+            "fromHigh": pct_from_high(idx.get("last"), idx.get("yearHigh")),
             "returns": returns,
             "rs": relative_strength(returns, benchmark_returns),
+            "lead": leadership(range_pos, stocks, benchmark_range_pos),
             "advances": adv,
             "declines": dec,
             "unchanged": unch,
             "stocks": stocks,
-        })
+        }
+        if not entry.get("csv"):
+            sector["note"] = "NSE does not publish a constituent list for this index, " \
+                             "so only index-level figures are available."
+        sectors.append(sector)
 
     # Indices with no constituent CSV but a sensible industry stand-in.
     covered = {s["indexName"] for s in sectors}
@@ -403,9 +536,10 @@ def main():
             continue
         idx = indices[index_name]
         members = [m for ind in industries for m in by_industry.get(ind, [])]
-        stocks = build_stocks(members, stock_now, stock_prev)
+        stocks = build_stocks(members, stock_now, stock_prev, week52, today)
         adv, dec, unch = breadth(stocks)
         returns = index_returns(index_name)
+        range_pos = range_position(idx.get("last"), idx.get("yearHigh"), idx.get("yearLow"))
         sectors.append({
             "name": pretty_name(index_name),
             "indexName": index_name,
@@ -414,8 +548,12 @@ def main():
             "isBenchmark": False,
             "last": idx.get("last"),
             "pChange": idx.get("percentChange"),
+            "high52": idx.get("yearHigh"),
+            "low52": idx.get("yearLow"),
+            "fromHigh": pct_from_high(idx.get("last"), idx.get("yearHigh")),
             "returns": returns,
             "rs": relative_strength(returns, benchmark_returns),
+            "lead": leadership(range_pos, stocks, benchmark_range_pos),
             "advances": adv,
             "declines": dec,
             "unchanged": unch,
@@ -425,7 +563,7 @@ def main():
 
     # --- 2. Industry groups -------------------------------------------------
     for industry, members in sorted(by_industry.items()):
-        stocks = build_stocks(members, stock_now, stock_prev)
+        stocks = build_stocks(members, stock_now, stock_prev, week52, today)
         adv, dec, unch = breadth(stocks)
 
         per_stock = {m["symbol"]: stock_returns(m["symbol"]) for m in members}
@@ -433,6 +571,9 @@ def main():
             label: average([r[label] for r in per_stock.values()])
             for label, _ in LOOKBACKS
         }
+        # No index to read a level off, so the group's range position is the
+        # average of where its constituents sit in their own ranges.
+        range_pos = average([s["rangePos"] for s in stocks], digits=1)
 
         sectors.append({
             "name": industry,
@@ -442,8 +583,12 @@ def main():
             "isBenchmark": False,
             "last": None,
             "pChange": average([s["pChange"] for s in stocks]),
+            "high52": None,
+            "low52": None,
+            "fromHigh": average([s["fromHigh"] for s in stocks]),
             "returns": returns,
             "rs": relative_strength(returns, benchmark_returns),
+            "lead": leadership(range_pos, stocks, benchmark_range_pos),
             "advances": adv,
             "declines": dec,
             "unchanged": unch,
@@ -459,10 +604,20 @@ def main():
         "updatedAt": datetime.now().isoformat(timespec="seconds"),
         "bhavDate": bhav_date.strftime("%d-%b-%Y") if bhav_date else None,
         "indexDate": index_date.strftime("%d-%b-%Y") if index_date else None,
+        "week52Date": wk52_date.strftime("%d-%b-%Y") if wk52_date else None,
         "benchmark": {
             "indexName": BENCHMARK,
             "name": pretty_name(BENCHMARK),
             "returns": benchmark_returns,
+            "rangePos": benchmark_range_pos,
+            "high52": bm_idx.get("yearHigh"),
+            "low52": bm_idx.get("yearLow"),
+            "fromHigh": pct_from_high(bm_idx.get("last"), bm_idx.get("yearHigh")),
+        },
+        "thresholds": {
+            "nearHighPct": NEAR_HIGH_PCT,
+            "breakoutRangePos": BREAKOUT_RANGE_POS,
+            "benchmarkRangeboundPos": BENCHMARK_RANGEBOUND_POS,
         },
         "periods": [label for label, _ in LOOKBACKS],
         "defaultPeriod": DEFAULT_PERIOD,

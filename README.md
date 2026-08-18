@@ -116,6 +116,32 @@ no index, so their return is the equal-weighted average of the constituents' ret
 
 The benchmark is set by `BENCHMARK` in `fetch_data.py`, and the windows by `LOOKBACKS`.
 
+## Spotting strength before the index confirms it
+
+A sector often turns up while the index is still going sideways. To catch that, every
+sector and stock carries its position in its own 52-week range — 0% at the low, 100%
+at the high — and the benchmark's position is drawn on the same bar. The gap between
+them is the leadership.
+
+A sector is flagged **⚡ Leading breakout** when it sits at or above 90% of its own
+52-week range while the benchmark is still below 80% of its. In other words: this one
+is making new highs and the market is not.
+
+Two things guard against being fooled by a single heavyweight dragging an index up:
+
+- **Breadth of strength** — the share of a sector's constituents that are themselves
+  within 5% of their own 52-week high.
+- **Freshness** — the stock table shows the date each 52-week high was set, highlighted
+  when it was set in the last ten days. A high from eleven months ago is not a breakout.
+
+On the data shipped here NIFTY 50 sits at **47% of its 52-week range**, 8.4% below its
+high — a textbook sideways market. Meanwhile India Defence is at **99.7%**, Auto at
+**90.5%** with 40% of its stocks near their own highs, and Pharma at **92.2%**. Inside
+Auto, BOSCHLTD is trading *above* its 52-week high with the high set days ago.
+
+Use the **⚡ Leading breakout** filter to see only those. Thresholds live at the top of
+`fetch_data.py` (`NEAR_HIGH_PCT`, `BREAKOUT_RANGE_POS`, `BENCHMARK_RANGEBOUND_POS`).
+
 ## Colour scale
 
 Colour is banded, not bucketed: every *step* percent gets its own shade, sweeping
