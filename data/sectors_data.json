@@ -1,0 +1,1969 @@
+{
+  "updatedAt": "2026-08-18T22:42:59",
+  "bhavDate": "18-Aug-2026",
+  "thresholds": {
+    "bullish": 0.75,
+    "bearish": -0.75
+  },
+  "sectors": [
+    {
+      "name": "Media",
+      "indexName": "NIFTY MEDIA",
+      "last": 1602.2,
+      "pChange": 0.4,
+      "advances": "4",
+      "declines": "6",
+      "unchanged": "0",
+      "status": "neutral",
+      "stocks": [
+        {
+          "symbol": "PFOCUS",
+          "company": "Prime Focus Ltd.",
+          "industry": "Media Entertainment & Publication",
+          "close": 286.25,
+          "prevClose": 266.4,
+          "pChange": 7.45,
+          "status": "bullish"
+        },
+        {
+          "symbol": "NAZARA",
+          "company": "Nazara Technologies Ltd.",
+          "industry": "Media Entertainment & Publication",
+          "close": 355.55,
+          "prevClose": 350.1,
+          "pChange": 1.56,
+          "status": "bullish"
+        },
+        {
+          "symbol": "PVRINOX",
+          "company": "PVR INOX Ltd.",
+          "industry": "Media Entertainment & Publication",
+          "close": 1198.1,
+          "prevClose": 1192.0,
+          "pChange": 0.51,
+          "status": "neutral"
+        },
+        {
+          "symbol": "ZEEL",
+          "company": "Zee Entertainment Enterprises Ltd.",
+          "industry": "Media Entertainment & Publication",
+          "close": 105.32,
+          "prevClose": 104.87,
+          "pChange": 0.43,
+          "status": "neutral"
+        },
+        {
+          "symbol": "TIPSMUSIC",
+          "company": "Tips Music Ltd.",
+          "industry": "Media Entertainment & Publication",
+          "close": 655.7,
+          "prevClose": 656.25,
+          "pChange": -0.08,
+          "status": "neutral"
+        },
+        {
+          "symbol": "HATHWAY",
+          "company": "Hathway Cable & Datacom Ltd.",
+          "industry": "Media Entertainment & Publication",
+          "close": 10.51,
+          "prevClose": 10.59,
+          "pChange": -0.76,
+          "status": "bearish"
+        },
+        {
+          "symbol": "DBCORP",
+          "company": "D.B.Corp Ltd.",
+          "industry": "Media Entertainment & Publication",
+          "close": 209.85,
+          "prevClose": 212.13,
+          "pChange": -1.07,
+          "status": "bearish"
+        },
+        {
+          "symbol": "SUNTV",
+          "company": "Sun TV Network Ltd.",
+          "industry": "Media Entertainment & Publication",
+          "close": 482.8,
+          "prevClose": 488.25,
+          "pChange": -1.12,
+          "status": "bearish"
+        },
+        {
+          "symbol": "NETWORK18",
+          "company": "Network18 Media & Investments Ltd.",
+          "industry": "Media Entertainment & Publication",
+          "close": 28.51,
+          "prevClose": 28.95,
+          "pChange": -1.52,
+          "status": "bearish"
+        },
+        {
+          "symbol": "SAREGAMA",
+          "company": "Saregama India Ltd",
+          "industry": "Media Entertainment & Publication",
+          "close": 513.95,
+          "prevClose": 523.4,
+          "pChange": -1.81,
+          "status": "bearish"
+        }
+      ]
+    },
+    {
+      "name": "Auto",
+      "indexName": "NIFTY AUTO",
+      "last": 29264.55,
+      "pChange": 0.3,
+      "advances": "8",
+      "declines": "7",
+      "unchanged": "0",
+      "status": "neutral",
+      "stocks": [
+        {
+          "symbol": "TIINDIA",
+          "company": "Tube Investments of India Ltd.",
+          "industry": "Automobile and Auto Components",
+          "close": 2959.0,
+          "prevClose": 2741.4,
+          "pChange": 7.94,
+          "status": "bullish"
+        },
+        {
+          "symbol": "BOSCHLTD",
+          "company": "Bosch Ltd.",
+          "industry": "Automobile and Auto Components",
+          "close": 48730.0,
+          "prevClose": 46970.0,
+          "pChange": 3.75,
+          "status": "bullish"
+        },
+        {
+          "symbol": "SONACOMS",
+          "company": "Sona BLW Precision Forgings Ltd.",
+          "industry": "Automobile and Auto Components",
+          "close": 824.0,
+          "prevClose": 805.1,
+          "pChange": 2.35,
+          "status": "bullish"
+        },
+        {
+          "symbol": "MOTHERSON",
+          "company": "Samvardhana Motherson International Ltd.",
+          "industry": "Automobile and Auto Components",
+          "close": 170.4,
+          "prevClose": 168.06,
+          "pChange": 1.39,
+          "status": "bullish"
+        },
+        {
+          "symbol": "M&M",
+          "company": "Mahindra & Mahindra Ltd.",
+          "industry": "Automobile and Auto Components",
+          "close": 3421.5,
+          "prevClose": 3390.4,
+          "pChange": 0.92,
+          "status": "bullish"
+        },
+        {
+          "symbol": "BHARATFORG",
+          "company": "Bharat Forge Ltd.",
+          "industry": "Automobile and Auto Components",
+          "close": 2098.9,
+          "prevClose": 2093.0,
+          "pChange": 0.28,
+          "status": "neutral"
+        },
+        {
+          "symbol": "UNOMINDA",
+          "company": "UNO Minda Ltd.",
+          "industry": "Automobile and Auto Components",
+          "close": 1273.0,
+          "prevClose": 1269.9,
+          "pChange": 0.24,
+          "status": "neutral"
+        },
+        {
+          "symbol": "HEROMOTOCO",
+          "company": "Hero MotoCorp Ltd.",
+          "industry": "Automobile and Auto Components",
+          "close": 5745.5,
+          "prevClose": 5745.0,
+          "pChange": 0.01,
+          "status": "neutral"
+        },
+        {
+          "symbol": "EICHERMOT",
+          "company": "Eicher Motors Ltd.",
+          "industry": "Automobile and Auto Components",
+          "close": 8018.5,
+          "prevClose": 8050.0,
+          "pChange": -0.39,
+          "status": "neutral"
+        },
+        {
+          "symbol": "ASHOKLEY",
+          "company": "Ashok Leyland Ltd.",
+          "industry": "Capital Goods",
+          "close": 176.35,
+          "prevClose": 177.1,
+          "pChange": -0.42,
+          "status": "neutral"
+        },
+        {
+          "symbol": "BAJAJ-AUTO",
+          "company": "Bajaj Auto Ltd.",
+          "industry": "Automobile and Auto Components",
+          "close": 11607.0,
+          "prevClose": 11663.0,
+          "pChange": -0.48,
+          "status": "neutral"
+        },
+        {
+          "symbol": "MARUTI",
+          "company": "Maruti Suzuki India Ltd.",
+          "industry": "Automobile and Auto Components",
+          "close": 13691.0,
+          "prevClose": 13760.0,
+          "pChange": -0.5,
+          "status": "neutral"
+        },
+        {
+          "symbol": "TVSMOTOR",
+          "company": "TVS Motor Company Ltd.",
+          "industry": "Automobile and Auto Components",
+          "close": 4356.8,
+          "prevClose": 4385.9,
+          "pChange": -0.66,
+          "status": "neutral"
+        },
+        {
+          "symbol": "EXIDEIND",
+          "company": "Exide Industries Ltd.",
+          "industry": "Automobile and Auto Components",
+          "close": 465.25,
+          "prevClose": 475.7,
+          "pChange": -2.2,
+          "status": "bearish"
+        },
+        {
+          "symbol": "TMPV",
+          "company": "Tata Motors Passenger Vehicles Ltd.",
+          "industry": "Automobile and Auto Components",
+          "close": 322.8,
+          "prevClose": 330.2,
+          "pChange": -2.24,
+          "status": "bearish"
+        }
+      ]
+    },
+    {
+      "name": "Healthcare",
+      "indexName": "NIFTY HEALTHCARE INDEX",
+      "last": 16463.7,
+      "pChange": 0.21,
+      "advances": "10",
+      "declines": "10",
+      "unchanged": "0",
+      "status": "neutral",
+      "stocks": [
+        {
+          "symbol": "PPLPHARMA",
+          "company": "Piramal Pharma Ltd.",
+          "industry": "Healthcare",
+          "close": 210.53,
+          "prevClose": 204.73,
+          "pChange": 2.83,
+          "status": "bullish"
+        },
+        {
+          "symbol": "ALKEM",
+          "company": "Alkem Laboratories Ltd.",
+          "industry": "Healthcare",
+          "close": 5475.0,
+          "prevClose": 5374.0,
+          "pChange": 1.88,
+          "status": "bullish"
+        },
+        {
+          "symbol": "TORNTPHARM",
+          "company": "Torrent Pharmaceuticals Ltd.",
+          "industry": "Healthcare",
+          "close": 4971.0,
+          "prevClose": 4900.0,
+          "pChange": 1.45,
+          "status": "bullish"
+        },
+        {
+          "symbol": "BIOCON",
+          "company": "Biocon Ltd.",
+          "industry": "Healthcare",
+          "close": 417.5,
+          "prevClose": 412.0,
+          "pChange": 1.33,
+          "status": "bullish"
+        },
+        {
+          "symbol": "DIVISLAB",
+          "company": "Divi's Laboratories Ltd.",
+          "industry": "Healthcare",
+          "close": 8588.0,
+          "prevClose": 8481.5,
+          "pChange": 1.26,
+          "status": "bullish"
+        },
+        {
+          "symbol": "AUROPHARMA",
+          "company": "Aurobindo Pharma Ltd.",
+          "industry": "Healthcare",
+          "close": 1645.0,
+          "prevClose": 1627.2,
+          "pChange": 1.09,
+          "status": "bullish"
+        },
+        {
+          "symbol": "MAXHEALTH",
+          "company": "Max Healthcare Institute Ltd.",
+          "industry": "Healthcare",
+          "close": 1014.4,
+          "prevClose": 1003.7,
+          "pChange": 1.07,
+          "status": "bullish"
+        },
+        {
+          "symbol": "FORTIS",
+          "company": "Fortis Healthcare Ltd.",
+          "industry": "Healthcare",
+          "close": 916.7,
+          "prevClose": 908.75,
+          "pChange": 0.87,
+          "status": "bullish"
+        },
+        {
+          "symbol": "SYNGENE",
+          "company": "Syngene International Ltd.",
+          "industry": "Healthcare",
+          "close": 404.1,
+          "prevClose": 403.0,
+          "pChange": 0.27,
+          "status": "neutral"
+        },
+        {
+          "symbol": "LAURUSLABS",
+          "company": "Laurus Labs Ltd.",
+          "industry": "Healthcare",
+          "close": 1814.0,
+          "prevClose": 1809.7,
+          "pChange": 0.24,
+          "status": "neutral"
+        },
+        {
+          "symbol": "CIPLA",
+          "company": "Cipla Ltd.",
+          "industry": "Healthcare",
+          "close": 1431.1,
+          "prevClose": 1431.5,
+          "pChange": -0.03,
+          "status": "neutral"
+        },
+        {
+          "symbol": "MANKIND",
+          "company": "Mankind Pharma Ltd.",
+          "industry": "Healthcare",
+          "close": 2380.0,
+          "prevClose": 2380.9,
+          "pChange": -0.04,
+          "status": "neutral"
+        },
+        {
+          "symbol": "APOLLOHOSP",
+          "company": "Apollo Hospitals Enterprise Ltd.",
+          "industry": "Healthcare",
+          "close": 8817.0,
+          "prevClose": 8825.5,
+          "pChange": -0.1,
+          "status": "neutral"
+        },
+        {
+          "symbol": "IPCALAB",
+          "company": "Ipca Laboratories Ltd.",
+          "industry": "Healthcare",
+          "close": 1882.1,
+          "prevClose": 1884.6,
+          "pChange": -0.13,
+          "status": "neutral"
+        },
+        {
+          "symbol": "SUNPHARMA",
+          "company": "Sun Pharmaceutical Industries Ltd.",
+          "industry": "Healthcare",
+          "close": 1875.1,
+          "prevClose": 1882.0,
+          "pChange": -0.37,
+          "status": "neutral"
+        },
+        {
+          "symbol": "GLENMARK",
+          "company": "Glenmark Pharmaceuticals Ltd.",
+          "industry": "Healthcare",
+          "close": 2305.0,
+          "prevClose": 2329.0,
+          "pChange": -1.03,
+          "status": "bearish"
+        },
+        {
+          "symbol": "DRREDDY",
+          "company": "Dr. Reddy's Laboratories Ltd.",
+          "industry": "Healthcare",
+          "close": 1178.8,
+          "prevClose": 1192.0,
+          "pChange": -1.11,
+          "status": "bearish"
+        },
+        {
+          "symbol": "LUPIN",
+          "company": "Lupin Ltd.",
+          "industry": "Healthcare",
+          "close": 2232.0,
+          "prevClose": 2259.0,
+          "pChange": -1.2,
+          "status": "bearish"
+        },
+        {
+          "symbol": "ABBOTINDIA",
+          "company": "Abbott India Ltd.",
+          "industry": "Healthcare",
+          "close": 26580.0,
+          "prevClose": 26905.0,
+          "pChange": -1.21,
+          "status": "bearish"
+        },
+        {
+          "symbol": "ZYDUSLIFE",
+          "company": "Zydus Lifesciences Ltd.",
+          "industry": "Healthcare",
+          "close": 1115.6,
+          "prevClose": 1131.5,
+          "pChange": -1.41,
+          "status": "bearish"
+        }
+      ]
+    },
+    {
+      "name": "Oil & Gas",
+      "indexName": "NIFTY OIL & GAS",
+      "last": 11231.15,
+      "pChange": 0.2,
+      "advances": "10",
+      "declines": "5",
+      "unchanged": "0",
+      "status": "neutral",
+      "stocks": [
+        {
+          "symbol": "AEGISLOG",
+          "company": "Aegis Logistics Ltd.",
+          "industry": "Oil Gas & Consumable Fuels",
+          "close": 1367.7,
+          "prevClose": 1287.2,
+          "pChange": 6.25,
+          "status": "bullish"
+        },
+        {
+          "symbol": "AEGISVOPAK",
+          "company": "Aegis Vopak Terminals Ltd.",
+          "industry": "Oil Gas & Consumable Fuels",
+          "close": 274.8,
+          "prevClose": 269.5,
+          "pChange": 1.97,
+          "status": "bullish"
+        },
+        {
+          "symbol": "PETRONET",
+          "company": "Petronet LNG Ltd.",
+          "industry": "Oil Gas & Consumable Fuels",
+          "close": 286.25,
+          "prevClose": 281.8,
+          "pChange": 1.58,
+          "status": "bullish"
+        },
+        {
+          "symbol": "CHENNPETRO",
+          "company": "Chennai Petroleum Corporation Ltd.",
+          "industry": "Oil Gas & Consumable Fuels",
+          "close": 1404.0,
+          "prevClose": 1382.4,
+          "pChange": 1.56,
+          "status": "bullish"
+        },
+        {
+          "symbol": "OIL",
+          "company": "Oil India Ltd.",
+          "industry": "Oil Gas & Consumable Fuels",
+          "close": 480.5,
+          "prevClose": 474.65,
+          "pChange": 1.23,
+          "status": "bullish"
+        },
+        {
+          "symbol": "GAIL",
+          "company": "GAIL (India) Ltd.",
+          "industry": "Oil Gas & Consumable Fuels",
+          "close": 173.5,
+          "prevClose": 172.1,
+          "pChange": 0.81,
+          "status": "bullish"
+        },
+        {
+          "symbol": "RELIANCE",
+          "company": "Reliance Industries Ltd.",
+          "industry": "Oil Gas & Consumable Fuels",
+          "close": 1322.0,
+          "prevClose": 1316.0,
+          "pChange": 0.46,
+          "status": "neutral"
+        },
+        {
+          "symbol": "ONGC",
+          "company": "Oil & Natural Gas Corporation Ltd.",
+          "industry": "Oil Gas & Consumable Fuels",
+          "close": 239.5,
+          "prevClose": 238.49,
+          "pChange": 0.42,
+          "status": "neutral"
+        },
+        {
+          "symbol": "ATGL",
+          "company": "Adani Total Gas Ltd.",
+          "industry": "Oil Gas & Consumable Fuels",
+          "close": 647.3,
+          "prevClose": 646.9,
+          "pChange": 0.06,
+          "status": "neutral"
+        },
+        {
+          "symbol": "CASTROLIND",
+          "company": "Castrol India Ltd.",
+          "industry": "Oil Gas & Consumable Fuels",
+          "close": 186.85,
+          "prevClose": 187.55,
+          "pChange": -0.37,
+          "status": "neutral"
+        },
+        {
+          "symbol": "IOC",
+          "company": "Indian Oil Corporation Ltd.",
+          "industry": "Oil Gas & Consumable Fuels",
+          "close": 137.8,
+          "prevClose": 138.61,
+          "pChange": -0.58,
+          "status": "neutral"
+        },
+        {
+          "symbol": "IGL",
+          "company": "Indraprastha Gas Ltd.",
+          "industry": "Oil Gas & Consumable Fuels",
+          "close": 149.39,
+          "prevClose": 151.0,
+          "pChange": -1.07,
+          "status": "bearish"
+        },
+        {
+          "symbol": "HINDPETRO",
+          "company": "Hindustan Petroleum Corporation Ltd.",
+          "industry": "Oil Gas & Consumable Fuels",
+          "close": 366.0,
+          "prevClose": 371.0,
+          "pChange": -1.35,
+          "status": "bearish"
+        },
+        {
+          "symbol": "MGL",
+          "company": "Mahanagar Gas Ltd.",
+          "industry": "Oil Gas & Consumable Fuels",
+          "close": 1111.4,
+          "prevClose": 1129.1,
+          "pChange": -1.57,
+          "status": "bearish"
+        },
+        {
+          "symbol": "BPCL",
+          "company": "Bharat Petroleum Corporation Ltd.",
+          "industry": "Oil Gas & Consumable Fuels",
+          "close": 310.3,
+          "prevClose": 316.65,
+          "pChange": -2.01,
+          "status": "bearish"
+        }
+      ]
+    },
+    {
+      "name": "Pharma",
+      "indexName": "NIFTY PHARMA",
+      "last": 26361.9,
+      "pChange": 0.08,
+      "advances": "8",
+      "declines": "12",
+      "unchanged": "0",
+      "status": "neutral",
+      "stocks": [
+        {
+          "symbol": "PPLPHARMA",
+          "company": "Piramal Pharma Ltd.",
+          "industry": "Healthcare",
+          "close": 210.53,
+          "prevClose": 204.73,
+          "pChange": 2.83,
+          "status": "bullish"
+        },
+        {
+          "symbol": "ALKEM",
+          "company": "Alkem Laboratories Ltd.",
+          "industry": "Healthcare",
+          "close": 5475.0,
+          "prevClose": 5374.0,
+          "pChange": 1.88,
+          "status": "bullish"
+        },
+        {
+          "symbol": "SAILIFE",
+          "company": "Sai Life Sciences Ltd.",
+          "industry": "Healthcare",
+          "close": 1440.1,
+          "prevClose": 1416.4,
+          "pChange": 1.67,
+          "status": "bullish"
+        },
+        {
+          "symbol": "TORNTPHARM",
+          "company": "Torrent Pharmaceuticals Ltd.",
+          "industry": "Healthcare",
+          "close": 4971.0,
+          "prevClose": 4900.0,
+          "pChange": 1.45,
+          "status": "bullish"
+        },
+        {
+          "symbol": "BIOCON",
+          "company": "Biocon Ltd.",
+          "industry": "Healthcare",
+          "close": 417.5,
+          "prevClose": 412.0,
+          "pChange": 1.33,
+          "status": "bullish"
+        },
+        {
+          "symbol": "DIVISLAB",
+          "company": "Divi's Laboratories Ltd.",
+          "industry": "Healthcare",
+          "close": 8588.0,
+          "prevClose": 8481.5,
+          "pChange": 1.26,
+          "status": "bullish"
+        },
+        {
+          "symbol": "AUROPHARMA",
+          "company": "Aurobindo Pharma Ltd.",
+          "industry": "Healthcare",
+          "close": 1645.0,
+          "prevClose": 1627.2,
+          "pChange": 1.09,
+          "status": "bullish"
+        },
+        {
+          "symbol": "LAURUSLABS",
+          "company": "Laurus Labs Ltd.",
+          "industry": "Healthcare",
+          "close": 1814.0,
+          "prevClose": 1809.7,
+          "pChange": 0.24,
+          "status": "neutral"
+        },
+        {
+          "symbol": "CIPLA",
+          "company": "Cipla Ltd.",
+          "industry": "Healthcare",
+          "close": 1431.1,
+          "prevClose": 1431.5,
+          "pChange": -0.03,
+          "status": "neutral"
+        },
+        {
+          "symbol": "MANKIND",
+          "company": "Mankind Pharma Ltd.",
+          "industry": "Healthcare",
+          "close": 2380.0,
+          "prevClose": 2380.9,
+          "pChange": -0.04,
+          "status": "neutral"
+        },
+        {
+          "symbol": "IPCALAB",
+          "company": "Ipca Laboratories Ltd.",
+          "industry": "Healthcare",
+          "close": 1882.1,
+          "prevClose": 1884.6,
+          "pChange": -0.13,
+          "status": "neutral"
+        },
+        {
+          "symbol": "AJANTPHARM",
+          "company": "Ajanta Pharmaceuticals Ltd.",
+          "industry": "Healthcare",
+          "close": 3706.4,
+          "prevClose": 3718.2,
+          "pChange": -0.32,
+          "status": "neutral"
+        },
+        {
+          "symbol": "SUNPHARMA",
+          "company": "Sun Pharmaceutical Industries Ltd.",
+          "industry": "Healthcare",
+          "close": 1875.1,
+          "prevClose": 1882.0,
+          "pChange": -0.37,
+          "status": "neutral"
+        },
+        {
+          "symbol": "GLENMARK",
+          "company": "Glenmark Pharmaceuticals Ltd.",
+          "industry": "Healthcare",
+          "close": 2305.0,
+          "prevClose": 2329.0,
+          "pChange": -1.03,
+          "status": "bearish"
+        },
+        {
+          "symbol": "DRREDDY",
+          "company": "Dr. Reddy's Laboratories Ltd.",
+          "industry": "Healthcare",
+          "close": 1178.8,
+          "prevClose": 1192.0,
+          "pChange": -1.11,
+          "status": "bearish"
+        },
+        {
+          "symbol": "LUPIN",
+          "company": "Lupin Ltd.",
+          "industry": "Healthcare",
+          "close": 2232.0,
+          "prevClose": 2259.0,
+          "pChange": -1.2,
+          "status": "bearish"
+        },
+        {
+          "symbol": "ABBOTINDIA",
+          "company": "Abbott India Ltd.",
+          "industry": "Healthcare",
+          "close": 26580.0,
+          "prevClose": 26905.0,
+          "pChange": -1.21,
+          "status": "bearish"
+        },
+        {
+          "symbol": "ZYDUSLIFE",
+          "company": "Zydus Lifesciences Ltd.",
+          "industry": "Healthcare",
+          "close": 1115.6,
+          "prevClose": 1131.5,
+          "pChange": -1.41,
+          "status": "bearish"
+        },
+        {
+          "symbol": "GLAND",
+          "company": "Gland Pharma Ltd.",
+          "industry": "Healthcare",
+          "close": 2858.6,
+          "prevClose": 2910.2,
+          "pChange": -1.77,
+          "status": "bearish"
+        },
+        {
+          "symbol": "WOCKPHARMA",
+          "company": "Wockhardt Ltd.",
+          "industry": "Healthcare",
+          "close": 1859.9,
+          "prevClose": 1898.8,
+          "pChange": -2.05,
+          "status": "bearish"
+        }
+      ]
+    },
+    {
+      "name": "Private Bank",
+      "indexName": "NIFTY PRIVATE BANK",
+      "last": 27247.9,
+      "pChange": -0.23,
+      "advances": "4",
+      "declines": "6",
+      "unchanged": "0",
+      "status": "neutral",
+      "stocks": [
+        {
+          "symbol": "AXISBANK",
+          "company": "Axis Bank Ltd.",
+          "industry": "Financial Services",
+          "close": 1243.0,
+          "prevClose": 1227.3,
+          "pChange": 1.28,
+          "status": "bullish"
+        },
+        {
+          "symbol": "FEDERALBNK",
+          "company": "Federal Bank Ltd.",
+          "industry": "Financial Services",
+          "close": 357.8,
+          "prevClose": 354.1,
+          "pChange": 1.04,
+          "status": "bullish"
+        },
+        {
+          "symbol": "INDUSINDBK",
+          "company": "IndusInd Bank Ltd.",
+          "industry": "Financial Services",
+          "close": 1015.0,
+          "prevClose": 1010.6,
+          "pChange": 0.44,
+          "status": "neutral"
+        },
+        {
+          "symbol": "RBLBANK",
+          "company": "RBL Bank Ltd.",
+          "industry": "Financial Services",
+          "close": 383.0,
+          "prevClose": 381.5,
+          "pChange": 0.39,
+          "status": "neutral"
+        },
+        {
+          "symbol": "ICICIBANK",
+          "company": "ICICI Bank Ltd.",
+          "industry": "Financial Services",
+          "close": 1412.0,
+          "prevClose": 1415.3,
+          "pChange": -0.23,
+          "status": "neutral"
+        },
+        {
+          "symbol": "IDFCFIRSTB",
+          "company": "IDFC First Bank Ltd.",
+          "industry": "Financial Services",
+          "close": 84.76,
+          "prevClose": 85.05,
+          "pChange": -0.34,
+          "status": "neutral"
+        },
+        {
+          "symbol": "HDFCBANK",
+          "company": "HDFC Bank Ltd.",
+          "industry": "Financial Services",
+          "close": 723.0,
+          "prevClose": 729.0,
+          "pChange": -0.82,
+          "status": "bearish"
+        },
+        {
+          "symbol": "KOTAKBANK",
+          "company": "Kotak Mahindra Bank Ltd.",
+          "industry": "Financial Services",
+          "close": 387.65,
+          "prevClose": 392.7,
+          "pChange": -1.29,
+          "status": "bearish"
+        },
+        {
+          "symbol": "BANDHANBNK",
+          "company": "Bandhan Bank Ltd.",
+          "industry": "Financial Services",
+          "close": 170.5,
+          "prevClose": 173.25,
+          "pChange": -1.59,
+          "status": "bearish"
+        },
+        {
+          "symbol": "YESBANK",
+          "company": "Yes Bank Ltd.",
+          "industry": "Financial Services",
+          "close": 22.46,
+          "prevClose": 22.92,
+          "pChange": -2.01,
+          "status": "bearish"
+        }
+      ]
+    },
+    {
+      "name": "Consumer Durables",
+      "indexName": "NIFTY CONSUMER DURABLES",
+      "last": 40264.7,
+      "pChange": -0.4,
+      "advances": "3",
+      "declines": "10",
+      "unchanged": "0",
+      "status": "neutral",
+      "stocks": [
+        {
+          "symbol": "AMBER",
+          "company": "Amber Enterprises India Ltd.",
+          "industry": "Consumer Durables",
+          "close": 7350.0,
+          "prevClose": 7259.0,
+          "pChange": 1.25,
+          "status": "bullish"
+        },
+        {
+          "symbol": "DIXON",
+          "company": "Dixon Technologies (India) Ltd.",
+          "industry": "Consumer Durables",
+          "close": 14150.0,
+          "prevClose": 14025.0,
+          "pChange": 0.89,
+          "status": "bullish"
+        },
+        {
+          "symbol": "HAVELLS",
+          "company": "Havells India Ltd.",
+          "industry": "Consumer Durables",
+          "close": 1299.7,
+          "prevClose": 1299.0,
+          "pChange": 0.05,
+          "status": "neutral"
+        },
+        {
+          "symbol": "TITAN",
+          "company": "Titan Company Ltd.",
+          "industry": "Consumer Durables",
+          "close": 5048.6,
+          "prevClose": 5068.5,
+          "pChange": -0.39,
+          "status": "neutral"
+        },
+        {
+          "symbol": "BATAINDIA",
+          "company": "Bata India Ltd.",
+          "industry": "Consumer Durables",
+          "close": 753.1,
+          "prevClose": 758.1,
+          "pChange": -0.66,
+          "status": "neutral"
+        },
+        {
+          "symbol": "CROMPTON",
+          "company": "Crompton Greaves Consumer Electricals Ltd.",
+          "industry": "Consumer Durables",
+          "close": 244.8,
+          "prevClose": 246.5,
+          "pChange": -0.69,
+          "status": "neutral"
+        },
+        {
+          "symbol": "BLUESTARCO",
+          "company": "Blue Star Ltd.",
+          "industry": "Consumer Durables",
+          "close": 1493.0,
+          "prevClose": 1508.1,
+          "pChange": -1.0,
+          "status": "bearish"
+        },
+        {
+          "symbol": "WHIRLPOOL",
+          "company": "Whirlpool of India Ltd.",
+          "industry": "Consumer Durables",
+          "close": 769.0,
+          "prevClose": 777.35,
+          "pChange": -1.07,
+          "status": "bearish"
+        },
+        {
+          "symbol": "LGEINDIA",
+          "company": "LG Electronics India Ltd.",
+          "industry": "Consumer Durables",
+          "close": 1649.4,
+          "prevClose": 1667.6,
+          "pChange": -1.09,
+          "status": "bearish"
+        },
+        {
+          "symbol": "VOLTAS",
+          "company": "Voltas Ltd.",
+          "industry": "Consumer Durables",
+          "close": 1252.9,
+          "prevClose": 1267.0,
+          "pChange": -1.11,
+          "status": "bearish"
+        },
+        {
+          "symbol": "KALYANKJIL",
+          "company": "Kalyan Jewellers India Ltd.",
+          "industry": "Consumer Durables",
+          "close": 601.6,
+          "prevClose": 610.0,
+          "pChange": -1.38,
+          "status": "bearish"
+        },
+        {
+          "symbol": "KAJARIACER",
+          "company": "Kajaria Ceramics Ltd.",
+          "industry": "Consumer Durables",
+          "close": 1225.8,
+          "prevClose": 1251.6,
+          "pChange": -2.06,
+          "status": "bearish"
+        },
+        {
+          "symbol": "PGEL",
+          "company": "PG Electroplast Ltd.",
+          "industry": "Consumer Durables",
+          "close": 597.0,
+          "prevClose": 614.0,
+          "pChange": -2.77,
+          "status": "bearish"
+        }
+      ]
+    },
+    {
+      "name": "Bank",
+      "indexName": "NIFTY BANK",
+      "last": 57262.4,
+      "pChange": -0.41,
+      "advances": "4",
+      "declines": "10",
+      "unchanged": "0",
+      "status": "neutral",
+      "stocks": [
+        {
+          "symbol": "AXISBANK",
+          "company": "Axis Bank Ltd.",
+          "industry": "Financial Services",
+          "close": 1243.0,
+          "prevClose": 1227.3,
+          "pChange": 1.28,
+          "status": "bullish"
+        },
+        {
+          "symbol": "FEDERALBNK",
+          "company": "Federal Bank Ltd.",
+          "industry": "Financial Services",
+          "close": 357.8,
+          "prevClose": 354.1,
+          "pChange": 1.04,
+          "status": "bullish"
+        },
+        {
+          "symbol": "INDUSINDBK",
+          "company": "IndusInd Bank Ltd.",
+          "industry": "Financial Services",
+          "close": 1015.0,
+          "prevClose": 1010.6,
+          "pChange": 0.44,
+          "status": "neutral"
+        },
+        {
+          "symbol": "AUBANK",
+          "company": "AU Small Finance Bank Ltd.",
+          "industry": "Financial Services",
+          "close": 1075.7,
+          "prevClose": 1072.2,
+          "pChange": 0.33,
+          "status": "neutral"
+        },
+        {
+          "symbol": "ICICIBANK",
+          "company": "ICICI Bank Ltd.",
+          "industry": "Financial Services",
+          "close": 1412.0,
+          "prevClose": 1415.3,
+          "pChange": -0.23,
+          "status": "neutral"
+        },
+        {
+          "symbol": "IDFCFIRSTB",
+          "company": "IDFC First Bank Ltd.",
+          "industry": "Financial Services",
+          "close": 84.76,
+          "prevClose": 85.05,
+          "pChange": -0.34,
+          "status": "neutral"
+        },
+        {
+          "symbol": "PNB",
+          "company": "Punjab National Bank",
+          "industry": "Financial Services",
+          "close": 116.5,
+          "prevClose": 117.32,
+          "pChange": -0.7,
+          "status": "neutral"
+        },
+        {
+          "symbol": "SBIN",
+          "company": "State Bank of India",
+          "industry": "Financial Services",
+          "close": 1053.0,
+          "prevClose": 1061.2,
+          "pChange": -0.77,
+          "status": "bearish"
+        },
+        {
+          "symbol": "HDFCBANK",
+          "company": "HDFC Bank Ltd.",
+          "industry": "Financial Services",
+          "close": 723.0,
+          "prevClose": 729.0,
+          "pChange": -0.82,
+          "status": "bearish"
+        },
+        {
+          "symbol": "BANKBARODA",
+          "company": "Bank of Baroda",
+          "industry": "Financial Services",
+          "close": 244.0,
+          "prevClose": 246.55,
+          "pChange": -1.03,
+          "status": "bearish"
+        },
+        {
+          "symbol": "KOTAKBANK",
+          "company": "Kotak Mahindra Bank Ltd.",
+          "industry": "Financial Services",
+          "close": 387.65,
+          "prevClose": 392.7,
+          "pChange": -1.29,
+          "status": "bearish"
+        },
+        {
+          "symbol": "CANBK",
+          "company": "Canara Bank",
+          "industry": "Financial Services",
+          "close": 129.1,
+          "prevClose": 131.1,
+          "pChange": -1.53,
+          "status": "bearish"
+        },
+        {
+          "symbol": "UNIONBANK",
+          "company": "Union Bank of India",
+          "industry": "Financial Services",
+          "close": 185.5,
+          "prevClose": 188.9,
+          "pChange": -1.8,
+          "status": "bearish"
+        },
+        {
+          "symbol": "YESBANK",
+          "company": "Yes Bank Ltd.",
+          "industry": "Financial Services",
+          "close": 22.46,
+          "prevClose": 22.92,
+          "pChange": -2.01,
+          "status": "bearish"
+        }
+      ]
+    },
+    {
+      "name": "Financial Services",
+      "indexName": "NIFTY FINANCIAL SERVICES",
+      "last": 26108,
+      "pChange": -0.42,
+      "advances": "7",
+      "declines": "13",
+      "unchanged": "0",
+      "status": "neutral",
+      "stocks": [
+        {
+          "symbol": "AXISBANK",
+          "company": "Axis Bank Ltd.",
+          "industry": "Financial Services",
+          "close": 1243.0,
+          "prevClose": 1227.3,
+          "pChange": 1.28,
+          "status": "bullish"
+        },
+        {
+          "symbol": "MFSL",
+          "company": "Max Financial Services Ltd.",
+          "industry": "Financial Services",
+          "close": 1584.5,
+          "prevClose": 1571.7,
+          "pChange": 0.81,
+          "status": "bullish"
+        },
+        {
+          "symbol": "BAJFINANCE",
+          "company": "Bajaj Finance Ltd.",
+          "industry": "Financial Services",
+          "close": 1094.3,
+          "prevClose": 1089.3,
+          "pChange": 0.46,
+          "status": "neutral"
+        },
+        {
+          "symbol": "BAJAJFINSV",
+          "company": "Bajaj Finserv Ltd.",
+          "industry": "Financial Services",
+          "close": 2011.2,
+          "prevClose": 2005.0,
+          "pChange": 0.31,
+          "status": "neutral"
+        },
+        {
+          "symbol": "MUTHOOTFIN",
+          "company": "Muthoot Finance Ltd.",
+          "industry": "Financial Services",
+          "close": 2894.1,
+          "prevClose": 2888.5,
+          "pChange": 0.19,
+          "status": "neutral"
+        },
+        {
+          "symbol": "LICHSGFIN",
+          "company": "LIC Housing Finance Ltd.",
+          "industry": "Financial Services",
+          "close": 498.8,
+          "prevClose": 498.25,
+          "pChange": 0.11,
+          "status": "neutral"
+        },
+        {
+          "symbol": "PFC",
+          "company": "Power Finance Corporation Ltd.",
+          "industry": "Financial Services",
+          "close": 374.45,
+          "prevClose": 374.4,
+          "pChange": 0.01,
+          "status": "neutral"
+        },
+        {
+          "symbol": "ICICIGI",
+          "company": "ICICI Lombard General Insurance Company Ltd.",
+          "industry": "Financial Services",
+          "close": 1623.8,
+          "prevClose": 1626.3,
+          "pChange": -0.15,
+          "status": "neutral"
+        },
+        {
+          "symbol": "ICICIBANK",
+          "company": "ICICI Bank Ltd.",
+          "industry": "Financial Services",
+          "close": 1412.0,
+          "prevClose": 1415.3,
+          "pChange": -0.23,
+          "status": "neutral"
+        },
+        {
+          "symbol": "RECLTD",
+          "company": "REC Ltd.",
+          "industry": "Financial Services",
+          "close": 338.5,
+          "prevClose": 340.0,
+          "pChange": -0.44,
+          "status": "neutral"
+        },
+        {
+          "symbol": "SBILIFE",
+          "company": "SBI Life Insurance Company Ltd.",
+          "industry": "Financial Services",
+          "close": 1778.0,
+          "prevClose": 1790.4,
+          "pChange": -0.69,
+          "status": "neutral"
+        },
+        {
+          "symbol": "BSE",
+          "company": "BSE Ltd.",
+          "industry": "Financial Services",
+          "close": 3308.0,
+          "prevClose": 3332.0,
+          "pChange": -0.72,
+          "status": "neutral"
+        },
+        {
+          "symbol": "SBIN",
+          "company": "State Bank of India",
+          "industry": "Financial Services",
+          "close": 1053.0,
+          "prevClose": 1061.2,
+          "pChange": -0.77,
+          "status": "bearish"
+        },
+        {
+          "symbol": "HDFCBANK",
+          "company": "HDFC Bank Ltd.",
+          "industry": "Financial Services",
+          "close": 723.0,
+          "prevClose": 729.0,
+          "pChange": -0.82,
+          "status": "bearish"
+        },
+        {
+          "symbol": "HDFCLIFE",
+          "company": "HDFC Life Insurance Company Ltd.",
+          "industry": "Financial Services",
+          "close": 538.25,
+          "prevClose": 543.0,
+          "pChange": -0.87,
+          "status": "bearish"
+        },
+        {
+          "symbol": "CHOLAFIN",
+          "company": "Cholamandalam Investment and Finance Company Ltd.",
+          "industry": "Financial Services",
+          "close": 1868.0,
+          "prevClose": 1884.7,
+          "pChange": -0.89,
+          "status": "bearish"
+        },
+        {
+          "symbol": "SHRIRAMFIN",
+          "company": "Shriram Finance Ltd.",
+          "industry": "Financial Services",
+          "close": 1108.4,
+          "prevClose": 1122.0,
+          "pChange": -1.21,
+          "status": "bearish"
+        },
+        {
+          "symbol": "KOTAKBANK",
+          "company": "Kotak Mahindra Bank Ltd.",
+          "industry": "Financial Services",
+          "close": 387.65,
+          "prevClose": 392.7,
+          "pChange": -1.29,
+          "status": "bearish"
+        },
+        {
+          "symbol": "JIOFIN",
+          "company": "Jio Financial Services Ltd.",
+          "industry": "Financial Services",
+          "close": 245.8,
+          "prevClose": 249.75,
+          "pChange": -1.58,
+          "status": "bearish"
+        },
+        {
+          "symbol": "SBICARD",
+          "company": "SBI Cards and Payment Services Ltd.",
+          "industry": "Financial Services",
+          "close": 615.0,
+          "prevClose": 641.75,
+          "pChange": -4.17,
+          "status": "bearish"
+        }
+      ]
+    },
+    {
+      "name": "Metal",
+      "indexName": "NIFTY METAL",
+      "last": 13025.3,
+      "pChange": -0.61,
+      "advances": "3",
+      "declines": "12",
+      "unchanged": "0",
+      "status": "neutral",
+      "stocks": [
+        {
+          "symbol": "WELCORP",
+          "company": "Welspun Corp Ltd.",
+          "industry": "Capital Goods",
+          "close": 1917.1,
+          "prevClose": 1882.0,
+          "pChange": 1.87,
+          "status": "bullish"
+        },
+        {
+          "symbol": "APLAPOLLO",
+          "company": "APL Apollo Tubes Ltd.",
+          "industry": "Capital Goods",
+          "close": 2115.0,
+          "prevClose": 2081.3,
+          "pChange": 1.62,
+          "status": "bullish"
+        },
+        {
+          "symbol": "NATIONALUM",
+          "company": "National Aluminium Co. Ltd.",
+          "industry": "Metals & Mining",
+          "close": 388.0,
+          "prevClose": 387.55,
+          "pChange": 0.12,
+          "status": "neutral"
+        },
+        {
+          "symbol": "ADANIENT",
+          "company": "Adani Enterprises Ltd.",
+          "industry": "Metals & Mining",
+          "close": 3002.5,
+          "prevClose": 3007.3,
+          "pChange": -0.16,
+          "status": "neutral"
+        },
+        {
+          "symbol": "LLOYDSME",
+          "company": "Lloyds Metals And Energy Ltd.",
+          "industry": "Metals & Mining",
+          "close": 1938.6,
+          "prevClose": 1942.0,
+          "pChange": -0.18,
+          "status": "neutral"
+        },
+        {
+          "symbol": "TATASTEEL",
+          "company": "Tata Steel Ltd.",
+          "industry": "Metals & Mining",
+          "close": 185.5,
+          "prevClose": 186.0,
+          "pChange": -0.27,
+          "status": "neutral"
+        },
+        {
+          "symbol": "HINDALCO",
+          "company": "Hindalco Industries Ltd.",
+          "industry": "Metals & Mining",
+          "close": 1041.6,
+          "prevClose": 1049.9,
+          "pChange": -0.79,
+          "status": "bearish"
+        },
+        {
+          "symbol": "JSWSTEEL",
+          "company": "JSW Steel Ltd.",
+          "industry": "Metals & Mining",
+          "close": 1267.6,
+          "prevClose": 1277.8,
+          "pChange": -0.8,
+          "status": "bearish"
+        },
+        {
+          "symbol": "HINDCOPPER",
+          "company": "Hindustan Copper Ltd.",
+          "industry": "Metals & Mining",
+          "close": 566.35,
+          "prevClose": 572.65,
+          "pChange": -1.1,
+          "status": "bearish"
+        },
+        {
+          "symbol": "JINDALSTEL",
+          "company": "Jindal Steel Ltd.",
+          "industry": "Metals & Mining",
+          "close": 1101.5,
+          "prevClose": 1116.1,
+          "pChange": -1.31,
+          "status": "bearish"
+        },
+        {
+          "symbol": "NMDC",
+          "company": "NMDC Ltd.",
+          "industry": "Metals & Mining",
+          "close": 84.19,
+          "prevClose": 85.5,
+          "pChange": -1.53,
+          "status": "bearish"
+        },
+        {
+          "symbol": "JSL",
+          "company": "Jindal Stainless Ltd.",
+          "industry": "Metals & Mining",
+          "close": 732.4,
+          "prevClose": 744.0,
+          "pChange": -1.56,
+          "status": "bearish"
+        },
+        {
+          "symbol": "HINDZINC",
+          "company": "Hindustan Zinc Ltd.",
+          "industry": "Metals & Mining",
+          "close": 558.0,
+          "prevClose": 567.5,
+          "pChange": -1.67,
+          "status": "bearish"
+        },
+        {
+          "symbol": "SAIL",
+          "company": "Steel Authority of India Ltd.",
+          "industry": "Metals & Mining",
+          "close": 170.2,
+          "prevClose": 173.6,
+          "pChange": -1.96,
+          "status": "bearish"
+        },
+        {
+          "symbol": "VEDL",
+          "company": "Vedanta Ltd.",
+          "industry": "Metals & Mining",
+          "close": 264.0,
+          "prevClose": 269.7,
+          "pChange": -2.11,
+          "status": "bearish"
+        }
+      ]
+    },
+    {
+      "name": "FMCG",
+      "indexName": "NIFTY FMCG",
+      "last": 47734.8,
+      "pChange": -0.77,
+      "advances": "3",
+      "declines": "12",
+      "unchanged": "0",
+      "status": "bearish",
+      "stocks": [
+        {
+          "symbol": "VBL",
+          "company": "Varun Beverages Ltd.",
+          "industry": "Fast Moving Consumer Goods",
+          "close": 439.3,
+          "prevClose": 433.85,
+          "pChange": 1.26,
+          "status": "bullish"
+        },
+        {
+          "symbol": "RADICO",
+          "company": "Radico Khaitan Ltd",
+          "industry": "Fast Moving Consumer Goods",
+          "close": 4732.9,
+          "prevClose": 4693.4,
+          "pChange": 0.84,
+          "status": "bullish"
+        },
+        {
+          "symbol": "GODREJCP",
+          "company": "Godrej Consumer Products Ltd.",
+          "industry": "Fast Moving Consumer Goods",
+          "close": 931.0,
+          "prevClose": 928.0,
+          "pChange": 0.32,
+          "status": "neutral"
+        },
+        {
+          "symbol": "BRITANNIA",
+          "company": "Britannia Industries Ltd.",
+          "industry": "Fast Moving Consumer Goods",
+          "close": 5495.0,
+          "prevClose": 5521.0,
+          "pChange": -0.47,
+          "status": "neutral"
+        },
+        {
+          "symbol": "NESTLEIND",
+          "company": "Nestle India Ltd.",
+          "industry": "Fast Moving Consumer Goods",
+          "close": 1462.5,
+          "prevClose": 1470.0,
+          "pChange": -0.51,
+          "status": "neutral"
+        },
+        {
+          "symbol": "PATANJALI",
+          "company": "Patanjali Foods Ltd.",
+          "industry": "Fast Moving Consumer Goods",
+          "close": 351.65,
+          "prevClose": 353.9,
+          "pChange": -0.64,
+          "status": "neutral"
+        },
+        {
+          "symbol": "DABUR",
+          "company": "Dabur India Ltd.",
+          "industry": "Fast Moving Consumer Goods",
+          "close": 403.5,
+          "prevClose": 406.8,
+          "pChange": -0.81,
+          "status": "bearish"
+        },
+        {
+          "symbol": "UBL",
+          "company": "United Breweries Ltd.",
+          "industry": "Fast Moving Consumer Goods",
+          "close": 1355.5,
+          "prevClose": 1367.9,
+          "pChange": -0.91,
+          "status": "bearish"
+        },
+        {
+          "symbol": "HINDUNILVR",
+          "company": "Hindustan Unilever Ltd.",
+          "industry": "Fast Moving Consumer Goods",
+          "close": 2035.0,
+          "prevClose": 2055.0,
+          "pChange": -0.97,
+          "status": "bearish"
+        },
+        {
+          "symbol": "TATACONSUM",
+          "company": "Tata Consumer Products Ltd.",
+          "industry": "Fast Moving Consumer Goods",
+          "close": 1061.6,
+          "prevClose": 1072.6,
+          "pChange": -1.03,
+          "status": "bearish"
+        },
+        {
+          "symbol": "EMAMILTD",
+          "company": "Emami Ltd.",
+          "industry": "Fast Moving Consumer Goods",
+          "close": 400.1,
+          "prevClose": 404.5,
+          "pChange": -1.09,
+          "status": "bearish"
+        },
+        {
+          "symbol": "ITC",
+          "company": "ITC Ltd.",
+          "industry": "Fast Moving Consumer Goods",
+          "close": 270.0,
+          "prevClose": 273.05,
+          "pChange": -1.12,
+          "status": "bearish"
+        },
+        {
+          "symbol": "MARICO",
+          "company": "Marico Ltd.",
+          "industry": "Fast Moving Consumer Goods",
+          "close": 841.55,
+          "prevClose": 852.05,
+          "pChange": -1.23,
+          "status": "bearish"
+        },
+        {
+          "symbol": "UNITDSPR",
+          "company": "United Spirits Ltd.",
+          "industry": "Fast Moving Consumer Goods",
+          "close": 1520.9,
+          "prevClose": 1545.0,
+          "pChange": -1.56,
+          "status": "bearish"
+        },
+        {
+          "symbol": "COLPAL",
+          "company": "Colgate Palmolive (India) Ltd.",
+          "industry": "Fast Moving Consumer Goods",
+          "close": 1903.0,
+          "prevClose": 1964.0,
+          "pChange": -3.11,
+          "status": "bearish"
+        }
+      ]
+    },
+    {
+      "name": "PSU Bank",
+      "indexName": "NIFTY PSU BANK",
+      "last": 8618.5,
+      "pChange": -1.01,
+      "advances": "0",
+      "declines": "12",
+      "unchanged": "0",
+      "status": "bearish",
+      "stocks": [
+        {
+          "symbol": "INDIANB",
+          "company": "Indian Bank",
+          "industry": "Financial Services",
+          "close": 875.0,
+          "prevClose": 881.2,
+          "pChange": -0.7,
+          "status": "neutral"
+        },
+        {
+          "symbol": "PNB",
+          "company": "Punjab National Bank",
+          "industry": "Financial Services",
+          "close": 116.5,
+          "prevClose": 117.32,
+          "pChange": -0.7,
+          "status": "neutral"
+        },
+        {
+          "symbol": "MAHABANK",
+          "company": "Bank of Maharashtra",
+          "industry": "Financial Services",
+          "close": 80.49,
+          "prevClose": 81.1,
+          "pChange": -0.75,
+          "status": "bearish"
+        },
+        {
+          "symbol": "SBIN",
+          "company": "State Bank of India",
+          "industry": "Financial Services",
+          "close": 1053.0,
+          "prevClose": 1061.2,
+          "pChange": -0.77,
+          "status": "bearish"
+        },
+        {
+          "symbol": "CENTRALBK",
+          "company": "Central Bank of India",
+          "industry": "Financial Services",
+          "close": 31.02,
+          "prevClose": 31.27,
+          "pChange": -0.8,
+          "status": "bearish"
+        },
+        {
+          "symbol": "UCOBANK",
+          "company": "UCO Bank",
+          "industry": "Financial Services",
+          "close": 25.9,
+          "prevClose": 26.11,
+          "pChange": -0.8,
+          "status": "bearish"
+        },
+        {
+          "symbol": "BANKBARODA",
+          "company": "Bank of Baroda",
+          "industry": "Financial Services",
+          "close": 244.0,
+          "prevClose": 246.55,
+          "pChange": -1.03,
+          "status": "bearish"
+        },
+        {
+          "symbol": "BANKINDIA",
+          "company": "Bank of India",
+          "industry": "Financial Services",
+          "close": 142.1,
+          "prevClose": 143.75,
+          "pChange": -1.15,
+          "status": "bearish"
+        },
+        {
+          "symbol": "IOB",
+          "company": "Indian Overseas Bank",
+          "industry": "Financial Services",
+          "close": 33.27,
+          "prevClose": 33.66,
+          "pChange": -1.16,
+          "status": "bearish"
+        },
+        {
+          "symbol": "CANBK",
+          "company": "Canara Bank",
+          "industry": "Financial Services",
+          "close": 129.1,
+          "prevClose": 131.1,
+          "pChange": -1.53,
+          "status": "bearish"
+        },
+        {
+          "symbol": "UNIONBANK",
+          "company": "Union Bank of India",
+          "industry": "Financial Services",
+          "close": 185.5,
+          "prevClose": 188.9,
+          "pChange": -1.8,
+          "status": "bearish"
+        },
+        {
+          "symbol": "PSB",
+          "company": "Punjab & Sind Bank",
+          "industry": "Financial Services",
+          "close": 23.22,
+          "prevClose": 23.68,
+          "pChange": -1.94,
+          "status": "bearish"
+        }
+      ]
+    },
+    {
+      "name": "Realty",
+      "indexName": "NIFTY REALTY",
+      "last": 895.8,
+      "pChange": -1.42,
+      "advances": "1",
+      "declines": "9",
+      "unchanged": "0",
+      "status": "bearish",
+      "stocks": [
+        {
+          "symbol": "PHOENIXLTD",
+          "company": "Phoenix Mills Ltd.",
+          "industry": "Realty",
+          "close": 1940.0,
+          "prevClose": 1929.8,
+          "pChange": 0.53,
+          "status": "neutral"
+        },
+        {
+          "symbol": "ANANTRAJ",
+          "company": "Anant Raj Ltd.",
+          "industry": "Realty",
+          "close": 627.05,
+          "prevClose": 627.55,
+          "pChange": -0.08,
+          "status": "neutral"
+        },
+        {
+          "symbol": "PRESTIGE",
+          "company": "Prestige Estates Projects Ltd.",
+          "industry": "Realty",
+          "close": 1590.0,
+          "prevClose": 1591.9,
+          "pChange": -0.12,
+          "status": "neutral"
+        },
+        {
+          "symbol": "DLF",
+          "company": "DLF Ltd.",
+          "industry": "Realty",
+          "close": 665.75,
+          "prevClose": 671.0,
+          "pChange": -0.78,
+          "status": "bearish"
+        },
+        {
+          "symbol": "ABREL",
+          "company": "Aditya Birla Real Estate Ltd.",
+          "industry": "Realty",
+          "close": 1390.8,
+          "prevClose": 1402.1,
+          "pChange": -0.81,
+          "status": "bearish"
+        },
+        {
+          "symbol": "BRIGADE",
+          "company": "Brigade Enterprises Ltd.",
+          "industry": "Realty",
+          "close": 588.9,
+          "prevClose": 593.7,
+          "pChange": -0.81,
+          "status": "bearish"
+        },
+        {
+          "symbol": "SOBHA",
+          "company": "Sobha Ltd.",
+          "industry": "Realty",
+          "close": 1308.3,
+          "prevClose": 1321.0,
+          "pChange": -0.96,
+          "status": "bearish"
+        },
+        {
+          "symbol": "GODREJPROP",
+          "company": "Godrej Properties Ltd.",
+          "industry": "Realty",
+          "close": 1997.4,
+          "prevClose": 2054.0,
+          "pChange": -2.76,
+          "status": "bearish"
+        },
+        {
+          "symbol": "LODHA",
+          "company": "Lodha Developers Ltd.",
+          "industry": "Realty",
+          "close": 1211.1,
+          "prevClose": 1254.0,
+          "pChange": -3.42,
+          "status": "bearish"
+        },
+        {
+          "symbol": "OBEROIRLTY",
+          "company": "Oberoi Realty Ltd.",
+          "industry": "Realty",
+          "close": 1858.0,
+          "prevClose": 1931.0,
+          "pChange": -3.78,
+          "status": "bearish"
+        }
+      ]
+    },
+    {
+      "name": "IT",
+      "indexName": "NIFTY IT",
+      "last": 30213.45,
+      "pChange": -1.93,
+      "advances": "0",
+      "declines": "10",
+      "unchanged": "0",
+      "status": "bearish",
+      "stocks": [
+        {
+          "symbol": "TECHM",
+          "company": "Tech Mahindra Ltd.",
+          "industry": "Information Technology",
+          "close": 1592.0,
+          "prevClose": 1610.0,
+          "pChange": -1.12,
+          "status": "bearish"
+        },
+        {
+          "symbol": "OFSS",
+          "company": "Oracle Financial Services Software Ltd.",
+          "industry": "Information Technology",
+          "close": 11623.0,
+          "prevClose": 11789.0,
+          "pChange": -1.41,
+          "status": "bearish"
+        },
+        {
+          "symbol": "TCS",
+          "company": "Tata Consultancy Services Ltd.",
+          "industry": "Information Technology",
+          "close": 2280.0,
+          "prevClose": 2313.2,
+          "pChange": -1.44,
+          "status": "bearish"
+        },
+        {
+          "symbol": "COFORGE",
+          "company": "Coforge Ltd.",
+          "industry": "Information Technology",
+          "close": 1773.0,
+          "prevClose": 1806.0,
+          "pChange": -1.83,
+          "status": "bearish"
+        },
+        {
+          "symbol": "HCLTECH",
+          "company": "HCL Technologies Ltd.",
+          "industry": "Information Technology",
+          "close": 1298.0,
+          "prevClose": 1325.0,
+          "pChange": -2.04,
+          "status": "bearish"
+        },
+        {
+          "symbol": "WIPRO",
+          "company": "Wipro Ltd.",
+          "industry": "Information Technology",
+          "close": 178.06,
+          "prevClose": 181.9,
+          "pChange": -2.11,
+          "status": "bearish"
+        },
+        {
+          "symbol": "INFY",
+          "company": "Infosys Ltd.",
+          "industry": "Information Technology",
+          "close": 1115.0,
+          "prevClose": 1139.9,
+          "pChange": -2.18,
+          "status": "bearish"
+        },
+        {
+          "symbol": "PERSISTENT",
+          "company": "Persistent Systems Ltd.",
+          "industry": "Information Technology",
+          "close": 5442.5,
+          "prevClose": 5570.0,
+          "pChange": -2.29,
+          "status": "bearish"
+        },
+        {
+          "symbol": "LTM",
+          "company": "LTM Ltd.",
+          "industry": "Information Technology",
+          "close": 4562.2,
+          "prevClose": 4700.0,
+          "pChange": -2.93,
+          "status": "bearish"
+        },
+        {
+          "symbol": "MPHASIS",
+          "company": "MphasiS Ltd.",
+          "industry": "Information Technology",
+          "close": 2432.0,
+          "prevClose": 2510.0,
+          "pChange": -3.11,
+          "status": "bearish"
+        }
+      ]
+    }
+  ]
+}
