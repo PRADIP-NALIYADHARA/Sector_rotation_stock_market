@@ -33,6 +33,10 @@
   <!-- Sector overview -->
   <section id="overviewView">
     <div class="summary-row">
+      <div class="summary-card strong-bullish">
+        <span class="summary-count" id="countStrongBullish">0</span>
+        <span class="summary-label">Strong bull</span>
+      </div>
       <div class="summary-card bullish">
         <span class="summary-count" id="countBullish">0</span>
         <span class="summary-label">Bullish</span>
@@ -45,21 +49,44 @@
         <span class="summary-count" id="countBearish">0</span>
         <span class="summary-label">Bearish</span>
       </div>
+      <div class="summary-card strong-bearish">
+        <span class="summary-count" id="countStrongBearish">0</span>
+        <span class="summary-label">Strong bear</span>
+      </div>
       <div class="legend">
-        <div><i class="dot bullish"></i> Bullish (≥ <span class="thBull">+0.75</span>%)</div>
+        <div><i class="dot strong-bullish"></i> Strong bull (≥ <span class="thStrongBull">+1.5</span>%)</div>
+        <div><i class="dot bullish"></i> Bullish (≥ <span class="thBull">+0.4</span>%)</div>
         <div><i class="dot neutral"></i> Moderate (in between)</div>
-        <div><i class="dot bearish"></i> Bearish (≤ <span class="thBear">-0.75</span>%)</div>
+        <div><i class="dot bearish"></i> Bearish (≤ <span class="thBear">-0.4</span>%)</div>
+        <div><i class="dot strong-bearish"></i> Strong bear (≤ <span class="thStrongBear">-1.5</span>%)</div>
       </div>
     </div>
 
     <div class="controls">
       <input type="search" id="sectorSearch" placeholder="Search sector…">
       <div class="filter-group" id="statusFilter">
-        <button class="chip active" data-filter="all">All</button>
-        <button class="chip" data-filter="bullish">Bullish</button>
+        <button class="chip active" data-filter="all">All signals</button>
+        <button class="chip" data-filter="bull">Bullish</button>
         <button class="chip" data-filter="neutral">Moderate</button>
-        <button class="chip" data-filter="bearish">Bearish</button>
+        <button class="chip" data-filter="bear">Bearish</button>
       </div>
+      <div class="filter-group" id="groupFilter">
+        <button class="chip active" data-group="all">Every group</button>
+        <button class="chip" data-group="Broad">Broad market</button>
+        <button class="chip" data-group="Sectoral">Sectoral</button>
+        <button class="chip" data-group="Thematic">Thematic</button>
+        <button class="chip" data-group="Industry">Industry</button>
+      </div>
+      <label class="sort-control">
+        Rank by
+        <select id="sortBy">
+          <option value="pChange">Today</option>
+          <option value="pChange30d">30 days</option>
+          <option value="pChange365d">1 year</option>
+          <option value="name">Name</option>
+        </select>
+      </label>
+      <span class="dim" id="resultCount"></span>
     </div>
 
     <div id="sectorGrid" class="sector-grid">
@@ -77,13 +104,21 @@
       <div>
         <h2 id="detailName">—</h2>
         <span id="detailIndex" class="dim"></span>
+        <p id="detailNote" class="detail-note hidden"></p>
       </div>
       <div class="detail-stats">
         <div><span class="stat-label">Index</span><span id="detailLast" class="stat-value">—</span></div>
-        <div><span class="stat-label">Change</span><span id="detailChange" class="stat-value">—</span></div>
+        <div><span class="stat-label">Today</span><span id="detailChange" class="stat-value">—</span></div>
+        <div><span class="stat-label">30 days</span><span id="detail30d" class="stat-value">—</span></div>
+        <div><span class="stat-label">1 year</span><span id="detail365d" class="stat-value">—</span></div>
         <div><span class="stat-label">Adv / Dec</span><span id="detailAdvDec" class="stat-value">—</span></div>
         <div><span class="stat-label">Verdict</span><span id="detailStatus" class="stat-value">—</span></div>
       </div>
+    </div>
+
+    <div id="overlapBox" class="overlap-box hidden">
+      <span class="overlap-title">Shares constituents with</span>
+      <div id="overlapList" class="overlap-list"></div>
     </div>
 
     <div class="controls">

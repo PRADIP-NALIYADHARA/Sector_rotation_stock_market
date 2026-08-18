@@ -6,13 +6,48 @@ Click into any sector to see its constituent stocks with the same colour coding.
 
 ## Features
 
-- 14 NSE sectoral indices at a glance, sorted strongest → weakest
+- Complete sector coverage, from two complementary sources (see below)
 - Bullish / Moderate / Bearish classification with configurable thresholds
+- Today / 30-day / 1-year momentum on every card — rank sectors by any of them
 - Advance–decline breadth bar on every sector card
 - Drill into a sector to see all its stocks with prev-close, close, and % change
-- Search + filter on both the sector grid and the stock table
+- Filter by signal *and* by group, plus search on both grid and stock table
 - **Update Data** button inside the site — triggers a live fetch from NSE, no terminal needed
 - Dark / light theme, remembered between visits
+
+## Coverage
+
+Everything is pulled from NSE's own index taxonomy, so new indices appear automatically.
+Four groups, switchable with the group filter:
+
+**Broad** — the standard benchmarks to compare everything against: NIFTY 50, Next 50,
+100, 200, 500, Midcap 50/100/150, Smallcap 50/100/250, Midsmallcap 400, Microcap 250,
+LargeMidcap 250, Total Market.
+
+**Sectoral** — every sectoral index NSE publishes: Auto, Bank, IT, Pharma, FMCG, Metal,
+Realty, Media, PSU Bank, Private Bank, Oil & Gas, Healthcare, Consumer Durables, Cement,
+Chemicals and the rest.
+
+**Thematic** — India Defence, Railways PSU, EV & New Age Automotive, Infrastructure,
+Transportation & Logistics, Manufacturing, Energy, Digital, Tourism, Commodities,
+Consumption, CPSE, PSE, MNC and more.
+
+**Industry** — derived from the NIFTY 500 industry classification, so every industry in
+the investable universe gets a bucket even when no index exists for it:
+**Telecommunication, Power, Metals & Mining, Capital Goods, Construction, Construction
+Materials, Textiles, Services, Diversified** and the others. Their % change is the
+equal-weighted average of the constituent stocks.
+
+## Overlap awareness
+
+NSE indices deliberately overlap — NIFTY BANK, NIFTY PRIVATE BANK and NIFTY PSU BANK
+hold many of the same banks, and every index overlaps its industry group. Read naively,
+that looks like several independent signals when it is really one.
+
+Each sector's detail view therefore lists the sectors it shares constituents with, how
+many stocks are shared, and what share of *this* sector that represents. A sector whose
+constituents sit entirely inside another is flagged **fully inside**. Click any of them
+to jump straight across.
 
 ## Setup
 
@@ -38,15 +73,20 @@ python fetch_data.py
 
 ## How the classification works
 
-A sector or stock is classified on its daily percentage change:
+Sectors and stocks are graded on daily percentage change across a five-step colour
+scale, so strength is visible at a glance rather than flattened into three buckets:
 
-| Signal   | Condition        |
-|----------|------------------|
-| Bullish  | `≥ +0.75%`       |
-| Moderate | between the two  |
-| Bearish  | `≤ -0.75%`       |
+| Signal      | Condition   | Colour      |
+|-------------|-------------|-------------|
+| Strong bull | `≥ +1.50%`  | dark green  |
+| Bullish     | `≥ +0.40%`  | light green |
+| Moderate    | in between  | yellow      |
+| Bearish     | `≤ -0.40%`  | light red   |
+| Strong bear | `≤ -1.50%`  | dark red    |
 
-Thresholds live at the top of `fetch_data.py` (`BULLISH_THRESHOLD` / `BEARISH_THRESHOLD`) — change them there to tune sensitivity.
+The four thresholds live at the top of `fetch_data.py` (`STRONG_BULLISH`,
+`BULLISH_THRESHOLD`, `BEARISH_THRESHOLD`, `STRONG_BEARISH`) — change them there to tune
+sensitivity.
 
 ## Data sources
 
@@ -54,22 +94,35 @@ All data comes from public NSE India endpoints — no API key or login:
 
 | Data | Source |
 |------|--------|
-| Sector index level & % change | `nseindia.com/api/allIndices` |
-| Sector constituent stock lists | `nsearchives.nseindia.com/content/indices/*.csv` |
+| Index level & % change (today, 30d, 1y) | `nseindia.com/api/allIndices` |
+| Which indices are Sectoral / Thematic | `nseindia.com/api/equity-master` |
+| Constituent stock lists | `nsearchives.nseindia.com/content/indices/*.csv` |
+| Industry classification | `nsearchives.nseindia.com/content/indices/ind_nifty500list.csv` |
 | Per-stock close / prev close | `nsearchives.nseindia.com/products/content/sec_bhavdata_full_DDMMYYYY.csv` (daily bhavcopy) |
 
 Stock prices come from the daily bhavcopy, so stock-level figures reflect the **last completed
 trading session**. Sector index figures are live during market hours.
 
+NSE's per-symbol quote API is blocked to scripted clients, which is why the bhavcopy
+is used for stock-level prices instead.
+
 ## Project structure
 
 ```
-app.py            local web server + /api/sectors and /api/refresh
-fetch_data.py     NSE fetcher, writes data/sectors_data.json
-index.html        dashboard markup
-css/style.css     styling and theming
-js/app.js         rendering, filtering, drill-down, refresh
-data/             cached JSON (regenerated on every update)
+app.py                local web server + /api/sectors and /api/refresh
+fetch_data.py         NSE fetcher, writes data/sectors_data.json
+discover_indices.py   maintenance: resolves index -> constituent CSV, writes index_map.json
+index_map.json        generated mapping used by fetch_data.py
+index.html            dashboard markup
+css/style.css         styling and theming
+js/app.js             rendering, filtering, drill-down, refresh
+data/                 cached JSON (regenerated on every update)
+```
+
+If NSE adds or renames an index, re-run the discovery step:
+
+```bash
+python discover_indices.py
 ```
 
 ## Disclaimer
