@@ -4,7 +4,7 @@
     {
       "name": "sector-rotation",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["app.py"],
+      "runtimeArgs": ["app.py", "--lan"],
       "port": 5000
     }
   ]

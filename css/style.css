@@ -698,8 +698,59 @@ main { max-width: 1240px; margin: 0 auto; padding: 2rem; }
 }
 
 @media (max-width: 640px) {
-  .topbar { padding: 1rem; }
-  main { padding: 1.2rem; }
-  .detail-stats { gap: 1.2rem; }
-  .compare-tray { padding: 0.75rem 1rem; }
+  /* A sticky header that eats a third of a phone screen isn't worth the
+     convenience -- let it scroll away and give the cards the room. */
+  .topbar {
+    position: static;
+    padding: 0.8rem 1rem;
+    gap: 0.6rem;
+  }
+
+  .brand h1 { font-size: 1.05rem; }
+  .byline { font-size: 0.7rem; }
+
+  .topbar-right { width: 100%; justify-content: space-between; gap: 0.6rem; }
+  .meta { text-align: left; }
+  .meta-line { font-size: 0.68rem; }
+
+  .btn-refresh { padding: 0.55rem 0.9rem; font-size: 0.8rem; }
+  .icon-btn { width: 34px; height: 34px; }
+
+  main { padding: 1rem; }
+
+  .benchmark-strip { padding: 0.8rem 0.9rem; gap: 0.7rem; }
+  .bm-title { font-size: 0.85rem; }
+  .bm-sub { font-size: 0.72rem; }
+  .bm-controls { width: 100%; justify-content: space-between; }
+  .bm-return { font-size: 0.78rem; }
+
+  /* Squeezing the label, nine chips and a dropdown onto one row leaves the
+     chips in a ragged column. Stack the parts instead. */
+  .scale-strip {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0.7rem 0.8rem;
+    gap: 0.5rem;
+  }
+
+  .scale-strip .sort-control { align-self: flex-start; }
+  .scale-label { font-size: 0.62rem; }
+  .scale-label br { display: none; }
+  .scale-label .scale-sub::before { content: ' '; }
+  .scale-chip { font-size: 0.62rem; padding: 0.2rem 0.4rem; }
+  .scale-legend { gap: 0.25rem; }
+
+  .controls { gap: 0.7rem; margin-bottom: 1.2rem; }
+  .controls input[type="search"] { min-width: 0; width: 100%; }
+  .filter-group { flex-wrap: wrap; }
+  .chip { padding: 0.4rem 0.8rem; font-size: 0.78rem; }
+
+  .sector-grid { grid-template-columns: 1fr; gap: 0.9rem; }
+
+  .detail-head h2 { font-size: 1.35rem; }
+  .detail-stats { gap: 1rem 1.4rem; }
+
+  .compare-tray { padding: 0.7rem 0.9rem; gap: 0.6rem; }
+  .tray-chip { font-size: 0.72rem; }
+  .tray-btn { padding: 0.5rem 0.9rem; font-size: 0.8rem; }
 }
