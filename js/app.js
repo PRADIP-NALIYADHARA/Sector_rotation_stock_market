@@ -202,6 +202,8 @@ function applyData(data) {
   if (state.activeSector) {
     const fresh = sectorBy(state.activeSector.indexName);
     if (fresh) { state.activeSector = fresh; renderDetail(); }
+  } else {
+    restoreFromUrl();
   }
 }
 
@@ -360,12 +362,13 @@ function rangeBar(lead) {
 
 /* ---------------------------------------------------------- sector detail */
 
-function openSector(indexName) {
+function openSector(indexName, push = true) {
   const sector = sectorBy(indexName);
   if (!sector) return;
   state.activeSector = sector;
   state.stockSearch = '';
   el('stockSearch').value = '';
+  if (push) pushView('detail', indexName);
   showView('detail');
   renderDetail();
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -819,9 +822,63 @@ function showView(view) {
   if (view !== 'overview') state.lastView = view;
 }
 
-function goBack() {
+/*
+ * Drilling into a sector swaps one section for another without the browser
+ * noticing, so a phone's back gesture used to leave the site entirely instead of
+ * returning to the grid. Each drill-in now pushes a history entry, which makes
+ * the hardware back button, the on-screen button and Escape all do the same
+ * thing.
+ *
+ * The URL only changes over http; a snapshot opened from a file:// path is not
+ * allowed to rewrite its own URL, so there the entry is pushed without one.
+ */
+function pushView(view, indexName) {
+  const entry = { view, indexName: indexName || null };
+  try {
+    if (location.protocol.startsWith('http')) {
+      const hash = view === 'detail' ? '#sector/' + encodeURIComponent(indexName)
+                 : view === 'compare' ? '#compare' : '#';
+      history.pushState(entry, '', hash);
+    } else {
+      history.pushState(entry, '');
+    }
+  } catch (e) {
+    /* history blocked (sandboxed file view) - the on-screen button still works */
+  }
+}
+
+function showOverview() {
   state.activeSector = null;
   showView('overview');
+}
+
+function goBack() {
+  const current = history.state;
+  if (current && current.view && current.view !== 'overview') {
+    history.back();          // popstate renders it, keeping the stack honest
+  } else {
+    showOverview();
+  }
+}
+
+window.addEventListener('popstate', (e) => {
+  const entry = e.state;
+  if (!entry || entry.view === 'overview') { showOverview(); return; }
+  if (entry.view === 'detail' && entry.indexName) { openSector(entry.indexName, false); return; }
+  if (entry.view === 'compare') { showView('compare'); renderCompare(); }
+});
+
+/** Reopen whatever the URL points at, once the data is actually loaded. */
+function restoreFromUrl() {
+  const hash = decodeURIComponent(location.hash || '');
+  if (hash.startsWith('#sector/')) {
+    const name = hash.slice('#sector/'.length);
+    if (sectorBy(name)) { openSector(name, false); return; }
+  }
+  if (hash === '#compare' && state.selected.length >= 2) {
+    showView('compare');
+    renderCompare();
+  }
 }
 
 /* ----------------------------------------------------------------- events */
@@ -874,6 +931,7 @@ el('chartPeriod').addEventListener('change', renderChart);
 
 el('openCompare').addEventListener('click', () => {
   if (state.selected.length < 2) return;
+  pushView('compare');
   showView('compare');
   renderCompare();
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -898,6 +956,9 @@ if (savedStep) {
 
 const savedPeriod = localStorage.getItem('period');
 if (savedPeriod) state.period = savedPeriod;
+
+// Anchor the stack so the first back press has somewhere to land.
+try { history.replaceState({ view: 'overview', indexName: null }, ''); } catch (e) { /* ignore */ }
 
 loadCached();
 loadHistory();
