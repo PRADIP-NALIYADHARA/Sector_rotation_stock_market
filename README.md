@@ -6,12 +6,13 @@ Click into any sector to see its constituent stocks with the same colour coding.
 
 ## Features
 
-- Complete sector coverage, from two complementary sources (see below)
-- Bullish / Moderate / Bearish classification with configurable thresholds
-- Today / 30-day / 1-year momentum on every card — rank sectors by any of them
+- Complete coverage — 97 sectors across four groups, kept in separate sections
+- Banded colour scale with a selectable step, not a fixed set of buckets
+- Compare any number of sectors, indices or themes side by side
+- Today / 30-day / 1-year momentum on every card — rank by any of them
 - Advance–decline breadth bar on every sector card
 - Drill into a sector to see all its stocks with prev-close, close, and % change
-- Filter by signal *and* by group, plus search on both grid and stock table
+- Overlap warnings so related indices aren't read as independent signals
 - **Update Data** button inside the site — triggers a live fetch from NSE, no terminal needed
 - Dark / light theme, remembered between visits
 
@@ -71,22 +72,36 @@ You can also refresh the data from the command line:
 python fetch_data.py
 ```
 
-## How the classification works
+## Colour scale
 
-Sectors and stocks are graded on daily percentage change across a five-step colour
-scale, so strength is visible at a glance rather than flattened into three buckets:
+Colour is banded, not bucketed: every *step* percent gets its own shade, sweeping
+dark red → light red → yellow → light green → dark green. Nothing is hard-coded to a
+fixed number of levels — change the step and the whole scale re-bands itself, legend
+included.
 
-| Signal      | Condition   | Colour      |
-|-------------|-------------|-------------|
-| Strong bull | `≥ +1.50%`  | dark green  |
-| Bullish     | `≥ +0.40%`  | light green |
-| Moderate    | in between  | yellow      |
-| Bearish     | `≤ -0.40%`  | light red   |
-| Strong bear | `≤ -1.50%`  | dark red    |
+The step is selectable at the top of the page (0.25% up to 10%) and is remembered
+between visits. Pick it to match what you're reading:
 
-The four thresholds live at the top of `fetch_data.py` (`STRONG_BULLISH`,
-`BULLISH_THRESHOLD`, `BEARISH_THRESHOLD`, `STRONG_BEARISH`) — change them there to tune
-sensitivity.
+| Looking at        | Useful step |
+|-------------------|-------------|
+| Today's move      | 0.25% – 0.5% |
+| 30-day momentum   | 2% – 5%      |
+| 1-year momentum   | 5% – 10%     |
+
+A single day rarely moves a sector more than ±2%, so a 5% step will paint most of the
+daily column yellow — that is the scale working, not a bug. Drop to 0.5% for the daily
+view.
+
+## Comparing
+
+Every card has a **+** button that adds it to the comparison tray at the bottom of the
+screen. Pick as many as you like — two, five, a dozen — across any groups, then hit
+**Compare**. You get:
+
+- a metric table: index level, today / 30-day / 1-year change, advances, declines,
+  constituent count, best and worst stock
+- a **shared-constituents matrix** showing how many stocks each pair holds in common,
+  which is the fastest way to see that two "different" sectors are really the same bet
 
 ## Data sources
 

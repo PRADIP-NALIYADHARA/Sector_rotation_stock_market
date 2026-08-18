@@ -30,52 +30,30 @@
 <div id="statusBar" class="status-bar hidden"></div>
 
 <main>
-  <!-- Sector overview -->
+  <!-- ============ Overview ============ -->
   <section id="overviewView">
-    <div class="summary-row">
-      <div class="summary-card strong-bullish">
-        <span class="summary-count" id="countStrongBullish">0</span>
-        <span class="summary-label">Strong bull</span>
-      </div>
-      <div class="summary-card bullish">
-        <span class="summary-count" id="countBullish">0</span>
-        <span class="summary-label">Bullish</span>
-      </div>
-      <div class="summary-card neutral">
-        <span class="summary-count" id="countNeutral">0</span>
-        <span class="summary-label">Moderate</span>
-      </div>
-      <div class="summary-card bearish">
-        <span class="summary-count" id="countBearish">0</span>
-        <span class="summary-label">Bearish</span>
-      </div>
-      <div class="summary-card strong-bearish">
-        <span class="summary-count" id="countStrongBearish">0</span>
-        <span class="summary-label">Strong bear</span>
-      </div>
-      <div class="legend">
-        <div><i class="dot strong-bullish"></i> Strong bull (≥ <span class="thStrongBull">+1.5</span>%)</div>
-        <div><i class="dot bullish"></i> Bullish (≥ <span class="thBull">+0.4</span>%)</div>
-        <div><i class="dot neutral"></i> Moderate (in between)</div>
-        <div><i class="dot bearish"></i> Bearish (≤ <span class="thBear">-0.4</span>%)</div>
-        <div><i class="dot strong-bearish"></i> Strong bear (≤ <span class="thStrongBear">-1.5</span>%)</div>
-      </div>
+    <div class="scale-strip">
+      <span class="scale-label">Colour scale</span>
+      <div id="scaleLegend" class="scale-legend"></div>
+      <label class="sort-control">
+        step
+        <select id="colourStep">
+          <option value="0.25">0.25%</option>
+          <option value="0.5">0.5%</option>
+          <option value="1">1%</option>
+          <option value="2">2%</option>
+          <option value="5" selected>5%</option>
+          <option value="10">10%</option>
+        </select>
+      </label>
     </div>
 
     <div class="controls">
-      <input type="search" id="sectorSearch" placeholder="Search sector…">
+      <input type="search" id="sectorSearch" placeholder="Search sector, index or theme…">
       <div class="filter-group" id="statusFilter">
-        <button class="chip active" data-filter="all">All signals</button>
-        <button class="chip" data-filter="bull">Bullish</button>
-        <button class="chip" data-filter="neutral">Moderate</button>
-        <button class="chip" data-filter="bear">Bearish</button>
-      </div>
-      <div class="filter-group" id="groupFilter">
-        <button class="chip active" data-group="all">Every group</button>
-        <button class="chip" data-group="Broad">Broad market</button>
-        <button class="chip" data-group="Sectoral">Sectoral</button>
-        <button class="chip" data-group="Thematic">Thematic</button>
-        <button class="chip" data-group="Industry">Industry</button>
+        <button class="chip active" data-filter="all">All</button>
+        <button class="chip" data-filter="bull">Advancing</button>
+        <button class="chip" data-filter="bear">Declining</button>
       </div>
       <label class="sort-control">
         Rank by
@@ -89,17 +67,17 @@
       <span class="dim" id="resultCount"></span>
     </div>
 
-    <div id="sectorGrid" class="sector-grid">
-      <div class="empty-state" id="emptyState">
-        <p>No data loaded yet.</p>
-        <p class="dim">Click <strong>Update Data</strong> to pull the latest figures from NSE.</p>
-      </div>
+    <div id="sectionsContainer"></div>
+
+    <div class="empty-state hidden" id="emptyState">
+      <p>No data loaded yet.</p>
+      <p class="dim">Click <strong>Update Data</strong> to pull the latest figures from NSE.</p>
     </div>
   </section>
 
-  <!-- Sector detail (stocks) -->
+  <!-- ============ Sector detail ============ -->
   <section id="detailView" class="hidden">
-    <button id="backBtn" class="back-btn">← All Sectors</button>
+    <button class="back-btn" data-back>← Back</button>
     <div class="detail-head">
       <div>
         <h2 id="detailName">—</h2>
@@ -112,7 +90,6 @@
         <div><span class="stat-label">30 days</span><span id="detail30d" class="stat-value">—</span></div>
         <div><span class="stat-label">1 year</span><span id="detail365d" class="stat-value">—</span></div>
         <div><span class="stat-label">Adv / Dec</span><span id="detailAdvDec" class="stat-value">—</span></div>
-        <div><span class="stat-label">Verdict</span><span id="detailStatus" class="stat-value">—</span></div>
       </div>
     </div>
 
@@ -135,14 +112,47 @@
             <th class="right">Prev Close</th>
             <th class="right">Close</th>
             <th class="right">% Change</th>
-            <th>Signal</th>
           </tr>
         </thead>
         <tbody id="stockBody"></tbody>
       </table>
     </div>
   </section>
+
+  <!-- ============ Compare ============ -->
+  <section id="compareView" class="hidden">
+    <button class="back-btn" data-back>← Back</button>
+    <h2 class="compare-heading">Comparing <span id="compareCount">0</span> selections</h2>
+
+    <div class="table-wrap">
+      <table class="compare-table">
+        <thead><tr id="compareHead"></tr></thead>
+        <tbody id="compareBody"></tbody>
+      </table>
+    </div>
+
+    <h3 class="compare-subheading">Shared constituents</h3>
+    <p class="dim compare-hint">
+      How many stocks each pair has in common. High numbers mean the two are not
+      independent readings of the market.
+    </p>
+    <div class="table-wrap">
+      <table class="compare-table overlap-matrix">
+        <thead><tr id="matrixHead"></tr></thead>
+        <tbody id="matrixBody"></tbody>
+      </table>
+    </div>
+  </section>
 </main>
+
+<!-- Selection tray -->
+<div id="compareTray" class="compare-tray hidden">
+  <div class="tray-items" id="trayItems"></div>
+  <div class="tray-actions">
+    <button id="clearCompare" class="tray-btn ghost">Clear</button>
+    <button id="openCompare" class="tray-btn">Compare</button>
+  </div>
+</div>
 
 <footer class="footer">
   <p>Data sourced from public NSE India endpoints. For research/educational use only — not investment advice.</p>
