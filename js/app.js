@@ -529,6 +529,9 @@ function renderCompare() {
   const chosen = state.selected.map(sectorBy).filter(Boolean);
   el('compareCount').textContent = chosen.length;
 
+  renderChartControls();
+  renderChart();
+
   el('compareHead').innerHTML = '<th>Metric</th>' +
     chosen.map(s => `<th><div>${s.name}</div><span class="dim th-sub">${s.group}</span></th>`).join('');
 
@@ -554,6 +557,250 @@ function renderCompare() {
     }).join('');
     return `<tr><th class="row-label">${s.name}</th>${cells}</tr>`;
   }).join('');
+}
+
+/* ------------------------------------------------- same-% chart + crossings
+ * The chart is the point of the whole exercise: rebase every series to 0% at
+ * the left edge and the vertical distance between two lines *is* their relative
+ * performance. Where the lines cross is where leadership changed hands, which a
+ * pair of endpoint numbers can never show.
+ */
+
+const CHART_WINDOWS = [
+  ['1M', 30], ['3M', 91], ['6M', 182], ['1Y', 365], ['2Y', 730], ['3Y', 1095], ['5Y', 1826],
+];
+
+const LINE_COLOURS = [
+  '#4b9fff', '#16c784', '#f0b90b', '#ff7ab6', '#a78bfa',
+  '#22d3ee', '#fb923c', '#f87171', '#84cc16', '#e879f9',
+];
+
+let history = null;          // {dates, series}
+let historyError = null;
+
+async function loadHistory() {
+  try {
+    const res = await fetch('/api/history');
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      historyError = body.message || 'No price history available.';
+      return;
+    }
+    history = await res.json();
+  } catch (e) {
+    historyError = 'Could not load price history: ' + e.message;
+  }
+}
+
+// Industry groups have no index of their own, so they cannot be charted.
+const chartableSeries = (indexName) =>
+  history && history.series[(indexName || '').toUpperCase()] || null;
+
+function windowSlice(days) {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - days);
+  const iso = cutoff.toISOString().slice(0, 10);
+  const from = history.dates.findIndex(d => d >= iso);
+  return from < 0 ? history.dates.length - 2 : from;
+}
+
+/** Rebase a series to 0% at `from`, skipping leading gaps. */
+function rebase(values, from) {
+  let base = null;
+  for (let i = from; i < values.length; i++) {
+    if (values[i] !== null && values[i] !== undefined) { base = values[i]; break; }
+  }
+  if (!base) return null;
+  return values.slice(from).map(v =>
+    v === null || v === undefined ? null : (v / base - 1) * 100);
+}
+
+/** Index of the last sign change between two rebased series. */
+function lastCrossing(a, b) {
+  let last = null;
+  for (let i = 1; i < a.length; i++) {
+    if (a[i] === null || b[i] === null || a[i - 1] === null || b[i - 1] === null) continue;
+    const before = a[i - 1] - b[i - 1];
+    const now = a[i] - b[i];
+    if (before === 0 || now === 0) continue;
+    if ((before < 0) !== (now < 0)) last = { at: i, above: now > 0 };
+  }
+  return last;
+}
+
+function chartState() {
+  const days = parseInt(el('chartPeriod').value, 10);
+  const baseName = el('baselineSelect').value;
+  const from = windowSlice(days);
+  const dates = history.dates.slice(from);
+
+  const baseRaw = chartableSeries(baseName);
+  const base = baseRaw && rebase(baseRaw, from);
+
+  const lines = state.selected.map(name => {
+    const sector = sectorBy(name);
+    const raw = chartableSeries(name);
+    return {
+      name: sector ? sector.name : name,
+      indexName: name,
+      values: raw ? rebase(raw, from) : null,
+      isBase: name === baseName,
+    };
+  });
+
+  return { dates, base, baseName, lines, days };
+}
+
+function renderChart() {
+  const host = el('chartHost');
+  if (!history) {
+    host.innerHTML = `<div class="chart-empty">${historyError ||
+      'Price history not built yet. Run <code>python build_history.py</code>.'}</div>`;
+    el('chartLegend').innerHTML = '';
+    el('crossList').innerHTML = '';
+    return;
+  }
+
+  const { dates, base, baseName, lines } = chartState();
+  const drawable = lines.filter(l => l.values);
+
+  if (!base || !drawable.length) {
+    host.innerHTML = '<div class="chart-empty">None of the selections have an index series to chart. '
+      + 'Industry groups are computed from their constituents, so they have no index of their own.</div>';
+    el('chartLegend').innerHTML = '';
+    el('crossList').innerHTML = '';
+    return;
+  }
+
+  const series = [{ name: baselineLabel(baseName), values: base, baseline: true },
+                  ...drawable.filter(l => !l.isBase)];
+
+  const all = series.flatMap(s => s.values).filter(v => v !== null);
+  const min = Math.min(0, ...all), max = Math.max(0, ...all);
+  const pad = (max - min) * 0.08 || 1;
+  const lo = min - pad, hi = max + pad;
+
+  const W = 900, H = 340, L = 52, R = 12, T = 14, B = 26;
+  const x = i => L + (i / Math.max(dates.length - 1, 1)) * (W - L - R);
+  const y = v => T + (1 - (v - lo) / (hi - lo)) * (H - T - B);
+
+  const path = values => {
+    let d = '', pen = false;
+    values.forEach((v, i) => {
+      if (v === null) { pen = false; return; }
+      d += `${pen ? 'L' : 'M'}${x(i).toFixed(1)} ${y(v).toFixed(1)} `;
+      pen = true;
+    });
+    return d.trim();
+  };
+
+  const ticks = [];
+  for (let k = 0; k <= 4; k++) ticks.push(lo + (hi - lo) * (k / 4));
+
+  const dateLabels = [0, Math.floor(dates.length / 2), dates.length - 1]
+    .filter((v, i, a) => a.indexOf(v) === i);
+
+  host.innerHTML = `
+    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" class="chart-svg" role="img"
+         aria-label="Rebased performance comparison">
+      ${ticks.map(t => `
+        <line x1="${L}" x2="${W - R}" y1="${y(t).toFixed(1)}" y2="${y(t).toFixed(1)}"
+              class="grid ${Math.abs(t) < 1e-9 ? 'zero' : ''}"/>
+        <text x="${L - 8}" y="${(y(t) + 4).toFixed(1)}" class="axis" text-anchor="end">
+          ${t > 0 ? '+' : ''}${t.toFixed(0)}%
+        </text>`).join('')}
+      ${dateLabels.map(i => `
+        <text x="${x(i).toFixed(1)}" y="${H - 8}" class="axis"
+              text-anchor="${i === 0 ? 'start' : i === dates.length - 1 ? 'end' : 'middle'}">
+          ${dates[i]}
+        </text>`).join('')}
+      ${series.map((s, i) => `
+        <path d="${path(s.values)}" fill="none"
+              stroke="${s.baseline ? 'var(--text-dim)' : LINE_COLOURS[i % LINE_COLOURS.length]}"
+              stroke-width="${s.baseline ? 2.5 : 2}"
+              stroke-dasharray="${s.baseline ? '6 4' : ''}"/>`).join('')}
+    </svg>`;
+
+  el('chartLegend').innerHTML = series.map((s, i) => {
+    const last = [...s.values].reverse().find(v => v !== null);
+    const colour = s.baseline ? 'var(--text-dim)' : LINE_COLOURS[i % LINE_COLOURS.length];
+    return `<span class="legend-item">
+      <i style="background:${colour}"></i>${s.name}
+      <b>${signedPct(last)}</b>${s.baseline ? '<em>baseline</em>' : ''}
+    </span>`;
+  }).join('');
+
+  renderCrossings(dates, base, drawable, baseName);
+}
+
+function baselineLabel(indexName) {
+  const s = sectorBy(indexName);
+  return s ? s.name : indexName;
+}
+
+function renderCrossings(dates, base, lines, baseName) {
+  el('crossBaseName').textContent = baselineLabel(baseName);
+
+  const rows = lines.filter(l => !l.isBase).map(l => {
+    const cross = lastCrossing(l.values, base);
+    const lastA = [...l.values].reverse().find(v => v !== null);
+    const lastB = [...base].reverse().find(v => v !== null);
+    const gap = lastA === undefined || lastB === undefined ? null : lastA - lastB;
+    const above = gap !== null && gap > 0;
+
+    let age = null;
+    let when;
+    if (cross) {
+      const d = new Date(dates[cross.at]);
+      age = Math.round((Date.now() - d.getTime()) / 86400000);
+      when = `crossed ${cross.above ? 'above' : 'below'} on ${dates[cross.at]}`;
+    } else {
+      // No sign change at all: it has held one side for the entire window.
+      when = `stayed ${above ? 'above' : 'below'} for the whole window`;
+    }
+
+    return { name: l.name, indexName: l.indexName, gap, above, when, age, cross };
+  });
+
+  // Freshest crossings first: those are the leadership changes worth acting on.
+  rows.sort((a, b) => (a.age === null ? 1e9 : a.age) - (b.age === null ? 1e9 : b.age));
+
+  el('crossList').innerHTML = rows.map(r => {
+    const c = colourFor(r.gap);
+    const fresh = r.age !== null && r.age <= 45;
+    return `
+      <div class="cross-row ${fresh ? 'fresh' : ''}">
+        <span class="cross-name">${r.name}</span>
+        <span class="cross-gap" style="color:${c.fg}">${signedPct(r.gap)}</span>
+        <span class="cross-when">
+          ${r.when}${r.age !== null ? ` <b>${r.age} days ago</b>` : ''}
+        </span>
+        ${fresh ? '<span class="cross-flag">recent change</span>' : ''}
+      </div>`;
+  }).join('') || '<p class="dim">Nothing else selected to compare against the baseline.</p>';
+}
+
+function renderChartControls() {
+  const baseSel = el('baselineSelect');
+  const options = state.selected
+    .map(sectorBy)
+    .filter(s => s && chartableSeries(s.indexName));
+
+  const bmName = state.data.benchmark.indexName;
+  const all = options.some(o => o.indexName === bmName)
+    ? options
+    : [{ indexName: bmName, name: state.data.benchmark.name }, ...options];
+
+  const previous = baseSel.value;
+  baseSel.innerHTML = all
+    .map(o => `<option value="${o.indexName}">${o.name}</option>`).join('');
+  baseSel.value = all.some(o => o.indexName === previous) ? previous : bmName;
+
+  if (!el('chartPeriod').options.length) {
+    el('chartPeriod').innerHTML = CHART_WINDOWS
+      .map(([label, days]) => `<option value="${days}" ${label === '1Y' ? 'selected' : ''}>${label}</option>`)
+      .join('');
+  }
 }
 
 /* ------------------------------------------------------------ view switching */
@@ -615,6 +862,9 @@ el('colourStep').addEventListener('change', (e) => {
   if (!el('compareView').classList.contains('hidden')) renderCompare();
 });
 
+el('baselineSelect').addEventListener('change', renderChart);
+el('chartPeriod').addEventListener('change', renderChart);
+
 el('openCompare').addEventListener('click', () => {
   if (state.selected.length < 2) return;
   showView('compare');
@@ -643,3 +893,4 @@ const savedPeriod = localStorage.getItem('period');
 if (savedPeriod) state.period = savedPeriod;
 
 loadCached();
+loadHistory();

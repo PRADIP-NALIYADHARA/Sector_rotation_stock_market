@@ -14,6 +14,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).parent
 DATA_FILE = BASE_DIR / "data" / "sectors_data.json"
+HISTORY_FILE = BASE_DIR / "data" / "index_history.json"
 PORT = 5000
 
 
@@ -48,7 +49,9 @@ class Handler(SimpleHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_GET(self):
-        if self.path.split("?")[0] == "/api/sectors":
+        route = self.path.split("?")[0]
+
+        if route == "/api/sectors":
             if not DATA_FILE.exists():
                 self.send_json(
                     {"error": "no_data", "message": "No data yet. Click 'Update Data' to fetch from NSE."},
@@ -57,6 +60,21 @@ class Handler(SimpleHTTPRequestHandler):
                 return
             self.send_json(json.loads(DATA_FILE.read_text(encoding="utf-8")))
             return
+
+        if route == "/api/history":
+            if not HISTORY_FILE.exists():
+                self.send_json(
+                    {"error": "no_history",
+                     "message": "No price history yet. Run 'python build_history.py'."},
+                    404,
+                )
+                return
+            raw = json.loads(HISTORY_FILE.read_text(encoding="utf-8"))
+            # byDate is the incremental-fetch scratch copy; the browser wants series.
+            raw.pop("byDate", None)
+            self.send_json(raw)
+            return
+
         super().do_GET()
 
     def do_POST(self):

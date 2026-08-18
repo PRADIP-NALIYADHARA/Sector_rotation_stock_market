@@ -163,16 +163,49 @@ window you're looking at:
 Gaps over a single day are tiny, so a 5% step will paint the 1D view yellow — that is
 the scale working, not a bug.
 
-## Comparing
+## Comparing — the same-% chart
 
 Every card has a **+** button that adds it to the comparison tray at the bottom of the
 screen. Pick as many as you like — two, five, a dozen — across any groups, then hit
-**Compare**. You get:
+**Compare**.
 
-- a metric table: index level, today / 30-day / 1-year change, advances, declines,
-  constituent count, best and worst stock
-- a **shared-constituents matrix** showing how many stocks each pair holds in common,
-  which is the fastest way to see that two "different" sectors are really the same bet
+The comparison opens with the chart the rest of the app is a summary of: every series
+rebased to 0% at the left edge, so the vertical distance between two lines *is* their
+relative performance. Window runs from 1M to 5Y.
+
+Two things it gives you that endpoint numbers cannot:
+
+**Any baseline, not just NIFTY 50.** Comparing everything to the index tells you who is
+beating the market, but the rotation decision is usually *old leader vs challenger*.
+Set the baseline to NIFTY AUTO and the chart re-centres on it — now you can see who is
+closing on the current leader.
+
+**When the lines crossed.** Under the chart, each selection is listed with the date it
+last crossed the baseline and how long ago that was, freshest first, with anything
+inside 45 days flagged as a recent change. An old crossing means the lead is already
+established; a fresh one means leadership is changing hands right now.
+
+Below that sit the metric table (index level, every window's return and gap, breadth,
+constituent count, best/worst stock) and a **shared-constituents matrix** showing how
+many stocks each pair holds in common — the fastest way to see that two "different"
+sectors are really the same bet.
+
+Industry groups have no index of their own, so they can be compared in the tables but
+not plotted on the chart.
+
+## Price history
+
+The chart and crossings need a real series, not endpoints, so `build_history.py` caches
+one from NSE's `ind_close_all` archives:
+
+```bash
+python build_history.py
+```
+
+Resolution is deliberately uneven — daily for the last three months where crossings are
+decided, weekly out to three years, monthly out to five. That keeps a five-year view of
+every index to roughly 1.3 MB. The cache is incremental: the first build takes a few
+minutes, after which only missing dates are fetched. Add `--rebuild` to start over.
 
 ## Data sources
 
@@ -195,13 +228,15 @@ is used for stock-level prices instead.
 ## Project structure
 
 ```
-app.py                local web server + /api/sectors and /api/refresh
+app.py                local web server + /api/sectors, /api/history, /api/refresh
 fetch_data.py         NSE fetcher, writes data/sectors_data.json
+build_history.py      caches the index price series, writes data/index_history.json
 discover_indices.py   maintenance: resolves index -> constituent CSV, writes index_map.json
+build_snapshot.py     bundles everything into one standalone HTML file
 index_map.json        generated mapping used by fetch_data.py
 index.html            dashboard markup
 css/style.css         styling and theming
-js/app.js             rendering, filtering, drill-down, refresh
+js/app.js             rendering, filtering, drill-down, chart, refresh
 data/                 cached JSON (regenerated on every update)
 ```
 

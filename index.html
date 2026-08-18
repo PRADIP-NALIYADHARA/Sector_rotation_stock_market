@@ -151,6 +151,33 @@
     <button class="back-btn" data-back>← Back</button>
     <h2 class="compare-heading">Comparing <span id="compareCount">0</span> selections</h2>
 
+    <div class="chart-panel">
+      <div class="chart-controls">
+        <label class="sort-control">
+          Baseline
+          <select id="baselineSelect"></select>
+        </label>
+        <label class="sort-control">
+          From
+          <select id="chartPeriod"></select>
+        </label>
+        <span class="dim chart-hint">
+          Every line starts at 0% on the left. Above the baseline is outperforming it.
+        </span>
+      </div>
+      <div id="chartHost" class="chart-host"></div>
+      <div id="chartLegend" class="chart-legend"></div>
+    </div>
+
+    <div id="crossBox" class="cross-box">
+      <h3 class="compare-subheading">Crossings against <span id="crossBaseName">the baseline</span></h3>
+      <p class="dim compare-hint">
+        When each line last crossed the baseline. A recent crossing is a change of
+        leadership; an old one means the lead is already established.
+      </p>
+      <div id="crossList" class="cross-list"></div>
+    </div>
+
     <div class="table-wrap">
       <table class="compare-table">
         <thead><tr id="compareHead"></tr></thead>
