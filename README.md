@@ -193,6 +193,44 @@ sectors are really the same bet.
 Industry groups have no index of their own, so they can be compared in the tables but
 not plotted on the chart.
 
+## Splits and bonuses
+
+The bhavcopy records the price actually traded that day, so a 10:2 split shows up as
+an 80% overnight fall with nothing in the file to say why. Compare a pre-split close
+against today's and a routine split reads as a collapse: ADANIPOWER split in September
+2025 and its raw one-year "return" was **−66%** when the stock had in fact *risen*.
+
+`corporate_actions.py` pulls NSE's corporate-actions feed and turns each split and
+bonus into a price factor — `Face Value Split From Rs 10 To Rs 2` becomes 5, `Bonus 1:1`
+becomes 2. Historical prices are divided by every factor that has gone ex since, which
+puts them on today's scale.
+
+This runs by itself. Every data refresh re-pulls the recent window and folds anything
+new into the cache, so a split that goes ex this morning is known before any return
+spanning it is computed — and if there is no cache at all, the multi-year backfill
+happens automatically on the first run. Forthcoming actions are published ahead of
+their ex-date, so upcoming ones land in the cache early too.
+
+The script is still there for a manual rebuild or a deeper backfill:
+
+```bash
+python corporate_actions.py            # rebuild, last 6 years
+python corporate_actions.py --years 8
+```
+
+Two things this does **not** silently paper over:
+
+- **Rights issues** cannot be adjusted from their description — the correct factor needs
+  the theoretical ex-rights price. Affected stocks are withheld from period returns
+  rather than reported wrong.
+- **Actions older than the cached window** are unknown, so a split from seven years ago
+  will still distort a raw comparison against that date.
+
+What was never affected: index levels, and therefore every chart, relative-strength
+number and crossing in the app. NSE adjusts an index's divisor when a constituent
+splits, so index series are continuous by construction. The 52-week highs and lows also
+arrive pre-adjusted from NSE. Only stock-level multi-period returns ever needed this.
+
 ## Price history
 
 The chart and crossings need a real series, not endpoints, so `build_history.py` caches
@@ -231,6 +269,7 @@ is used for stock-level prices instead.
 app.py                local web server + /api/sectors, /api/history, /api/refresh
 fetch_data.py         NSE fetcher, writes data/sectors_data.json
 build_history.py      caches the index price series, writes data/index_history.json
+corporate_actions.py  caches split/bonus factors, writes data/corporate_actions.json
 discover_indices.py   maintenance: resolves index -> constituent CSV, writes index_map.json
 build_snapshot.py     bundles everything into one standalone HTML file
 index_map.json        generated mapping used by fetch_data.py

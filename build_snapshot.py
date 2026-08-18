@@ -29,15 +29,32 @@ def main():
         sys.exit("No data/sectors_data.json yet -- run fetch_data.py first.")
     data = json.loads(data_file.read_text(encoding="utf-8"))
 
+    # The comparison chart reads its series over /api/history, which a file on
+    # disk has no way to call, so it travels inside the page too.
+    history_file = BASE_DIR / "data" / "index_history.json"
+    history = None
+    if history_file.exists():
+        history = json.loads(history_file.read_text(encoding="utf-8"))
+        history.pop("byDate", None)     # incremental-fetch scratch, not needed here
+    else:
+        print("No index history cached - the comparison chart will be unavailable "
+              "in this snapshot. Run build_history.py first.", file=sys.stderr)
+
     html = html.replace(
         '<link rel="stylesheet" href="css/style.css">',
         f"<style>\n{css}\n</style>",
     )
     # </script> inside the JSON would end the tag early.
-    payload = json.dumps(data).replace("</", "<\\/")
+    def embed(obj):
+        return json.dumps(obj).replace("</", "<\\/")
+
+    preamble = f"window.EMBEDDED_DATA = {embed(data)};"
+    if history:
+        preamble += f"\nwindow.EMBEDDED_HISTORY = {embed(history)};"
+
     html = html.replace(
         '<script src="js/app.js"></script>',
-        f"<script>window.EMBEDDED_DATA = {payload};</script>\n<script>\n{js}\n</script>",
+        f"<script>{preamble}</script>\n<script>\n{js}\n</script>",
     )
 
     built = datetime.now().strftime("%d %b %Y %H:%M")

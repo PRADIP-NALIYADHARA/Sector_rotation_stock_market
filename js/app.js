@@ -579,6 +579,13 @@ let history = null;          // {dates, series}
 let historyError = null;
 
 async function loadHistory() {
+  // Standalone snapshots carry the series inline; there is no server to ask.
+  if (window.EMBEDDED_HISTORY) { history = window.EMBEDDED_HISTORY; return; }
+  if (window.EMBEDDED_DATA) {
+    historyError = 'This snapshot was built without price history, so the chart is '
+      + 'unavailable. Run build_history.py, then build_snapshot.py again.';
+    return;
+  }
   try {
     const res = await fetch('/api/history');
     if (!res.ok) {

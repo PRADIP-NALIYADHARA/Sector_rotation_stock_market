@@ -37,6 +37,8 @@ from pathlib import Path
 
 import requests
 
+import corporate_actions
+
 BASE_DIR = Path(__file__).parent
 DATA_FILE = BASE_DIR / "data" / "sectors_data.json"
 MAP_FILE = BASE_DIR / "index_map.json"
@@ -230,6 +232,35 @@ def week52_on(day, max_back=8):
             }
         return levels, d
     return {}, None
+
+
+def adjusted_price(symbol, old_price, on_date, actions):
+    """
+    An old bhavcopy close brought onto today's scale.
+
+    Bhavcopy records the price actually traded, so a 10:2 split shows up as an
+    80% overnight fall. Dividing by every split/bonus factor that has gone ex
+    since makes the two prices comparable.
+    """
+    if old_price is None:
+        return None
+    factor = corporate_actions.factor_since(actions.get(symbol), on_date)
+    return old_price / factor if factor != 1.0 else old_price
+
+
+def survives_sanity_check(symbol, ret, unreliable):
+    """
+    Backstop for actions the feed can't express as a ratio.
+
+    Rights issues move the price without a factor that can be derived from their
+    description, so a stock that had one is not trusted for period returns rather
+    than being quietly reported wrong.
+    """
+    if ret is None:
+        return True
+    if symbol in unreliable:
+        return False
+    return -95 < ret < 5000
 
 
 def range_position(last, high, low):
@@ -447,10 +478,47 @@ def main():
         return {label: pct_change(now, index_hist[label].get(index_name.upper()))
                 for label, _ in LOOKBACKS}
 
+    # Pulled on every refresh: a split that goes ex today has to be known before
+    # any return spanning it is computed, or the number is quietly wrong.
+    print("Refreshing corporate actions...", file=sys.stderr)
+    try:
+        ca, added = corporate_actions.ensure_fresh(session=session)
+        if added:
+            print(f"  {added} new split/bonus events picked up", file=sys.stderr)
+    except Exception as e:
+        print(f"  warning: could not refresh corporate actions ({e}); using cache",
+              file=sys.stderr)
+        ca = corporate_actions.load()
+
+    actions, unreliable = ca.get("actions", {}), ca.get("unreliable", {})
+    if not actions:
+        print("  note: no corporate actions available - split-affected stocks will "
+              "read wrong", file=sys.stderr)
+    else:
+        print(f"Corporate actions: {sum(len(v) for v in actions.values())} adjustments "
+              f"across {len(actions)} symbols", file=sys.stderr)
+
+    adjusted_count = defaultdict(int)
+    dropped = defaultdict(int)
+    hist_dates = {label: today - timedelta(days=days) for label, days in LOOKBACKS}
+
     def stock_returns(symbol):
+        """Returns per window, on a split-adjusted basis."""
         now = stock_now.get(symbol)
-        return {label: pct_change(now, stock_hist[label].get(symbol))
-                for label, _ in LOOKBACKS}
+        out = {}
+        for label, _ in LOOKBACKS:
+            raw = stock_hist[label].get(symbol)
+            old = adjusted_price(symbol, raw, hist_dates[label].date(), actions)
+            if raw is not None and old != raw:
+                adjusted_count[label] += 1
+
+            ret = pct_change(now, old)
+            if not survives_sanity_check(symbol, ret, unreliable):
+                out[label] = None
+                dropped[label] += 1
+                continue
+            out[label] = ret
+        return out
 
     benchmark_returns = index_returns(BENCHMARK)
     print(f"Benchmark {BENCHMARK}: "
@@ -571,6 +639,11 @@ def main():
             label: average([r[label] for r in per_stock.values()])
             for label, _ in LOOKBACKS
         }
+        # How much of the group actually made it into each average.
+        coverage = {
+            label: sum(1 for r in per_stock.values() if r[label] is not None)
+            for label, _ in LOOKBACKS
+        }
         # No index to read a level off, so the group's range position is the
         # average of where its constituents sit in their own ranges.
         range_pos = average([s["rangePos"] for s in stocks], digits=1)
@@ -587,6 +660,8 @@ def main():
             "low52": None,
             "fromHigh": average([s["fromHigh"] for s in stocks]),
             "returns": returns,
+            "coverage": coverage,
+            "memberCount": len(members),
             "rs": relative_strength(returns, benchmark_returns),
             "lead": leadership(range_pos, stocks, benchmark_range_pos),
             "advances": adv,
@@ -594,6 +669,13 @@ def main():
             "unchanged": unch,
             "stocks": stocks,
         })
+
+    if adjusted_count:
+        summary = ", ".join(f"{label} {n}" for label, n in sorted(adjusted_count.items()))
+        print(f"Split/bonus adjusted prices: {summary}", file=sys.stderr)
+    if dropped:
+        summary = ", ".join(f"{label} {n}" for label, n in sorted(dropped.items()))
+        print(f"Withheld (rights issue, not adjustable): {summary}", file=sys.stderr)
 
     print("Computing constituent overlaps...", file=sys.stderr)
     annotate_overlaps(sectors)

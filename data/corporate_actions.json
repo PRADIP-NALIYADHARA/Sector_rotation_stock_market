@@ -1,0 +1,4981 @@
+{
+  "builtAt": "2026-08-19T01:48:14",
+  "years": 6,
+  "counts": {
+    "split": 283,
+    "rights": 218,
+    "bonus": 287
+  },
+  "actions": {
+    "DEVIT": [
+      {
+        "exDate": "2022-11-25",
+        "factor": 2.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2025-08-21",
+        "factor": 2.5,
+        "kind": "split"
+      }
+    ],
+    "AARON": [
+      {
+        "exDate": "2025-08-25",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "HDFCBANK": [
+      {
+        "exDate": "2025-08-26",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "KARURVYSYA": [
+      {
+        "exDate": "2025-08-26",
+        "factor": 1.2,
+        "kind": "bonus"
+      }
+    ],
+    "STEELCAS": [
+      {
+        "exDate": "2025-08-29",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "PAVNAIND": [
+      {
+        "exDate": "2025-09-01",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "PATANJALI": [
+      {
+        "exDate": "2025-09-11",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "FISCHER": [
+      {
+        "exDate": "2025-09-12",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "GODFRYPHLP": [
+      {
+        "exDate": "2025-09-16",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "ZYDUSWELL": [
+      {
+        "exDate": "2025-09-18",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "TFCILTD": [
+      {
+        "exDate": "2025-09-19",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "ADANIPOWER": [
+      {
+        "exDate": "2025-09-22",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "SANDUMA": [
+      {
+        "exDate": "2024-02-02",
+        "factor": 6.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2025-09-22",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "TIMETECHNO": [
+      {
+        "exDate": "2025-09-23",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "PIDILITIND": [
+      {
+        "exDate": "2025-09-23",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "NAZARA": [
+      {
+        "exDate": "2022-06-24",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2025-09-26",
+        "factor": 2.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2025-09-26",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "RMDRIP": [
+      {
+        "exDate": "2025-09-26",
+        "factor": 10.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2026-04-10",
+        "factor": 1.714286,
+        "kind": "bonus"
+      }
+    ],
+    "SHILPAMED": [
+      {
+        "exDate": "2025-10-03",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "SUMEETINDS": [
+      {
+        "exDate": "2025-10-03",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "SIGMA": [
+      {
+        "exDate": "2025-10-06",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "AGIIL": [
+      {
+        "exDate": "2025-02-07",
+        "factor": 2.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2025-10-10",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "UEL": [
+      {
+        "exDate": "2024-09-20",
+        "factor": 1.25,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2025-05-30",
+        "factor": 1.68,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2025-10-10",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "LGHL": [
+      {
+        "exDate": "2025-10-10",
+        "factor": 2.4,
+        "kind": "bonus"
+      }
+    ],
+    "UNIVASTU": [
+      {
+        "exDate": "2025-10-13",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "TATAINVEST": [
+      {
+        "exDate": "2025-10-14",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "GOKULAGRO": [
+      {
+        "exDate": "2025-10-14",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "ABINFRA": [
+      {
+        "exDate": "2025-10-17",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "ROLEXRINGS": [
+      {
+        "exDate": "2025-10-17",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "GEEKAYWIRE": [
+      {
+        "exDate": "2023-10-23",
+        "factor": 5.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2025-10-30",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "FCL": [
+      {
+        "exDate": "2025-10-31",
+        "factor": 5.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2025-10-31",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "BEML": [
+      {
+        "exDate": "2025-11-03",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "WEBELSOLAR": [
+      {
+        "exDate": "2025-11-14",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "SMCGLOBAL": [
+      {
+        "exDate": "2025-11-14",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "HDFCAMC": [
+      {
+        "exDate": "2025-11-26",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "SIKKO": [
+      {
+        "exDate": "2022-10-28",
+        "factor": 1.5,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2025-11-27",
+        "factor": 10.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2025-12-08",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "THYROCARE": [
+      {
+        "exDate": "2025-11-28",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "CAMS": [
+      {
+        "exDate": "2025-12-05",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "BECTORFOOD": [
+      {
+        "exDate": "2025-12-12",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "BHARATRAS": [
+      {
+        "exDate": "2025-12-12",
+        "factor": 2.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2025-12-12",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "MONEYBOXX": [
+      {
+        "exDate": "2025-12-15",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "LALPATHLAB": [
+      {
+        "exDate": "2025-12-19",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "KMEW": [
+      {
+        "exDate": "2025-12-22",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "GRMOVER": [
+      {
+        "exDate": "2025-12-24",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "RAMRAT": [
+      {
+        "exDate": "2022-09-28",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2025-12-26",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "NUVAMA": [
+      {
+        "exDate": "2025-12-26",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "MCX": [
+      {
+        "exDate": "2026-01-02",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "ORIENTTECH": [
+      {
+        "exDate": "2026-01-05",
+        "factor": 1.1,
+        "kind": "bonus"
+      }
+    ],
+    "SKMEGGPROD": [
+      {
+        "exDate": "2026-01-12",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "AIIL": [
+      {
+        "exDate": "2026-01-13",
+        "factor": 5.0,
+        "kind": "bonus"
+      }
+    ],
+    "KOTAKBANK": [
+      {
+        "exDate": "2026-01-14",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "AJMERA": [
+      {
+        "exDate": "2026-01-14",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "BESTAGRO": [
+      {
+        "exDate": "2026-01-16",
+        "factor": 10.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2026-01-16",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "AXITA": [
+      {
+        "exDate": "2022-10-21",
+        "factor": 10.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2023-12-22",
+        "factor": 1.333333,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2024-09-20",
+        "factor": 1.333333,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2026-02-13",
+        "factor": 1.1,
+        "kind": "bonus"
+      }
+    ],
+    "DELPHIFX": [
+      {
+        "exDate": "2026-02-13",
+        "factor": 5.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2026-02-13",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "ANGELONE": [
+      {
+        "exDate": "2026-02-26",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "INFOBEAN": [
+      {
+        "exDate": "2026-02-27",
+        "factor": 4.0,
+        "kind": "bonus"
+      }
+    ],
+    "VGL": [
+      {
+        "exDate": "2026-03-02",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "AQYLON": [
+      {
+        "exDate": "2026-03-05",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "KAPSTON": [
+      {
+        "exDate": "2024-08-09",
+        "factor": 2.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2026-03-06",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "SILVERTUC": [
+      {
+        "exDate": "2026-03-06",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2026-03-06",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "CUPID": [
+      {
+        "exDate": "2024-04-04",
+        "factor": 10.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2024-04-04",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2026-03-09",
+        "factor": 5.0,
+        "kind": "bonus"
+      }
+    ],
+    "ECLERX": [
+      {
+        "exDate": "2022-09-21",
+        "factor": 1.5,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2026-03-13",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "METROPOLIS": [
+      {
+        "exDate": "2026-03-20",
+        "factor": 4.0,
+        "kind": "bonus"
+      }
+    ],
+    "KILITCH": [
+      {
+        "exDate": "2026-03-24",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "V2RETAIL": [
+      {
+        "exDate": "2026-03-25",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "HIRECT": [
+      {
+        "exDate": "2026-03-27",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "IRB": [
+      {
+        "exDate": "2023-02-22",
+        "factor": 10.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2026-03-30",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "RNBDENIMS": [
+      {
+        "exDate": "2026-04-02",
+        "factor": 2.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2026-04-02",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "PASHUPATI": [
+      {
+        "exDate": "2026-04-17",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "AHCL": [
+      {
+        "exDate": "2026-04-24",
+        "factor": 5.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2026-04-24",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "AVROIND": [
+      {
+        "exDate": "2026-05-05",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "LICI": [
+      {
+        "exDate": "2026-05-29",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "LEMERITE": [
+      {
+        "exDate": "2026-05-29",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "ANANDRATHI": [
+      {
+        "exDate": "2025-03-05",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2026-06-03",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "TRENT": [
+      {
+        "exDate": "2026-06-04",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "E2E": [
+      {
+        "exDate": "2026-06-05",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "CUB": [
+      {
+        "exDate": "2026-06-12",
+        "factor": 1.333333,
+        "kind": "bonus"
+      }
+    ],
+    "BRIGADE": [
+      {
+        "exDate": "2026-06-17",
+        "factor": 1.333333,
+        "kind": "bonus"
+      }
+    ],
+    "DBEIL": [
+      {
+        "exDate": "2026-06-19",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "KOTYARK": [
+      {
+        "exDate": "2026-06-24",
+        "factor": 11.0,
+        "kind": "bonus"
+      }
+    ],
+    "ZFCVINDIA": [
+      {
+        "exDate": "2026-06-24",
+        "factor": 6.0,
+        "kind": "bonus"
+      }
+    ],
+    "MBAPL": [
+      {
+        "exDate": "2022-10-18",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2023-10-20",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2026-07-03",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "KRISHANA": [
+      {
+        "exDate": "2023-10-25",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2026-07-03",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "MWL": [
+      {
+        "exDate": "2026-07-10",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "GOLDIAM": [
+      {
+        "exDate": "2022-03-28",
+        "factor": 5.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2026-07-10",
+        "factor": 1.333333,
+        "kind": "bonus"
+      }
+    ],
+    "POCL": [
+      {
+        "exDate": "2024-10-16",
+        "factor": 2.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2026-07-21",
+        "factor": 2.5,
+        "kind": "split"
+      }
+    ],
+    "JLHL": [
+      {
+        "exDate": "2026-07-24",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "HARDWYN": [
+      {
+        "exDate": "2022-07-25",
+        "factor": 1.5,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2023-06-05",
+        "factor": 1.333333,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2023-06-05",
+        "factor": 10.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2024-12-27",
+        "factor": 1.4,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2026-07-28",
+        "factor": 1.4,
+        "kind": "bonus"
+      }
+    ],
+    "NARMADA": [
+      {
+        "exDate": "2026-07-31",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "TEMBO": [
+      {
+        "exDate": "2026-08-05",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "KIRLPNU": [
+      {
+        "exDate": "2026-08-18",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "CDSL": [
+      {
+        "exDate": "2024-08-23",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "SAPPHIRE": [
+      {
+        "exDate": "2024-09-05",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "VSTIND": [
+      {
+        "exDate": "2024-09-06",
+        "factor": 11.0,
+        "kind": "bonus"
+      }
+    ],
+    "ANDHRAPAP": [
+      {
+        "exDate": "2024-09-11",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "VBL": [
+      {
+        "exDate": "2021-06-10",
+        "factor": 1.5,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2022-06-06",
+        "factor": 1.5,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2023-06-15",
+        "factor": 2.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2024-09-12",
+        "factor": 2.5,
+        "kind": "split"
+      }
+    ],
+    "BIGBLOC": [
+      {
+        "exDate": "2021-11-15",
+        "factor": 5.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2024-09-12",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "KIMS": [
+      {
+        "exDate": "2024-09-13",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "MONARCH": [
+      {
+        "exDate": "2024-09-13",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "SPORTKING": [
+      {
+        "exDate": "2024-09-13",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "RPPL": [
+      {
+        "exDate": "2024-02-26",
+        "factor": 3.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2024-09-17",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "SAKSOFT": [
+      {
+        "exDate": "2022-09-23",
+        "factor": 10.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2024-09-19",
+        "factor": 1.25,
+        "kind": "bonus"
+      }
+    ],
+    "NDL": [
+      {
+        "exDate": "2022-03-24",
+        "factor": 3.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2024-09-19",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "MINDTECK": [
+      {
+        "exDate": "2024-09-20",
+        "factor": 1.25,
+        "kind": "bonus"
+      }
+    ],
+    "PHOENIXLTD": [
+      {
+        "exDate": "2024-09-20",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "RITES": [
+      {
+        "exDate": "2024-09-20",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "NDRAUTO": [
+      {
+        "exDate": "2023-07-24",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2024-09-25",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "SANGHVIMOV": [
+      {
+        "exDate": "2024-09-27",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "GPIL": [
+      {
+        "exDate": "2021-10-26",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2021-10-26",
+        "factor": 2.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2024-10-04",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "NBCC": [
+      {
+        "exDate": "2024-10-07",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "POWERMECH": [
+      {
+        "exDate": "2024-10-08",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "JINDALSAW": [
+      {
+        "exDate": "2024-10-09",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "VAISHALI": [
+      {
+        "exDate": "2024-10-15",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2024-10-15",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "HEG": [
+      {
+        "exDate": "2024-10-18",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "SUKHJITS": [
+      {
+        "exDate": "2024-10-25",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "DRREDDY": [
+      {
+        "exDate": "2024-10-28",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "RELIANCE": [
+      {
+        "exDate": "2024-10-28",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "JASH": [
+      {
+        "exDate": "2024-10-30",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "PREMIERPOL": [
+      {
+        "exDate": "2024-11-05",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "ROTO": [
+      {
+        "exDate": "2023-07-07",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2024-11-08",
+        "factor": 2.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2025-07-11",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "MOTISONS": [
+      {
+        "exDate": "2024-11-08",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "WEL": [
+      {
+        "exDate": "2024-11-12",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "JTLIND": [
+      {
+        "exDate": "2023-09-07",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2024-11-14",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "SHAKTIPUMP": [
+      {
+        "exDate": "2024-11-25",
+        "factor": 6.0,
+        "kind": "bonus"
+      }
+    ],
+    "EASEMYTRIP": [
+      {
+        "exDate": "2022-02-28",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2022-11-21",
+        "factor": 2.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2022-11-21",
+        "factor": 4.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2024-11-29",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "RPEL": [
+      {
+        "exDate": "2024-11-29",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "WIPRO": [
+      {
+        "exDate": "2024-12-03",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "DIACABS": [
+      {
+        "exDate": "2024-12-03",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "TARACHAND": [
+      {
+        "exDate": "2024-12-05",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "SHRADHA": [
+      {
+        "exDate": "2023-01-20",
+        "factor": 2.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2024-12-10",
+        "factor": 2.5,
+        "kind": "split"
+      }
+    ],
+    "GLOBAL": [
+      {
+        "exDate": "2022-10-19",
+        "factor": 2.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2024-12-10",
+        "factor": 2.5,
+        "kind": "split"
+      }
+    ],
+    "EXXARO": [
+      {
+        "exDate": "2024-12-13",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "SKYGOLD": [
+      {
+        "exDate": "2024-12-16",
+        "factor": 10.0,
+        "kind": "bonus"
+      }
+    ],
+    "PCJEWELLER": [
+      {
+        "exDate": "2024-12-16",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "LINC": [
+      {
+        "exDate": "2024-12-20",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2024-12-20",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "NMDC": [
+      {
+        "exDate": "2024-12-27",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "MAZDOCK": [
+      {
+        "exDate": "2024-12-27",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "BANCOINDIA": [
+      {
+        "exDate": "2024-12-30",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "SURYAROSNI": [
+      {
+        "exDate": "2023-10-06",
+        "factor": 2.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2025-01-01",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "GARFIBRES": [
+      {
+        "exDate": "2025-01-03",
+        "factor": 5.0,
+        "kind": "bonus"
+      }
+    ],
+    "KPIGREEN": [
+      {
+        "exDate": "2023-01-18",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2024-02-15",
+        "factor": 1.5,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2024-07-18",
+        "factor": 2.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2025-01-03",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "JAGSNPHARM": [
+      {
+        "exDate": "2025-01-08",
+        "factor": 2.5,
+        "kind": "split"
+      }
+    ],
+    "KAMDHENU": [
+      {
+        "exDate": "2025-01-08",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "SHRIRAMFIN": [
+      {
+        "exDate": "2025-01-10",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "KITEX": [
+      {
+        "exDate": "2025-01-17",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "JAIBALAJI": [
+      {
+        "exDate": "2025-01-17",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "NAVA": [
+      {
+        "exDate": "2025-01-20",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "MAZDA": [
+      {
+        "exDate": "2025-01-28",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "IGL": [
+      {
+        "exDate": "2025-01-31",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "JBMA": [
+      {
+        "exDate": "2022-02-21",
+        "factor": 2.5,
+        "kind": "split"
+      },
+      {
+        "exDate": "2025-01-31",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "SENCO": [
+      {
+        "exDate": "2025-01-31",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "REDTAPE": [
+      {
+        "exDate": "2025-02-04",
+        "factor": 4.0,
+        "kind": "bonus"
+      }
+    ],
+    "KSOLVES": [
+      {
+        "exDate": "2025-02-06",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "RAMAPHO": [
+      {
+        "exDate": "2025-02-07",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "TTL": [
+      {
+        "exDate": "2025-02-12",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "TARIL": [
+      {
+        "exDate": "2025-02-14",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "KOTHARIPRO": [
+      {
+        "exDate": "2025-02-18",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "JINDWORLD": [
+      {
+        "exDate": "2025-02-28",
+        "factor": 5.0,
+        "kind": "bonus"
+      }
+    ],
+    "MGEL": [
+      {
+        "exDate": "2022-08-18",
+        "factor": 5.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2025-03-04",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "COASTCORP": [
+      {
+        "exDate": "2025-03-04",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "SBC": [
+      {
+        "exDate": "2022-02-22",
+        "factor": 10.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2022-02-22",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2024-01-19",
+        "factor": 1.5,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2025-03-10",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "IOLCP": [
+      {
+        "exDate": "2025-03-11",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "GREENLAM": [
+      {
+        "exDate": "2022-02-10",
+        "factor": 5.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2025-03-21",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "DHARAN": [
+      {
+        "exDate": "2021-08-12",
+        "factor": 2.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2021-08-12",
+        "factor": 5.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2025-04-04",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "AFIL": [
+      {
+        "exDate": "2025-04-17",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "NAVKARURB": [
+      {
+        "exDate": "2025-04-24",
+        "factor": 2.5,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2025-05-09",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "ACUTAAS": [
+      {
+        "exDate": "2025-04-25",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "UNITEDPOLY": [
+      {
+        "exDate": "2025-05-02",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "NAUKRI": [
+      {
+        "exDate": "2025-05-07",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "BSE": [
+      {
+        "exDate": "2022-03-21",
+        "factor": 3.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2025-05-23",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "COFORGE": [
+      {
+        "exDate": "2025-06-04",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "VESUVIUS": [
+      {
+        "exDate": "2025-06-10",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "VIMTALABS": [
+      {
+        "exDate": "2025-06-13",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "BAJFINANCE": [
+      {
+        "exDate": "2025-06-16",
+        "factor": 5.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2025-06-16",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "VMART": [
+      {
+        "exDate": "2025-06-23",
+        "factor": 4.0,
+        "kind": "bonus"
+      }
+    ],
+    "IRISDOREME": [
+      {
+        "exDate": "2023-08-11",
+        "factor": 5.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2025-07-04",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "PARAS": [
+      {
+        "exDate": "2025-07-04",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "CONCOR": [
+      {
+        "exDate": "2025-07-04",
+        "factor": 1.25,
+        "kind": "bonus"
+      }
+    ],
+    "SHARDAMOTR": [
+      {
+        "exDate": "2021-04-16",
+        "factor": 5.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2025-07-04",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "DYCL": [
+      {
+        "exDate": "2025-07-11",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "ANUHPHR": [
+      {
+        "exDate": "2025-07-15",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "ASHOKLEY": [
+      {
+        "exDate": "2025-07-16",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "MOTHERSON": [
+      {
+        "exDate": "2022-10-03",
+        "factor": 1.5,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2025-07-18",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "MSUMI": [
+      {
+        "exDate": "2022-11-16",
+        "factor": 1.4,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2025-07-18",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "INDOTHAI": [
+      {
+        "exDate": "2025-07-18",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "IFGLEXPOR": [
+      {
+        "exDate": "2025-07-18",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "KELLTONTEC": [
+      {
+        "exDate": "2025-07-25",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "NESTLEIND": [
+      {
+        "exDate": "2024-01-05",
+        "factor": 10.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2025-08-08",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "INDIAGLYCO": [
+      {
+        "exDate": "2025-08-12",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "VRLLOG": [
+      {
+        "exDate": "2025-08-14",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "GNA": [
+      {
+        "exDate": "2023-09-01",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "ADFFOODS": [
+      {
+        "exDate": "2023-09-11",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "POWERGRID": [
+      {
+        "exDate": "2021-07-29",
+        "factor": 1.333333,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2023-09-12",
+        "factor": 1.333333,
+        "kind": "bonus"
+      }
+    ],
+    "SARVESHWAR": [
+      {
+        "exDate": "2023-09-15",
+        "factor": 10.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2023-09-15",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "JBCHEPHARM": [
+      {
+        "exDate": "2023-09-18",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "PFC": [
+      {
+        "exDate": "2023-09-21",
+        "factor": 1.25,
+        "kind": "bonus"
+      }
+    ],
+    "BERGEPAINT": [
+      {
+        "exDate": "2023-09-22",
+        "factor": 1.2,
+        "kind": "bonus"
+      }
+    ],
+    "HAL": [
+      {
+        "exDate": "2023-09-28",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "FOCUS": [
+      {
+        "exDate": "2023-10-06",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "SIGACHI": [
+      {
+        "exDate": "2023-10-09",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "THEMISMED": [
+      {
+        "exDate": "2023-10-10",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "GENSOL": [
+      {
+        "exDate": "2023-10-17",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "JAYBARMARU": [
+      {
+        "exDate": "2021-06-07",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2023-10-26",
+        "factor": 2.5,
+        "kind": "split"
+      }
+    ],
+    "BCLIND": [
+      {
+        "exDate": "2023-10-27",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "TALBROAUTO": [
+      {
+        "exDate": "2023-10-27",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "MITTAL": [
+      {
+        "exDate": "2021-08-31",
+        "factor": 1.1,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2023-11-01",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "CANTABIL": [
+      {
+        "exDate": "2023-11-02",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "DPWIRES": [
+      {
+        "exDate": "2023-11-08",
+        "factor": 1.142857,
+        "kind": "bonus"
+      }
+    ],
+    "HPAL": [
+      {
+        "exDate": "2023-11-09",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "MKPL": [
+      {
+        "exDate": "2023-11-10",
+        "factor": 10.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2024-03-15",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "HINDCON": [
+      {
+        "exDate": "2023-11-10",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "ATALREAL": [
+      {
+        "exDate": "2023-11-16",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "SHAILY": [
+      {
+        "exDate": "2023-11-23",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "SONATSOFTW": [
+      {
+        "exDate": "2022-09-08",
+        "factor": 1.333333,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2023-12-12",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "SAFARI": [
+      {
+        "exDate": "2023-12-12",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "TPHQ": [
+      {
+        "exDate": "2023-12-14",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "KRITIKA": [
+      {
+        "exDate": "2022-08-30",
+        "factor": 5.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2023-12-19",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "HMAAGRO": [
+      {
+        "exDate": "2023-12-29",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "ALLCARGO": [
+      {
+        "exDate": "2024-01-02",
+        "factor": 4.0,
+        "kind": "bonus"
+      }
+    ],
+    "PGIL": [
+      {
+        "exDate": "2024-01-05",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "COCHINSHIP": [
+      {
+        "exDate": "2024-01-10",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "ESSENTIA": [
+      {
+        "exDate": "2022-02-03",
+        "factor": 3.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2024-01-11",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "NEWGEN": [
+      {
+        "exDate": "2024-01-12",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "DOLPHIN": [
+      {
+        "exDate": "2024-01-25",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "KANANIIND": [
+      {
+        "exDate": "2024-01-30",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "SALASAR": [
+      {
+        "exDate": "2021-07-13",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2022-06-27",
+        "factor": 10.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2024-02-01",
+        "factor": 5.0,
+        "kind": "bonus"
+      }
+    ],
+    "OSWALSEEDS": [
+      {
+        "exDate": "2023-08-18",
+        "factor": 5.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2024-02-02",
+        "factor": 1.2,
+        "kind": "bonus"
+      }
+    ],
+    "AKSHAR": [
+      {
+        "exDate": "2023-07-31",
+        "factor": 10.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2024-02-15",
+        "factor": 1.2,
+        "kind": "bonus"
+      }
+    ],
+    "CHOICEIN": [
+      {
+        "exDate": "2022-09-22",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2024-02-20",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "MASFIN": [
+      {
+        "exDate": "2024-02-22",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "DRCSYSTEMS": [
+      {
+        "exDate": "2022-03-16",
+        "factor": 10.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2024-02-27",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "FIEMIND": [
+      {
+        "exDate": "2024-02-28",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "CGCL": [
+      {
+        "exDate": "2024-03-05",
+        "factor": 2.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2024-03-05",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "MANORAMA": [
+      {
+        "exDate": "2024-03-07",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "GAEL": [
+      {
+        "exDate": "2020-10-01",
+        "factor": 2.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2024-03-15",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "RAMASTEEL": [
+      {
+        "exDate": "2022-08-25",
+        "factor": 5.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2023-01-06",
+        "factor": 5.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2024-03-19",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "ADVANIHOTR": [
+      {
+        "exDate": "2024-03-20",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "NRL": [
+      {
+        "exDate": "2024-03-20",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "PAISALO": [
+      {
+        "exDate": "2022-06-30",
+        "factor": 10.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2024-03-20",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "REFEX": [
+      {
+        "exDate": "2024-03-22",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "PERSISTENT": [
+      {
+        "exDate": "2024-03-28",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "LAL": [
+      {
+        "exDate": "2024-03-28",
+        "factor": 1.545455,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2024-03-28",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "BTML": [
+      {
+        "exDate": "2024-04-05",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "SBGLP": [
+      {
+        "exDate": "2024-04-18",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "ANUP": [
+      {
+        "exDate": "2024-04-23",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "BBL": [
+      {
+        "exDate": "2024-04-24",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "BHAGCHEM": [
+      {
+        "exDate": "2024-05-02",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "SONAMLTD": [
+      {
+        "exDate": "2022-07-14",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2024-05-10",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "CANBK": [
+      {
+        "exDate": "2024-05-15",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "VARDMNPOLY": [
+      {
+        "exDate": "2024-05-17",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "GMBREW": [
+      {
+        "exDate": "2024-05-24",
+        "factor": 1.25,
+        "kind": "bonus"
+      }
+    ],
+    "SDBL": [
+      {
+        "exDate": "2020-10-15",
+        "factor": 2.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2024-05-24",
+        "factor": 2.5,
+        "kind": "split"
+      }
+    ],
+    "BDL": [
+      {
+        "exDate": "2024-05-24",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "INOXWIND": [
+      {
+        "exDate": "2024-05-24",
+        "factor": 4.0,
+        "kind": "bonus"
+      }
+    ],
+    "BALAXI": [
+      {
+        "exDate": "2024-05-30",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "DAVANGERE": [
+      {
+        "exDate": "2024-05-31",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "MOTILALOFS": [
+      {
+        "exDate": "2024-06-10",
+        "factor": 4.0,
+        "kind": "bonus"
+      }
+    ],
+    "KAMOPAINTS": [
+      {
+        "exDate": "2023-08-01",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2024-06-14",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "HINDPETRO": [
+      {
+        "exDate": "2024-06-21",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "PREMEXPLN": [
+      {
+        "exDate": "2024-06-21",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "BPCL": [
+      {
+        "exDate": "2024-06-21",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "AURIONPRO": [
+      {
+        "exDate": "2024-06-27",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "SHAREINDIA": [
+      {
+        "exDate": "2024-06-27",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "AVONMORE": [
+      {
+        "exDate": "2024-06-28",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "OIL": [
+      {
+        "exDate": "2024-07-02",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "GPTINFRA": [
+      {
+        "exDate": "2022-11-11",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2024-07-03",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "VERTOZ": [
+      {
+        "exDate": "2024-07-05",
+        "factor": 10.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2024-07-05",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "REMSONSIND": [
+      {
+        "exDate": "2024-07-05",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "PGEL": [
+      {
+        "exDate": "2024-07-10",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "MMFL": [
+      {
+        "exDate": "2024-07-16",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "ELECON": [
+      {
+        "exDate": "2024-07-19",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "ALMONDZ": [
+      {
+        "exDate": "2024-07-23",
+        "factor": 6.0,
+        "kind": "split"
+      }
+    ],
+    "KSB": [
+      {
+        "exDate": "2024-07-25",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "AARTECH": [
+      {
+        "exDate": "2024-08-09",
+        "factor": 1.5,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2024-08-09",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "DJML": [
+      {
+        "exDate": "2024-08-09",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "SAKUMA": [
+      {
+        "exDate": "2024-08-09",
+        "factor": 5.0,
+        "kind": "bonus"
+      }
+    ],
+    "FILATFASH": [
+      {
+        "exDate": "2024-08-09",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "RUSHIL": [
+      {
+        "exDate": "2024-08-09",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "GRPLTD": [
+      {
+        "exDate": "2024-08-12",
+        "factor": 4.0,
+        "kind": "bonus"
+      }
+    ],
+    "EIHAHOTELS": [
+      {
+        "exDate": "2024-08-13",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "PDSL": [
+      {
+        "exDate": "2022-08-26",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "SOTL": [
+      {
+        "exDate": "2022-09-01",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "GAIL": [
+      {
+        "exDate": "2022-09-06",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "DANGEE": [
+      {
+        "exDate": "2022-09-06",
+        "factor": 1.5,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2022-09-06",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "BANSWRAS": [
+      {
+        "exDate": "2022-09-08",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "BAJAJFINSV": [
+      {
+        "exDate": "2022-09-13",
+        "factor": 5.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2022-09-13",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "RAJMET": [
+      {
+        "exDate": "2021-09-02",
+        "factor": 1.5,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2022-09-15",
+        "factor": 1.5,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2022-11-30",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "BEL": [
+      {
+        "exDate": "2022-09-15",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "RUBYMILLS": [
+      {
+        "exDate": "2022-09-23",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "BSHSL": [
+      {
+        "exDate": "2022-09-23",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "BHARATGEAR": [
+      {
+        "exDate": "2022-09-27",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "LANDSMILL": [
+      {
+        "exDate": "2022-09-28",
+        "factor": 1.5,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2022-09-28",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "INSECTICID": [
+      {
+        "exDate": "2022-09-30",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "AHLEAST": [
+      {
+        "exDate": "2022-10-06",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "AJOONI": [
+      {
+        "exDate": "2022-10-07",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "RUCHIRA": [
+      {
+        "exDate": "2022-10-10",
+        "factor": 1.1,
+        "kind": "bonus"
+      }
+    ],
+    "SBCL": [
+      {
+        "exDate": "2022-10-12",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "HLEGLAS": [
+      {
+        "exDate": "2022-10-18",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "TPLPLASTEH": [
+      {
+        "exDate": "2021-09-16",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2022-10-19",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "DIL": [
+      {
+        "exDate": "2022-10-27",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "KSHITIJPOL": [
+      {
+        "exDate": "2022-10-27",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "TDPOWERSYS": [
+      {
+        "exDate": "2022-10-31",
+        "factor": 5.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2026-08-24",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "NYKAA": [
+      {
+        "exDate": "2022-11-10",
+        "factor": 6.0,
+        "kind": "bonus"
+      }
+    ],
+    "SSWL": [
+      {
+        "exDate": "2021-11-18",
+        "factor": 2.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2022-11-10",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "MAHSEAMLES": [
+      {
+        "exDate": "2022-11-25",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "LIKHITHA": [
+      {
+        "exDate": "2022-12-02",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "BLS": [
+      {
+        "exDate": "2022-05-13",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2022-12-08",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "CLEDUCATE": [
+      {
+        "exDate": "2021-09-30",
+        "factor": 2.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2022-12-16",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "LANCER": [
+      {
+        "exDate": "2022-12-16",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "SFL": [
+      {
+        "exDate": "2022-12-21",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "PRECWIRE": [
+      {
+        "exDate": "2021-12-22",
+        "factor": 5.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2022-12-22",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "ZIMLAB": [
+      {
+        "exDate": "2022-12-22",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "FILATEX": [
+      {
+        "exDate": "2022-12-27",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "SECURCRED": [
+      {
+        "exDate": "2023-01-04",
+        "factor": 4.0,
+        "kind": "bonus"
+      }
+    ],
+    "SPLPETRO": [
+      {
+        "exDate": "2023-01-06",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "VISHNU": [
+      {
+        "exDate": "2023-01-13",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "GVPTECH": [
+      {
+        "exDate": "2023-01-23",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "SERVOTECH": [
+      {
+        "exDate": "2023-02-03",
+        "factor": 5.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2023-07-28",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "VCL": [
+      {
+        "exDate": "2023-02-15",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "ACCURACY": [
+      {
+        "exDate": "2023-02-15",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "VINNY": [
+      {
+        "exDate": "2023-02-24",
+        "factor": 2.3,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2023-02-24",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "360ONE": [
+      {
+        "exDate": "2023-03-02",
+        "factor": 2.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2023-03-02",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "OSIAHYPER": [
+      {
+        "exDate": "2023-03-13",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "ASTRAL": [
+      {
+        "exDate": "2021-03-18",
+        "factor": 1.333333,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2023-03-14",
+        "factor": 1.333333,
+        "kind": "bonus"
+      }
+    ],
+    "MEDICO": [
+      {
+        "exDate": "2023-03-16",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "HITECH": [
+      {
+        "exDate": "2023-03-17",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "DEEPINDS": [
+      {
+        "exDate": "2023-04-10",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "TIPSMUSIC": [
+      {
+        "exDate": "2023-04-21",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "GOYALALUM": [
+      {
+        "exDate": "2023-04-25",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "APOLLO": [
+      {
+        "exDate": "2023-05-04",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "SIRCA": [
+      {
+        "exDate": "2023-05-11",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "VISAKAIND": [
+      {
+        "exDate": "2023-05-15",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "SRPL": [
+      {
+        "exDate": "2023-05-19",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "RADHIKAJWE": [
+      {
+        "exDate": "2023-05-26",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "VSSL": [
+      {
+        "exDate": "2023-05-26",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "LODHA": [
+      {
+        "exDate": "2023-05-31",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "IONEXCHANG": [
+      {
+        "exDate": "2023-06-12",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "BLUESTARCO": [
+      {
+        "exDate": "2023-06-20",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "GULPOLY": [
+      {
+        "exDate": "2023-06-21",
+        "factor": 1.2,
+        "kind": "bonus"
+      }
+    ],
+    "INDIAMART": [
+      {
+        "exDate": "2023-06-21",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "AKI": [
+      {
+        "exDate": "2023-06-22",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "KANSAINER": [
+      {
+        "exDate": "2023-07-04",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "BEPL": [
+      {
+        "exDate": "2023-07-05",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "SADHNANIQ": [
+      {
+        "exDate": "2023-07-05",
+        "factor": 1.222222,
+        "kind": "bonus"
+      }
+    ],
+    "APTECHT": [
+      {
+        "exDate": "2023-07-14",
+        "factor": 1.4,
+        "kind": "bonus"
+      }
+    ],
+    "THANGAMAYL": [
+      {
+        "exDate": "2023-07-17",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "ANMOL": [
+      {
+        "exDate": "2023-07-18",
+        "factor": 5.0,
+        "kind": "bonus"
+      }
+    ],
+    "SHRIPISTON": [
+      {
+        "exDate": "2023-07-24",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "MAANALU": [
+      {
+        "exDate": "2021-08-02",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2023-07-27",
+        "factor": 2.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2023-07-27",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "NINSYS": [
+      {
+        "exDate": "2023-08-03",
+        "factor": 1.8,
+        "kind": "bonus"
+      }
+    ],
+    "SARDAEN": [
+      {
+        "exDate": "2023-08-04",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "MHRIL": [
+      {
+        "exDate": "2021-09-08",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "GANGAFORGE": [
+      {
+        "exDate": "2021-09-13",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "MAHLIFE": [
+      {
+        "exDate": "2021-09-14",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "KANPRPLA": [
+      {
+        "exDate": "2021-09-15",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "APLAPOLLO": [
+      {
+        "exDate": "2020-12-15",
+        "factor": 5.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2021-09-16",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "CESC": [
+      {
+        "exDate": "2021-09-17",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "LIBAS": [
+      {
+        "exDate": "2021-04-06",
+        "factor": 1.2,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2021-09-21",
+        "factor": 1.2,
+        "kind": "bonus"
+      }
+    ],
+    "ARTEMISMED": [
+      {
+        "exDate": "2021-09-23",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "KPRMILL": [
+      {
+        "exDate": "2021-09-24",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "TIRUPATIFL": [
+      {
+        "exDate": "2021-10-07",
+        "factor": 5.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2021-10-07",
+        "factor": 1.75,
+        "kind": "bonus"
+      }
+    ],
+    "AFFLE": [
+      {
+        "exDate": "2021-10-07",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "SRF": [
+      {
+        "exDate": "2021-10-13",
+        "factor": 5.0,
+        "kind": "bonus"
+      }
+    ],
+    "VISHWARAJ": [
+      {
+        "exDate": "2021-10-21",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "NIPPOBATRY": [
+      {
+        "exDate": "2021-10-28",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "IRCTC": [
+      {
+        "exDate": "2021-10-28",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "MANINFRA": [
+      {
+        "exDate": "2021-11-17",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "APOLLOPIPE": [
+      {
+        "exDate": "2021-12-02",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "IEX": [
+      {
+        "exDate": "2021-12-03",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "TTKPRESTIG": [
+      {
+        "exDate": "2021-12-14",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "KKCL": [
+      {
+        "exDate": "2021-12-16",
+        "factor": 5.0,
+        "kind": "bonus"
+      }
+    ],
+    "PTL": [
+      {
+        "exDate": "2021-12-23",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "ANDHRSUGAR": [
+      {
+        "exDate": "2021-12-30",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "IMFA": [
+      {
+        "exDate": "2022-01-07",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "IPCALAB": [
+      {
+        "exDate": "2022-01-10",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "ONEPOINT": [
+      {
+        "exDate": "2022-01-18",
+        "factor": 5.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2022-01-18",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "AURIGROW": [
+      {
+        "exDate": "2022-01-20",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2022-03-24",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "AAKASH": [
+      {
+        "exDate": "2022-02-03",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "SCHAEFFLER": [
+      {
+        "exDate": "2022-02-08",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "HGS": [
+      {
+        "exDate": "2022-02-22",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "SUPREMEENG": [
+      {
+        "exDate": "2022-03-03",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "VISHAL": [
+      {
+        "exDate": "2020-12-16",
+        "factor": 1.5,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2022-03-10",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "CCAVENUE": [
+      {
+        "exDate": "2021-03-18",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2022-03-14",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "RKFORGE": [
+      {
+        "exDate": "2022-03-14",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "BCG": [
+      {
+        "exDate": "2021-08-18",
+        "factor": 1.25,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2022-03-15",
+        "factor": 1.666667,
+        "kind": "bonus"
+      }
+    ],
+    "RAJRATAN": [
+      {
+        "exDate": "2022-03-15",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "VTL": [
+      {
+        "exDate": "2022-03-24",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "SUULD": [
+      {
+        "exDate": "2022-03-30",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "PCBL": [
+      {
+        "exDate": "2022-04-11",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "ARIHANTCAP": [
+      {
+        "exDate": "2022-04-12",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "DUCON": [
+      {
+        "exDate": "2022-04-18",
+        "factor": 1.1,
+        "kind": "bonus"
+      }
+    ],
+    "JUBLFOOD": [
+      {
+        "exDate": "2022-04-19",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "SAREGAMA": [
+      {
+        "exDate": "2022-04-26",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "BBOX": [
+      {
+        "exDate": "2022-05-13",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "JETFREIGHT": [
+      {
+        "exDate": "2022-05-19",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "AUBANK": [
+      {
+        "exDate": "2022-06-09",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "COSMOFIRST": [
+      {
+        "exDate": "2022-06-16",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "IOC": [
+      {
+        "exDate": "2022-06-30",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "RATNAMANI": [
+      {
+        "exDate": "2022-06-30",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "XPROINDIA": [
+      {
+        "exDate": "2022-07-01",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "UNOMINDA": [
+      {
+        "exDate": "2022-07-07",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "TORNTPHARM": [
+      {
+        "exDate": "2022-07-08",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "GMMPFAUDLR": [
+      {
+        "exDate": "2022-07-11",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "STEELXIND": [
+      {
+        "exDate": "2022-07-12",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "RGL": [
+      {
+        "exDate": "2022-07-19",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "HNDFDS": [
+      {
+        "exDate": "2022-07-21",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "TATASTEEL": [
+      {
+        "exDate": "2022-07-28",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "RECLTD": [
+      {
+        "exDate": "2022-08-17",
+        "factor": 1.333333,
+        "kind": "bonus"
+      }
+    ],
+    "EICHERMOT": [
+      {
+        "exDate": "2020-08-24",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "ELGIEQUIP": [
+      {
+        "exDate": "2020-09-24",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "COHANCE": [
+      {
+        "exDate": "2020-09-25",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "LAURUSLABS": [
+      {
+        "exDate": "2020-09-29",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "AARTIDRUGS": [
+      {
+        "exDate": "2020-09-30",
+        "factor": 4.0,
+        "kind": "bonus"
+      }
+    ],
+    "SAGARDEEP": [
+      {
+        "exDate": "2020-10-05",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "SHRENIK": [
+      {
+        "exDate": "2020-10-08",
+        "factor": 2.0,
+        "kind": "split"
+      },
+      {
+        "exDate": "2020-10-08",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ],
+    "MAHESHWARI": [
+      {
+        "exDate": "2020-10-13",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "HATSUN": [
+      {
+        "exDate": "2020-12-09",
+        "factor": 1.333333,
+        "kind": "bonus"
+      }
+    ],
+    "VALIANTORG": [
+      {
+        "exDate": "2020-12-24",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "PILANIINVS": [
+      {
+        "exDate": "2020-12-31",
+        "factor": 1.4,
+        "kind": "bonus"
+      }
+    ],
+    "KNRCON": [
+      {
+        "exDate": "2021-02-03",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "BASML": [
+      {
+        "exDate": "2021-02-12",
+        "factor": 2.0,
+        "kind": "split"
+      }
+    ],
+    "MARINE": [
+      {
+        "exDate": "2021-02-18",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "DIXON": [
+      {
+        "exDate": "2021-03-18",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "FINPIPE": [
+      {
+        "exDate": "2021-04-15",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "VAIBHAVGBL": [
+      {
+        "exDate": "2021-05-07",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "ALKYLAMINE": [
+      {
+        "exDate": "2021-05-11",
+        "factor": 2.5,
+        "kind": "split"
+      }
+    ],
+    "IRCON": [
+      {
+        "exDate": "2021-05-20",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "AARTIIND": [
+      {
+        "exDate": "2021-06-22",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "INVENTURE": [
+      {
+        "exDate": "2021-06-24",
+        "factor": 10.0,
+        "kind": "split"
+      }
+    ],
+    "MOKSH": [
+      {
+        "exDate": "2021-07-14",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "VEEDOL": [
+      {
+        "exDate": "2021-07-26",
+        "factor": 2.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2021-07-26",
+        "factor": 2.5,
+        "kind": "split"
+      }
+    ],
+    "GLOBE": [
+      {
+        "exDate": "2021-08-03",
+        "factor": 3.0,
+        "kind": "bonus"
+      },
+      {
+        "exDate": "2021-08-03",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "DVL": [
+      {
+        "exDate": "2021-08-05",
+        "factor": 1.5,
+        "kind": "bonus"
+      }
+    ],
+    "SAGCEM": [
+      {
+        "exDate": "2021-08-17",
+        "factor": 5.0,
+        "kind": "split"
+      }
+    ],
+    "REDINGTON": [
+      {
+        "exDate": "2021-08-18",
+        "factor": 2.0,
+        "kind": "bonus"
+      }
+    ],
+    "GOODLUCK": [
+      {
+        "exDate": "2026-08-21",
+        "factor": 3.0,
+        "kind": "bonus"
+      }
+    ]
+  },
+  "unreliable": {
+    "SARVESHWAR": [
+      {
+        "exDate": "2025-08-22",
+        "kind": "rights"
+      }
+    ],
+    "TVSMOTOR": [
+      {
+        "exDate": "2025-08-25",
+        "kind": "bonus"
+      }
+    ],
+    "NDTV": [
+      {
+        "exDate": "2025-09-12",
+        "kind": "rights"
+      }
+    ],
+    "SHRADHA": [
+      {
+        "exDate": "2025-09-16",
+        "kind": "rights"
+      }
+    ],
+    "3IINFOLTD": [
+      {
+        "exDate": "2025-09-26",
+        "kind": "rights"
+      }
+    ],
+    "CAPTRUST": [
+      {
+        "exDate": "2025-10-10",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2025-06-18",
+        "kind": "rights"
+      }
+    ],
+    "DELPHIFX": [
+      {
+        "exDate": "2025-10-14",
+        "kind": "rights"
+      }
+    ],
+    "UTKARSHBNK": [
+      {
+        "exDate": "2025-10-14",
+        "kind": "rights"
+      }
+    ],
+    "ATL": [
+      {
+        "exDate": "2025-11-14",
+        "kind": "rights"
+      }
+    ],
+    "ADANIENT": [
+      {
+        "exDate": "2025-11-17",
+        "kind": "rights"
+      }
+    ],
+    "BAIDFIN": [
+      {
+        "exDate": "2025-11-17",
+        "kind": "rights"
+      }
+    ],
+    "INDOWIND": [
+      {
+        "exDate": "2025-11-19",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2024-07-16",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2023-01-13",
+        "kind": "rights"
+      }
+    ],
+    "PATELENG": [
+      {
+        "exDate": "2025-12-04",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2023-02-06",
+        "kind": "rights"
+      }
+    ],
+    "HCC": [
+      {
+        "exDate": "2025-12-05",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2024-03-15",
+        "kind": "rights"
+      }
+    ],
+    "NACLIND": [
+      {
+        "exDate": "2025-12-12",
+        "kind": "rights"
+      }
+    ],
+    "KRISHIVAL": [
+      {
+        "exDate": "2025-12-17",
+        "kind": "rights"
+      }
+    ],
+    "VINEETLAB": [
+      {
+        "exDate": "2025-12-23",
+        "kind": "rights"
+      }
+    ],
+    "HILTON": [
+      {
+        "exDate": "2025-12-26",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2026-02-24",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2022-10-20",
+        "kind": "rights"
+      }
+    ],
+    "SILGO": [
+      {
+        "exDate": "2026-01-05",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2024-02-22",
+        "kind": "rights"
+      }
+    ],
+    "STALLION": [
+      {
+        "exDate": "2026-02-11",
+        "kind": "rights"
+      }
+    ],
+    "ONELIFECAP": [
+      {
+        "exDate": "2026-02-16",
+        "kind": "rights"
+      }
+    ],
+    "SICALLOG": [
+      {
+        "exDate": "2026-02-18",
+        "kind": "rights"
+      }
+    ],
+    "SADHNANIQ": [
+      {
+        "exDate": "2026-02-18",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2024-09-13",
+        "kind": "rights"
+      }
+    ],
+    "BHANDARI": [
+      {
+        "exDate": "2026-02-25",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2023-09-22",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2024-06-19",
+        "kind": "rights"
+      }
+    ],
+    "HCG": [
+      {
+        "exDate": "2026-03-02",
+        "kind": "rights"
+      }
+    ],
+    "PRABHA": [
+      {
+        "exDate": "2026-03-11",
+        "kind": "rights"
+      }
+    ],
+    "5PAISA": [
+      {
+        "exDate": "2026-03-17",
+        "kind": "rights"
+      }
+    ],
+    "MAHAPEXLTD": [
+      {
+        "exDate": "2026-03-20",
+        "kind": "rights"
+      }
+    ],
+    "TIL": [
+      {
+        "exDate": "2024-03-22",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2026-03-23",
+        "kind": "rights"
+      }
+    ],
+    "EFCIL": [
+      {
+        "exDate": "2026-05-07",
+        "kind": "rights"
+      }
+    ],
+    "ESSENTIA": [
+      {
+        "exDate": "2022-05-04",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2022-11-17",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2024-05-31",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2026-05-20",
+        "kind": "rights"
+      }
+    ],
+    "AVG": [
+      {
+        "exDate": "2026-05-21",
+        "kind": "rights"
+      }
+    ],
+    "SHAH": [
+      {
+        "exDate": "2022-12-23",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2026-05-27",
+        "kind": "rights"
+      }
+    ],
+    "RELTD": [
+      {
+        "exDate": "2026-06-08",
+        "kind": "rights"
+      }
+    ],
+    "SUMEETINDS": [
+      {
+        "exDate": "2026-06-12",
+        "kind": "rights"
+      }
+    ],
+    "GANGAFORGE": [
+      {
+        "exDate": "2026-07-02",
+        "kind": "rights"
+      }
+    ],
+    "SHANTIGOLD": [
+      {
+        "exDate": "2026-08-06",
+        "kind": "rights"
+      }
+    ],
+    "GENESYS": [
+      {
+        "exDate": "2026-08-06",
+        "kind": "rights"
+      }
+    ],
+    "KSHITIJPOL": [
+      {
+        "exDate": "2024-06-18",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2026-08-19",
+        "kind": "rights"
+      }
+    ],
+    "ATALREAL": [
+      {
+        "exDate": "2024-08-22",
+        "kind": "rights"
+      }
+    ],
+    "AKSHAR": [
+      {
+        "exDate": "2024-08-23",
+        "kind": "rights"
+      }
+    ],
+    "VARDMNPOLY": [
+      {
+        "exDate": "2024-08-28",
+        "kind": "rights"
+      }
+    ],
+    "DUCON": [
+      {
+        "exDate": "2024-08-30",
+        "kind": "rights"
+      }
+    ],
+    "ORIENTALTL": [
+      {
+        "exDate": "2024-09-05",
+        "kind": "rights"
+      }
+    ],
+    "PATINTLOG": [
+      {
+        "exDate": "2024-09-06",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2021-10-28",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2021-02-17",
+        "kind": "rights"
+      }
+    ],
+    "SGIL": [
+      {
+        "exDate": "2024-09-11",
+        "kind": "rights"
+      }
+    ],
+    "NARMADA": [
+      {
+        "exDate": "2024-09-13",
+        "kind": "rights"
+      }
+    ],
+    "MITTAL": [
+      {
+        "exDate": "2024-10-03",
+        "kind": "rights"
+      }
+    ],
+    "GEOJITFSL": [
+      {
+        "exDate": "2024-10-07",
+        "kind": "rights"
+      }
+    ],
+    "HINDWAREAP": [
+      {
+        "exDate": "2024-10-25",
+        "kind": "rights"
+      }
+    ],
+    "UPL": [
+      {
+        "exDate": "2024-11-26",
+        "kind": "rights"
+      }
+    ],
+    "VHLTD": [
+      {
+        "exDate": "2024-11-29",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2026-08-20",
+        "kind": "rights"
+      }
+    ],
+    "SIKKO": [
+      {
+        "exDate": "2024-12-06",
+        "kind": "rights"
+      }
+    ],
+    "AVONMORE": [
+      {
+        "exDate": "2024-12-12",
+        "kind": "rights"
+      }
+    ],
+    "IRBIT": [
+      {
+        "exDate": "2024-12-13",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2024-03-12",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2023-07-28",
+        "kind": "rights"
+      }
+    ],
+    "MOKSH": [
+      {
+        "exDate": "2024-12-20",
+        "kind": "rights"
+      }
+    ],
+    "DHANBANK": [
+      {
+        "exDate": "2024-12-27",
+        "kind": "rights"
+      }
+    ],
+    "CAMLINFINE": [
+      {
+        "exDate": "2025-01-08",
+        "kind": "rights"
+      }
+    ],
+    "CALSOFT": [
+      {
+        "exDate": "2025-01-15",
+        "kind": "rights"
+      }
+    ],
+    "GLOBE": [
+      {
+        "exDate": "2025-01-17",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2024-02-23",
+        "kind": "rights"
+      }
+    ],
+    "JYOTISTRUC": [
+      {
+        "exDate": "2025-02-10",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2024-03-21",
+        "kind": "rights"
+      }
+    ],
+    "THANGAMAYL": [
+      {
+        "exDate": "2025-02-11",
+        "kind": "rights"
+      }
+    ],
+    "ABINFRA": [
+      {
+        "exDate": "2025-03-10",
+        "kind": "rights"
+      }
+    ],
+    "IRISDOREME": [
+      {
+        "exDate": "2025-03-13",
+        "kind": "rights"
+      }
+    ],
+    "PRAXIS": [
+      {
+        "exDate": "2025-03-20",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2023-05-30",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2021-09-07",
+        "kind": "rights"
+      }
+    ],
+    "BTML": [
+      {
+        "exDate": "2025-03-24",
+        "kind": "rights"
+      }
+    ],
+    "FUSION": [
+      {
+        "exDate": "2025-04-04",
+        "kind": "rights"
+      }
+    ],
+    "LLOYDSENGG": [
+      {
+        "exDate": "2025-04-28",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2023-12-14",
+        "kind": "rights"
+      }
+    ],
+    "GATECHDVR": [
+      {
+        "exDate": "2025-04-28",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2024-07-16",
+        "kind": "rights"
+      }
+    ],
+    "GATECH": [
+      {
+        "exDate": "2025-04-28",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2024-07-16",
+        "kind": "rights"
+      }
+    ],
+    "MAXIND": [
+      {
+        "exDate": "2025-04-29",
+        "kind": "rights"
+      }
+    ],
+    "BASML": [
+      {
+        "exDate": "2025-04-30",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2021-09-08",
+        "kind": "rights"
+      }
+    ],
+    "AVANTEL": [
+      {
+        "exDate": "2025-05-07",
+        "kind": "rights"
+      }
+    ],
+    "M&MFIN": [
+      {
+        "exDate": "2025-05-14",
+        "kind": "rights"
+      }
+    ],
+    "SEPC": [
+      {
+        "exDate": "2025-05-23",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2023-11-28",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2024-06-25",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2023-03-29",
+        "kind": "rights"
+      }
+    ],
+    "MAHLIFE": [
+      {
+        "exDate": "2025-05-23",
+        "kind": "rights"
+      }
+    ],
+    "UGROCAP": [
+      {
+        "exDate": "2025-06-05",
+        "kind": "rights"
+      }
+    ],
+    "ETHOSLTD": [
+      {
+        "exDate": "2025-06-12",
+        "kind": "rights"
+      }
+    ],
+    "CCAVENUE": [
+      {
+        "exDate": "2025-06-26",
+        "kind": "rights"
+      }
+    ],
+    "GVPTECH": [
+      {
+        "exDate": "2025-06-30",
+        "kind": "rights"
+      }
+    ],
+    "ONIDA": [
+      {
+        "exDate": "2025-06-30",
+        "kind": "rights"
+      }
+    ],
+    "TTL": [
+      {
+        "exDate": "2025-07-04",
+        "kind": "rights"
+      }
+    ],
+    "ASTEC": [
+      {
+        "exDate": "2025-07-04",
+        "kind": "rights"
+      }
+    ],
+    "EXICOM": [
+      {
+        "exDate": "2025-07-07",
+        "kind": "rights"
+      }
+    ],
+    "KILITCH": [
+      {
+        "exDate": "2025-07-15",
+        "kind": "rights"
+      }
+    ],
+    "VALIANTLAB": [
+      {
+        "exDate": "2025-07-18",
+        "kind": "rights"
+      }
+    ],
+    "MAHLOG": [
+      {
+        "exDate": "2025-07-23",
+        "kind": "rights"
+      }
+    ],
+    "SPANDANA": [
+      {
+        "exDate": "2025-07-24",
+        "kind": "rights"
+      }
+    ],
+    "JTEKTINDIA": [
+      {
+        "exDate": "2025-07-25",
+        "kind": "rights"
+      }
+    ],
+    "INOXWIND": [
+      {
+        "exDate": "2025-07-29",
+        "kind": "rights"
+      }
+    ],
+    "CYBERMEDIA": [
+      {
+        "exDate": "2025-08-01",
+        "kind": "rights"
+      }
+    ],
+    "DAVANGERE": [
+      {
+        "exDate": "2025-08-06",
+        "kind": "rights"
+      }
+    ],
+    "LLOYDSENT": [
+      {
+        "exDate": "2025-08-14",
+        "kind": "rights"
+      }
+    ],
+    "NGIL": [
+      {
+        "exDate": "2023-09-05",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2024-05-30",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2022-03-30",
+        "kind": "rights"
+      }
+    ],
+    "MARSHALL": [
+      {
+        "exDate": "2023-09-28",
+        "kind": "rights"
+      }
+    ],
+    "VERTIS": [
+      {
+        "exDate": "2023-09-28",
+        "kind": "rights"
+      }
+    ],
+    "GRASIM": [
+      {
+        "exDate": "2024-01-10",
+        "kind": "rights"
+      }
+    ],
+    "SKIPPER": [
+      {
+        "exDate": "2024-01-12",
+        "kind": "rights"
+      }
+    ],
+    "ADROITINFO": [
+      {
+        "exDate": "2024-01-19",
+        "kind": "rights"
+      }
+    ],
+    "MAGNUM": [
+      {
+        "exDate": "2024-01-25",
+        "kind": "rights"
+      }
+    ],
+    "NAGREEKEXP": [
+      {
+        "exDate": "2024-01-30",
+        "kind": "rights"
+      }
+    ],
+    "SAMMAANCAP": [
+      {
+        "exDate": "2024-02-01",
+        "kind": "rights"
+      }
+    ],
+    "SOUTHBANK": [
+      {
+        "exDate": "2024-02-27",
+        "kind": "rights"
+      }
+    ],
+    "BALKRISHNA": [
+      {
+        "exDate": "2024-03-15",
+        "kind": "rights"
+      }
+    ],
+    "SAKUMA": [
+      {
+        "exDate": "2024-04-15",
+        "kind": "rights"
+      }
+    ],
+    "IIFL": [
+      {
+        "exDate": "2024-04-23",
+        "kind": "rights"
+      }
+    ],
+    "SANGINITA": [
+      {
+        "exDate": "2024-05-07",
+        "kind": "rights"
+      }
+    ],
+    "AJOONI": [
+      {
+        "exDate": "2024-05-07",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2022-11-25",
+        "kind": "rights"
+      }
+    ],
+    "KEEPLEARN": [
+      {
+        "exDate": "2024-05-14",
+        "kind": "rights"
+      }
+    ],
+    "VIJIFIN": [
+      {
+        "exDate": "2024-05-15",
+        "kind": "rights"
+      }
+    ],
+    "SOLARA": [
+      {
+        "exDate": "2024-05-15",
+        "kind": "rights"
+      }
+    ],
+    "MGEL": [
+      {
+        "exDate": "2024-05-24",
+        "kind": "rights"
+      }
+    ],
+    "SOBHA": [
+      {
+        "exDate": "2024-06-19",
+        "kind": "rights"
+      }
+    ],
+    "MITCON": [
+      {
+        "exDate": "2024-06-20",
+        "kind": "rights"
+      }
+    ],
+    "JAIPURKURT": [
+      {
+        "exDate": "2024-07-04",
+        "kind": "rights"
+      }
+    ],
+    "INVENTURE": [
+      {
+        "exDate": "2024-07-05",
+        "kind": "rights"
+      }
+    ],
+    "TATACONSUM": [
+      {
+        "exDate": "2024-07-26",
+        "kind": "rights"
+      }
+    ],
+    "GREENPOWER": [
+      {
+        "exDate": "2024-08-13",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2023-08-18",
+        "kind": "rights"
+      }
+    ],
+    "VINNY": [
+      {
+        "exDate": "2024-08-14",
+        "kind": "rights"
+      }
+    ],
+    "COASTCORP": [
+      {
+        "exDate": "2022-08-25",
+        "kind": "rights"
+      }
+    ],
+    "LIBAS": [
+      {
+        "exDate": "2022-09-15",
+        "kind": "rights"
+      }
+    ],
+    "SUZLON": [
+      {
+        "exDate": "2022-10-03",
+        "kind": "rights"
+      }
+    ],
+    "SUVEN": [
+      {
+        "exDate": "2022-10-17",
+        "kind": "rights"
+      }
+    ],
+    "TFL": [
+      {
+        "exDate": "2022-11-04",
+        "kind": "rights"
+      }
+    ],
+    "COMPINFO": [
+      {
+        "exDate": "2022-11-14",
+        "kind": "rights"
+      }
+    ],
+    "HATSUN": [
+      {
+        "exDate": "2022-12-07",
+        "kind": "rights"
+      }
+    ],
+    "APCL": [
+      {
+        "exDate": "2022-12-16",
+        "kind": "rights"
+      }
+    ],
+    "AKG": [
+      {
+        "exDate": "2022-12-16",
+        "kind": "rights"
+      }
+    ],
+    "RSWM": [
+      {
+        "exDate": "2022-12-16",
+        "kind": "rights"
+      }
+    ],
+    "JETFREIGHT": [
+      {
+        "exDate": "2023-01-11",
+        "kind": "rights"
+      }
+    ],
+    "RADIOCITY": [
+      {
+        "exDate": "2023-01-13",
+        "kind": "bonus"
+      }
+    ],
+    "AARTISURF": [
+      {
+        "exDate": "2023-01-17",
+        "kind": "rights"
+      }
+    ],
+    "HERITGFOOD": [
+      {
+        "exDate": "2023-01-20",
+        "kind": "rights"
+      }
+    ],
+    "ROML": [
+      {
+        "exDate": "2023-02-09",
+        "kind": "rights"
+      }
+    ],
+    "CGCL": [
+      {
+        "exDate": "2023-02-17",
+        "kind": "rights"
+      }
+    ],
+    "SHAREINDIA": [
+      {
+        "exDate": "2023-02-28",
+        "kind": "rights"
+      }
+    ],
+    "GOKULAGRO": [
+      {
+        "exDate": "2023-03-08",
+        "kind": "rights"
+      }
+    ],
+    "TVSHLTD": [
+      {
+        "exDate": "2023-03-24",
+        "kind": "bonus"
+      }
+    ],
+    "PNBHOUSING": [
+      {
+        "exDate": "2023-04-05",
+        "kind": "rights"
+      }
+    ],
+    "SDBL": [
+      {
+        "exDate": "2023-04-13",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2021-12-31",
+        "kind": "rights"
+      }
+    ],
+    "RUSHIL": [
+      {
+        "exDate": "2023-04-13",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2020-09-10",
+        "kind": "rights"
+      }
+    ],
+    "TPHQ": [
+      {
+        "exDate": "2023-04-18",
+        "kind": "rights"
+      }
+    ],
+    "AURIGROW": [
+      {
+        "exDate": "2023-05-12",
+        "kind": "rights"
+      }
+    ],
+    "SHREERAMA": [
+      {
+        "exDate": "2023-05-30",
+        "kind": "rights"
+      }
+    ],
+    "DIL": [
+      {
+        "exDate": "2023-06-01",
+        "kind": "rights"
+      }
+    ],
+    "NECCLTD": [
+      {
+        "exDate": "2023-06-02",
+        "kind": "rights"
+      }
+    ],
+    "UDAICEMENT": [
+      {
+        "exDate": "2023-06-14",
+        "kind": "rights"
+      }
+    ],
+    "SRPL": [
+      {
+        "exDate": "2023-07-06",
+        "kind": "rights"
+      }
+    ],
+    "VCL": [
+      {
+        "exDate": "2023-07-24",
+        "kind": "rights"
+      }
+    ],
+    "BROOKS": [
+      {
+        "exDate": "2023-07-28",
+        "kind": "rights"
+      }
+    ],
+    "PPLPHARMA": [
+      {
+        "exDate": "2023-08-02",
+        "kind": "rights"
+      }
+    ],
+    "ASIANTILES": [
+      {
+        "exDate": "2021-09-08",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2022-04-11",
+        "kind": "rights"
+      }
+    ],
+    "KESORAMIND": [
+      {
+        "exDate": "2021-09-16",
+        "kind": "rights"
+      }
+    ],
+    "RPPINFRA": [
+      {
+        "exDate": "2021-09-17",
+        "kind": "rights"
+      }
+    ],
+    "BHARTIARTL": [
+      {
+        "exDate": "2021-09-27",
+        "kind": "rights"
+      }
+    ],
+    "TEXRAIL": [
+      {
+        "exDate": "2021-10-21",
+        "kind": "rights"
+      }
+    ],
+    "NDLVENTURE": [
+      {
+        "exDate": "2021-10-22",
+        "kind": "rights"
+      }
+    ],
+    "BHARATGEAR": [
+      {
+        "exDate": "2021-10-28",
+        "kind": "rights"
+      }
+    ],
+    "VIKASLIFE": [
+      {
+        "exDate": "2021-10-29",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2021-05-20",
+        "kind": "rights"
+      }
+    ],
+    "INDHOTEL": [
+      {
+        "exDate": "2021-11-11",
+        "kind": "rights"
+      }
+    ],
+    "VIKASECO": [
+      {
+        "exDate": "2021-11-24",
+        "kind": "rights"
+      },
+      {
+        "exDate": "2021-06-09",
+        "kind": "rights"
+      }
+    ],
+    "SHIVAMAUTO": [
+      {
+        "exDate": "2021-12-09",
+        "kind": "rights"
+      }
+    ],
+    "BEARDSELL": [
+      {
+        "exDate": "2021-12-16",
+        "kind": "rights"
+      }
+    ],
+    "WOCKPHARMA": [
+      {
+        "exDate": "2022-03-08",
+        "kind": "rights"
+      }
+    ],
+    "BHAGCHEM": [
+      {
+        "exDate": "2022-04-07",
+        "kind": "rights"
+      }
+    ],
+    "AURUM": [
+      {
+        "exDate": "2022-04-12",
+        "kind": "rights"
+      }
+    ],
+    "DYNPRO": [
+      {
+        "exDate": "2022-05-12",
+        "kind": "rights"
+      }
+    ],
+    "AJANTPHARM": [
+      {
+        "exDate": "2022-06-22",
+        "kind": "bonus"
+      }
+    ],
+    "TEMBO": [
+      {
+        "exDate": "2022-08-08",
+        "kind": "rights"
+      }
+    ],
+    "DEEPAKFERT": [
+      {
+        "exDate": "2020-09-16",
+        "kind": "rights"
+      }
+    ],
+    "EIHOTEL": [
+      {
+        "exDate": "2020-09-22",
+        "kind": "rights"
+      }
+    ],
+    "MOLDTKPAC": [
+      {
+        "exDate": "2020-10-21",
+        "kind": "rights"
+      }
+    ],
+    "SHOPERSTOP": [
+      {
+        "exDate": "2020-11-19",
+        "kind": "rights"
+      }
+    ],
+    "PRICOLLTD": [
+      {
+        "exDate": "2020-11-24",
+        "kind": "rights"
+      }
+    ],
+    "URJA": [
+      {
+        "exDate": "2021-01-14",
+        "kind": "rights"
+      }
+    ],
+    "LTF": [
+      {
+        "exDate": "2021-01-21",
+        "kind": "rights"
+      }
+    ],
+    "ARVINDFASN": [
+      {
+        "exDate": "2021-02-23",
+        "kind": "rights"
+      }
+    ],
+    "INDIGRID": [
+      {
+        "exDate": "2021-03-26",
+        "kind": "rights"
+      }
+    ],
+    "KDDL": [
+      {
+        "exDate": "2021-03-30",
+        "kind": "rights"
+      }
+    ],
+    "TSFINV": [
+      {
+        "exDate": "2021-04-26",
+        "kind": "rights"
+      }
+    ],
+    "BRITANNIA": [
+      {
+        "exDate": "2021-05-25",
+        "kind": "bonus"
+      }
+    ],
+    "SIGMAADV": [
+      {
+        "exDate": "2021-07-12",
+        "kind": "rights"
+      }
+    ]
+  },
+  "refreshedAt": "2026-08-19T01:54:25"
+}
