@@ -12,14 +12,22 @@ const GROUP_BLURB = {
 let state = {
   data: null,
   filter: 'all',
-  sortBy: 'pChange',
+  sortBy: 'rs',
   search: '',
   colourStep: 5,
+  period: '1M',
   activeSector: null,
   stockSearch: '',
   selected: [],      // indexNames chosen for comparison
   lastView: 'overview',
 };
+
+// The signal: how far a sector's return sits above or below the benchmark's over
+// the selected window. Same reading as two lines on one same-% chart.
+const rsOf = (s) => (s.rs || {})[state.period] ?? null;
+const retOf = (s) => (s.returns || {})[state.period] ?? null;
+const benchmarkReturn = () =>
+  state.data && state.data.benchmark ? state.data.benchmark.returns[state.period] ?? null : null;
 
 /* ---------------------------------------------------------------- theming */
 
@@ -180,6 +188,13 @@ function applyData(data) {
   el('marketDate').textContent = 'Market date: ' + (data.bhavDate || '—');
   el('updatedAt').textContent = 'Updated ' + new Date(data.updatedAt).toLocaleString('en-IN');
 
+  const periods = data.periods || ['1M'];
+  if (!periods.includes(state.period)) state.period = data.defaultPeriod || periods[0];
+  el('periodSelect').innerHTML = periods
+    .map(p => `<option value="${p}" ${p === state.period ? 'selected' : ''}>${p}</option>`)
+    .join('');
+  if (data.benchmark) el('bmName').textContent = data.benchmark.name;
+
   // Drop selections that no longer exist.
   state.selected = state.selected.filter(sectorBy);
 
@@ -193,16 +208,26 @@ function applyData(data) {
 /* -------------------------------------------------------------- rendering */
 
 function render() {
+  renderBenchmarkStrip();
   renderScaleLegend();
   renderSections();
   renderTray();
 }
 
+function renderBenchmarkStrip() {
+  const r = benchmarkReturn();
+  const node = el('bmReturn');
+  if (r === null) { node.textContent = 'no data for this window'; node.style.color = ''; return; }
+  node.textContent = `${state.data.benchmark.name} ${signedPct(r)} over ${state.period}`;
+  node.style.color = colourFor(r).fg;
+}
+
 function visibleSectors() {
   if (!state.data) return [];
   return state.data.sectors.filter(s => {
-    if (state.filter === 'bull' && !(s.pChange > 0)) return false;
-    if (state.filter === 'bear' && !(s.pChange < 0)) return false;
+    const rs = rsOf(s);
+    if (state.filter === 'bull' && !(rs > 0)) return false;
+    if (state.filter === 'bear' && !(rs < 0)) return false;
     if (state.search) {
       const q = state.search;
       if (!s.name.toLowerCase().includes(q) && !s.indexName.toLowerCase().includes(q)) return false;
@@ -212,10 +237,10 @@ function visibleSectors() {
 }
 
 function sortSectors(list) {
-  const key = state.sortBy;
-  if (key === 'name') return [...list].sort((a, b) => a.name.localeCompare(b.name));
+  if (state.sortBy === 'name') return [...list].sort((a, b) => a.name.localeCompare(b.name));
+  const get = state.sortBy === 'ret' ? retOf : rsOf;
   return [...list].sort((a, b) => {
-    const av = a[key], bv = b[key];
+    const av = get(a), bv = get(b);
     if (av === null || av === undefined) return 1;
     if (bv === null || bv === undefined) return -1;
     return bv - av;
@@ -260,17 +285,18 @@ function renderSections() {
 }
 
 function sectorCard(s) {
-  const c = colourFor(s.pChange);
-  const c30 = colourFor(s.pChange30d);
-  const c365 = colourFor(s.pChange365d);
+  const rs = rsOf(s);
+  const ret = retOf(s);
+  const c = colourFor(rs);
   const adv = s.advances || 0;
   const dec = s.declines || 0;
   const total = adv + dec || 1;
-  const hasLevel = s.last !== null && s.last !== undefined;
   const picked = state.selected.includes(s.indexName);
+  const verdict = rs === null ? 'no data' : rs > 0 ? 'above' : rs < 0 ? 'below' : 'level';
 
   return `
-    <div class="sector-card" data-sector="${s.indexName}" style="border-left-color:${c.border}">
+    <div class="sector-card ${s.isBenchmark ? 'is-benchmark' : ''}" data-sector="${s.indexName}"
+         style="border-left-color:${c.border}">
       <div class="sector-card-top">
         <div>
           <div class="sector-name">${s.name}</div>
@@ -280,12 +306,12 @@ function sectorCard(s) {
                 title="Add to comparison">${picked ? '✓' : '+'}</button>
       </div>
       <div class="sector-figures">
-        <span class="sector-value">${hasLevel ? fmt(s.last) : signedPct(s.pChange)}</span>
-        ${hasLevel ? `<span class="sector-change" style="color:${c.fg}">${signedPct(s.pChange)}</span>` : ''}
+        <span class="sector-value" style="color:${c.fg}">${signedPct(rs)}</span>
+        <span class="rs-tag" style="color:${c.fg}">${verdict} benchmark</span>
       </div>
       <div class="trend-row">
-        <span>30d <b style="color:${c30.fg}">${signedPct(s.pChange30d)}</b></span>
-        <span>1y <b style="color:${c365.fg}">${signedPct(s.pChange365d)}</b></span>
+        <span>${state.period} return <b>${signedPct(ret)}</b></span>
+        <span>today <b>${signedPct(s.pChange)}</b></span>
       </div>
       <div class="breadth">
         <div class="breadth-adv" style="width:${(adv / total) * 100}%"></div>
@@ -321,15 +347,20 @@ function renderDetail() {
   if (s.note) { note.textContent = s.note; note.classList.remove('hidden'); }
   else note.classList.add('hidden');
 
-  [['detailChange', s.pChange], ['detail30d', s.pChange30d], ['detail365d', s.pChange365d]]
-    .forEach(([id, v]) => {
-      const node = el(id);
-      node.textContent = signedPct(v);
-      node.style.color = colourFor(v).fg;
-    });
+  const bm = state.data.benchmark;
+  el('detailRetLabel').textContent = `${state.period} return`;
+  el('detailBmLabel').textContent = `${bm.name} ${state.period}`;
+
+  const ret = retOf(s), bmRet = benchmarkReturn(), rs = rsOf(s);
+  el('detailReturn').textContent = signedPct(ret);
+  el('detailBm').textContent = signedPct(bmRet);
+  const rsNode = el('detailRs');
+  rsNode.textContent = signedPct(rs);
+  rsNode.style.color = colourFor(rs).fg;
 
   el('detailAdvDec').textContent = `${s.advances || 0} / ${s.declines || 0}`;
 
+  renderPeriodTable(s);
   renderOverlaps(s);
 
   const stocks = s.stocks.filter(st => {
@@ -350,6 +381,31 @@ function renderDetail() {
         <td class="pchange" style="color:${c.fg}">${signedPct(st.pChange)}</td>
       </tr>`;
   }).join('');
+}
+
+// Every window at once: the row that matters is the last one, which is the gap
+// you would read off a same-% chart.
+function renderPeriodTable(s) {
+  const periods = state.data.periods || [];
+  const bm = state.data.benchmark;
+
+  el('periodHead').innerHTML = '<th>Window</th>' +
+    periods.map(p => `<th class="${p === state.period ? 'active-period' : ''}">${p}</th>`).join('');
+
+  const row = (label, get, colour) => `
+    <tr>
+      <th class="row-label">${label}</th>
+      ${periods.map(p => {
+        const v = get(p);
+        const style = colour ? `color:${colourFor(v).fg};font-weight:700` : '';
+        return `<td class="${p === state.period ? 'active-period' : ''}" style="${style}">${signedPct(v)}</td>`;
+      }).join('')}
+    </tr>`;
+
+  el('periodBody').innerHTML =
+    row(s.name, p => (s.returns || {})[p], false) +
+    row(bm.name, p => bm.returns[p], false) +
+    row('Gap vs benchmark', p => (s.rs || {})[p], true);
 }
 
 // NSE indices overlap by design (Bank / Private Bank / PSU Bank, and every index
@@ -406,18 +462,20 @@ function renderTray() {
   el('openCompare').disabled = state.selected.length < 2;
 }
 
-const COMPARE_ROWS = [
-  ['Group', s => s.group],
-  ['Index level', s => s.last === null || s.last === undefined ? '—' : fmt(s.last)],
-  ['Today', s => s.pChange, true],
-  ['30 days', s => s.pChange30d, true],
-  ['1 year', s => s.pChange365d, true],
-  ['Advances', s => s.advances || 0],
-  ['Declines', s => s.declines || 0],
-  ['Constituents', s => s.stocks.length],
-  ['Best stock', s => topStock(s, 'best')],
-  ['Worst stock', s => topStock(s, 'worst')],
-];
+function compareRows() {
+  const periods = (state.data && state.data.periods) || [];
+  return [
+    ['Group', s => s.group],
+    ['Index level', s => s.last === null || s.last === undefined ? '—' : fmt(s.last)],
+    ...periods.map(p => [`${p} return`, s => (s.returns || {})[p], true]),
+    ...periods.map(p => [`${p} vs benchmark`, s => (s.rs || {})[p], true]),
+    ['Advances', s => s.advances || 0],
+    ['Declines', s => s.declines || 0],
+    ['Constituents', s => s.stocks.length],
+    ['Best stock today', s => topStock(s, 'best')],
+    ['Worst stock today', s => topStock(s, 'worst')],
+  ];
+}
 
 function topStock(s, which) {
   const rated = s.stocks.filter(st => st.pChange !== null && st.pChange !== undefined);
@@ -433,7 +491,7 @@ function renderCompare() {
   el('compareHead').innerHTML = '<th>Metric</th>' +
     chosen.map(s => `<th><div>${s.name}</div><span class="dim th-sub">${s.group}</span></th>`).join('');
 
-  el('compareBody').innerHTML = COMPARE_ROWS.map(([label, get, isPct]) => {
+  el('compareBody').innerHTML = compareRows().map(([label, get, isPct]) => {
     const cells = chosen.map(s => {
       const v = get(s);
       if (!isPct) return `<td>${v}</td>`;
@@ -500,6 +558,14 @@ el('sortBy').addEventListener('change', (e) => {
   renderSections();
 });
 
+el('periodSelect').addEventListener('change', (e) => {
+  state.period = e.target.value;
+  localStorage.setItem('period', e.target.value);
+  render();
+  if (state.activeSector) renderDetail();
+  if (!el('compareView').classList.contains('hidden')) renderCompare();
+});
+
 el('colourStep').addEventListener('change', (e) => {
   state.colourStep = parseFloat(e.target.value);
   localStorage.setItem('colourStep', e.target.value);
@@ -531,5 +597,8 @@ if (savedStep) {
   state.colourStep = parseFloat(savedStep);
   el('colourStep').value = savedStep;
 }
+
+const savedPeriod = localStorage.getItem('period');
+if (savedPeriod) state.period = savedPeriod;
 
 loadCached();

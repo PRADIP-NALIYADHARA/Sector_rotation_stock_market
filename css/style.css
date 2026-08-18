@@ -107,6 +107,30 @@ body {
 
 main { max-width: 1240px; margin: 0 auto; padding: 2rem; }
 
+/* -------------------------------------------------------- benchmark strip */
+
+.benchmark-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding: 1rem 1.2rem;
+  background: var(--bg-elev);
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.bm-explain { display: flex; flex-direction: column; gap: 0.25rem; }
+.bm-title { font-size: 0.95rem; font-weight: 600; }
+.bm-title b { color: var(--accent); }
+.bm-sub { font-size: 0.78rem; max-width: 560px; line-height: 1.5; }
+
+.bm-controls { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+
+.bm-return { font-size: 0.85rem; font-weight: 700; }
+
 /* ----------------------------------------------------------- colour scale */
 
 .scale-strip {
@@ -296,6 +320,32 @@ main { max-width: 1240px; margin: 0 auto; padding: 2rem; }
 .sector-value { font-size: 1.4rem; font-weight: 700; }
 .sector-change { font-size: 0.95rem; font-weight: 700; }
 
+.rs-tag {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sector-card.is-benchmark {
+  border-color: var(--accent);
+  border-left-color: var(--accent) !important;
+}
+
+.sector-card.is-benchmark .sector-name::after {
+  content: 'benchmark';
+  font-size: 0.58rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 3px;
+  padding: 0.05rem 0.28rem;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+}
+
 .trend-row {
   display: flex;
   gap: 1.2rem;
@@ -382,6 +432,58 @@ main { max-width: 1240px; margin: 0 auto; padding: 2rem; }
   font-size: 0.8rem;
   color: var(--text-dim);
   max-width: 460px;
+}
+
+/* --------------------------------------------------------- period table */
+
+.period-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-elev);
+  margin-bottom: 1.3rem;
+}
+
+.period-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.period-table th, .period-table td {
+  padding: 0.65rem 0.9rem;
+  text-align: right;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+}
+
+.period-table thead th {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  font-weight: 700;
+}
+
+.period-table thead th:first-child,
+.period-table .row-label {
+  text-align: left;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.period-table tbody tr:last-child td,
+.period-table tbody tr:last-child th { border-bottom: none; }
+
+.period-table tbody tr:last-child { background: var(--bg-elev2); }
+
+.period-table .active-period {
+  background: rgba(75, 159, 255, 0.1);
+  box-shadow: inset 2px 0 0 var(--accent), inset -2px 0 0 var(--accent);
 }
 
 /* ------------------------------------------------------- overlap warning */

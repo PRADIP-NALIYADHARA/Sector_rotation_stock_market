@@ -32,8 +32,25 @@
 <main>
   <!-- ============ Overview ============ -->
   <section id="overviewView">
+    <div class="benchmark-strip">
+      <div class="bm-explain">
+        <span class="bm-title">Measured against <b id="bmName">Nifty 50</b></span>
+        <span class="bm-sub dim">
+          Same idea as putting both on one chart at the same % scale: above the
+          benchmark line is bullish, below it is bearish.
+        </span>
+      </div>
+      <div class="bm-controls">
+        <label class="sort-control">
+          Over
+          <select id="periodSelect"></select>
+        </label>
+        <span class="bm-return" id="bmReturn">—</span>
+      </div>
+    </div>
+
     <div class="scale-strip">
-      <span class="scale-label">Colour scale</span>
+      <span class="scale-label">Colour scale<br><span class="dim scale-sub">vs benchmark</span></span>
       <div id="scaleLegend" class="scale-legend"></div>
       <label class="sort-control">
         step
@@ -52,16 +69,15 @@
       <input type="search" id="sectorSearch" placeholder="Search sector, index or theme…">
       <div class="filter-group" id="statusFilter">
         <button class="chip active" data-filter="all">All</button>
-        <button class="chip" data-filter="bull">Advancing</button>
-        <button class="chip" data-filter="bear">Declining</button>
+        <button class="chip" data-filter="bull">Outperforming</button>
+        <button class="chip" data-filter="bear">Underperforming</button>
       </div>
       <label class="sort-control">
         Rank by
         <select id="sortBy">
-          <option value="pChange">Today</option>
-          <option value="pChange30d">30 days</option>
-          <option value="pChange365d">1 year</option>
-          <option value="name">Name</option>
+          <option value="rs">vs benchmark</option>
+          <option value="ret">own return</option>
+          <option value="name">name</option>
         </select>
       </label>
       <span class="dim" id="resultCount"></span>
@@ -86,11 +102,18 @@
       </div>
       <div class="detail-stats">
         <div><span class="stat-label">Index</span><span id="detailLast" class="stat-value">—</span></div>
-        <div><span class="stat-label">Today</span><span id="detailChange" class="stat-value">—</span></div>
-        <div><span class="stat-label">30 days</span><span id="detail30d" class="stat-value">—</span></div>
-        <div><span class="stat-label">1 year</span><span id="detail365d" class="stat-value">—</span></div>
+        <div><span class="stat-label" id="detailRetLabel">Return</span><span id="detailReturn" class="stat-value">—</span></div>
+        <div><span class="stat-label" id="detailBmLabel">Benchmark</span><span id="detailBm" class="stat-value">—</span></div>
+        <div><span class="stat-label">vs benchmark</span><span id="detailRs" class="stat-value">—</span></div>
         <div><span class="stat-label">Adv / Dec</span><span id="detailAdvDec" class="stat-value">—</span></div>
       </div>
+    </div>
+
+    <div class="period-table-wrap">
+      <table class="period-table">
+        <thead><tr id="periodHead"></tr></thead>
+        <tbody id="periodBody"></tbody>
+      </table>
     </div>
 
     <div id="overlapBox" class="overlap-box hidden">

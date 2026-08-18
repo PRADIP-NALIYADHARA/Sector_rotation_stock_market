@@ -1,19 +1,28 @@
 """
-Fetches live NSE sector and stock data and writes it to data/sectors_data.json.
+Fetches NSE sector data and writes it to data/sectors_data.json.
 
-Sectors come from two complementary sources so that nothing is missed:
+The signal is relative strength, not raw direction. Putting a sector and NIFTY 50
+on the same percentage scale over some lookback and asking which line sits higher
+is the same as subtracting their returns, so every sector carries
+`rs[period] = its return - the benchmark's return`. Positive means it is beating
+the market over that window; negative means it is lagging. A sector that is up
+1% on a day the market is up 2% is losing ground, and a raw "is it green today"
+reading would miss that.
 
-  1. Official NSE indices (Sectoral + Thematic) -- authoritative index level and
-     % change straight from NSE, e.g. NIFTY AUTO, NIFTY INDIA DEFENCE.
-  2. Industry groups derived from the NIFTY 500 industry classification --
-     covers areas that have no dedicated tradeable index, e.g. Telecommunication,
-     Power, Metals & Mining, Capital Goods.
+Sectors come from two complementary sources so nothing is missed:
 
-Data sources (all public, no login required):
-  /api/allIndices                          -> live index level and % change
+  1. Official NSE indices (Broad + Sectoral + Thematic) -- index level and returns
+     straight from NSE.
+  2. Industry groups derived from the NIFTY 500 industry classification -- covers
+     areas with no dedicated index, e.g. Telecommunication, Power, Capital Goods.
+     Their returns are the equal-weighted average of the constituent stocks.
+
+Data sources (all public, no login):
+  /api/allIndices                          -> live index level, advances/declines
   /api/equity-master                       -> which indices are Sectoral / Thematic
   /content/indices/*.csv                   -> constituent stock lists
-  /products/content/sec_bhavdata_full_*.csv -> per-stock close / prev close
+  /content/indices/ind_close_all_*.csv     -> every index's close on a given day
+  /products/content/sec_bhavdata_full_*.csv -> every stock's close on a given day
 
 Run: python fetch_data.py
 """
@@ -32,18 +41,22 @@ BASE_DIR = Path(__file__).parent
 DATA_FILE = BASE_DIR / "data" / "sectors_data.json"
 MAP_FILE = BASE_DIR / "index_map.json"
 
-# Five-level classification on % change, strongest first. Tune to taste.
-#   strong-bullish  dark green
-#   bullish         light green
-#   neutral         yellow
-#   bearish         light red
-#   strong-bearish  dark red
-STRONG_BULLISH = 1.50
-BULLISH_THRESHOLD = 0.40
-BEARISH_THRESHOLD = -0.40
-STRONG_BEARISH = -1.50
+# The yardstick every sector is measured against.
+BENCHMARK = "NIFTY 50"
 
-# Universe used for the industry-group sectors, tried in order.
+# Lookback windows, in calendar days. Each costs two archive downloads.
+LOOKBACKS = [
+    ("1D", 1),
+    ("1W", 7),
+    ("1M", 30),
+    ("3M", 91),
+    ("6M", 182),
+    ("1Y", 365),
+    ("3Y", 1095),
+    ("5Y", 1826),
+]
+DEFAULT_PERIOD = "1M"
+
 UNIVERSE_CSVS = ["ind_nifty500list.csv", "ind_niftytotalmarketlist.csv"]
 
 # A few official indices publish no constituent CSV. Where an industry bucket is
@@ -53,7 +66,7 @@ INDUSTRY_FALLBACK = {
     "NIFTY CHEMICALS": ["Chemicals"],
 }
 
-# Indices that are strategy/screening baskets rather than sectors or themes.
+# Strategy/screening baskets rather than sectors or themes.
 EXCLUDED_INDICES = {
     "NIFTY100 LIQUID 15",
     "NIFTY MIDCAP LIQUID 15",
@@ -75,21 +88,15 @@ HEADERS = {
 
 NSE_REFERER = {"Referer": "https://www.nseindia.com/market-data/live-equity-market"}
 ARCHIVE = "https://nsearchives.nseindia.com/content/indices/{}"
+BHAV_URL = "https://nsearchives.nseindia.com/products/content/sec_bhavdata_full_{}.csv"
 
 
-def classify(pct_change):
-    """Five-level signal: strong-bullish .. strong-bearish."""
-    if pct_change is None:
-        return "neutral"
-    if pct_change >= STRONG_BULLISH:
-        return "strong-bullish"
-    if pct_change >= BULLISH_THRESHOLD:
-        return "bullish"
-    if pct_change <= STRONG_BEARISH:
-        return "strong-bearish"
-    if pct_change <= BEARISH_THRESHOLD:
-        return "bearish"
-    return "neutral"
+# --------------------------------------------------------------------- helpers
+
+def pct_change(now, then):
+    if now is None or then is None or not then:
+        return None
+    return round((now / then - 1) * 100, 2)
 
 
 def pretty_name(index_name):
@@ -113,17 +120,64 @@ def make_session():
     return session
 
 
+def fetch_csv_rows(filename):
+    r = requests.get(ARCHIVE.format(filename), headers=HEADERS, timeout=25)
+    if r.status_code != 200 or "Symbol" not in r.text[:300]:
+        raise RuntimeError(f"{filename} unavailable (HTTP {r.status_code})")
+    return list(csv.DictReader(io.StringIO(r.text)))
+
+
+# ------------------------------------------------------------- archive lookups
+
+def index_closes_on(day, max_back=8):
+    """Every index's close on `day`, stepping back over weekends and holidays."""
+    for back in range(max_back):
+        d = day - timedelta(days=back)
+        url = ARCHIVE.format(f"ind_close_all_{d.strftime('%d%m%Y')}.csv")
+        try:
+            r = requests.get(url, headers=HEADERS, timeout=25)
+        except requests.RequestException:
+            continue
+        if r.status_code != 200 or "Index Name" not in r.text[:100]:
+            continue
+        closes = {}
+        for row in csv.DictReader(io.StringIO(r.text)):
+            try:
+                closes[row["Index Name"].strip().upper()] = float(row["Closing Index Value"])
+            except (ValueError, KeyError):
+                pass
+        return closes, d
+    return {}, None
+
+
+def stock_closes_on(day, max_back=8):
+    """Every EQ stock's close on `day`, stepping back over non-trading days."""
+    for back in range(max_back):
+        d = day - timedelta(days=back)
+        try:
+            r = requests.get(BHAV_URL.format(d.strftime("%d%m%Y")), headers=HEADERS, timeout=35)
+        except requests.RequestException:
+            continue
+        if r.status_code != 200 or "SYMBOL" not in r.text[:200]:
+            continue
+        closes, prev = {}, {}
+        for raw in csv.DictReader(io.StringIO(r.text)):
+            row = {k.strip(): (v.strip() if isinstance(v, str) else v) for k, v in raw.items()}
+            if row.get("SERIES") != "EQ":
+                continue
+            try:
+                closes[row["SYMBOL"]] = float(row["CLOSE_PRICE"])
+                prev[row["SYMBOL"]] = float(row["PREV_CLOSE"])
+            except (ValueError, KeyError):
+                pass
+        return closes, prev, d
+    return {}, {}, None
+
+
 def fetch_all_indices(session):
     r = session.get("https://www.nseindia.com/api/allIndices", timeout=20, headers=NSE_REFERER)
     r.raise_for_status()
     return {d["index"]: d for d in r.json()["data"]}
-
-
-def fetch_csv_rows(filename):
-    r = requests.get(ARCHIVE.format(filename), headers=HEADERS, timeout=20)
-    if r.status_code != 200 or "Symbol" not in r.text[:300]:
-        raise RuntimeError(f"{filename} unavailable (HTTP {r.status_code})")
-    return list(csv.DictReader(io.StringIO(r.text)))
 
 
 def fetch_universe():
@@ -143,56 +197,23 @@ def fetch_universe():
             }
         print(f"Universe: {len(universe)} stocks from {filename}", file=sys.stderr)
         return universe
-    raise RuntimeError("Could not fetch any universe CSV for industry classification")
+    raise RuntimeError("Could not fetch a universe CSV for industry classification")
 
 
-def fetch_bhavcopy():
-    """Latest daily bhavcopy; steps back to skip weekends and holidays."""
-    for days_back in range(0, 8):
-        day = datetime.now() - timedelta(days=days_back)
-        url = (
-            "https://nsearchives.nseindia.com/products/content/"
-            f"sec_bhavdata_full_{day.strftime('%d%m%Y')}.csv"
-        )
-        r = requests.get(url, headers=HEADERS, timeout=30)
-        if r.status_code != 200 or "SYMBOL" not in r.text[:200]:
-            continue
+# ------------------------------------------------------------------- assembly
 
-        reader = csv.DictReader(io.StringIO(r.text))
-        prices = {}
-        for raw in reader:
-            row = {k.strip(): (v.strip() if isinstance(v, str) else v) for k, v in raw.items()}
-            if row.get("SERIES") != "EQ":
-                continue
-            try:
-                prev_close = float(row["PREV_CLOSE"])
-                close = float(row["CLOSE_PRICE"])
-                pchange = ((close - prev_close) / prev_close * 100) if prev_close else None
-            except (ValueError, KeyError, ZeroDivisionError):
-                prev_close = close = pchange = None
-            prices[row["SYMBOL"]] = {
-                "close": close,
-                "prevClose": prev_close,
-                "pChange": round(pchange, 2) if pchange is not None else None,
-            }
-        return prices, day.strftime("%d-%b-%Y")
-    raise RuntimeError("No NSE bhavcopy found in the last 8 days")
-
-
-def build_stocks(members, prices):
-    """Attach prices and a signal to a list of {symbol, company, industry}."""
+def build_stocks(members, closes, prev_closes):
     stocks = []
     for m in members:
-        price = prices.get(m["symbol"], {})
-        pchange = price.get("pChange")
+        close = closes.get(m["symbol"])
+        prev = prev_closes.get(m["symbol"])
         stocks.append({
             "symbol": m["symbol"],
             "company": m["company"],
             "industry": m.get("industry", ""),
-            "close": price.get("close"),
-            "prevClose": price.get("prevClose"),
-            "pChange": pchange,
-            "status": classify(pchange),
+            "close": close,
+            "prevClose": prev,
+            "pChange": pct_change(close, prev),
         })
     stocks.sort(key=lambda s: (s["pChange"] is None, -(s["pChange"] or 0)))
     return stocks
@@ -204,12 +225,25 @@ def breadth(stocks):
     return adv, dec, len(stocks) - adv - dec
 
 
+def average(values):
+    rated = [v for v in values if v is not None]
+    return round(sum(rated) / len(rated), 2) if rated else None
+
+
+def relative_strength(returns, benchmark_returns):
+    """How far a sector's line sits above the benchmark's on a same-% chart."""
+    rs = {}
+    for label, _ in LOOKBACKS:
+        mine, theirs = returns.get(label), benchmark_returns.get(label)
+        rs[label] = None if mine is None or theirs is None else round(mine - theirs, 2)
+    return rs
+
+
 def annotate_overlaps(sectors, max_related=4, min_share=0.30):
     """
-    Many NSE indices deliberately overlap -- NIFTY BANK, NIFTY PRIVATE BANK and
-    NIFTY PSU BANK share constituents, and every index overlaps its industry
-    group. Record that on each sector so the UI can warn instead of the reader
-    mistaking three views of the same banks for three independent signals.
+    NSE indices overlap by design -- NIFTY BANK, PRIVATE BANK and PSU BANK share
+    constituents, and every index overlaps its industry group. Record that so
+    three views of the same banks aren't read as three independent signals.
     """
     symbol_sets = {s["indexName"]: {st["symbol"] for st in s["stocks"]} for s in sectors}
 
@@ -224,7 +258,7 @@ def annotate_overlaps(sectors, max_related=4, min_share=0.30):
             if other["indexName"] == sector["indexName"]:
                 continue
             # Every sector sits inside NIFTY 500 / Total Market by construction,
-            # so broad benchmarks say nothing about genuine sector duplication.
+            # so broad benchmarks say nothing about genuine duplication.
             if other["group"] == "Broad" and sector["group"] != "Broad":
                 continue
             theirs = symbol_sets[other["indexName"]]
@@ -249,6 +283,8 @@ def annotate_overlaps(sectors, max_related=4, min_share=0.30):
         sector["related"] = related[:max_related]
 
 
+# ----------------------------------------------------------------------- main
+
 def main():
     print("Connecting to NSE...", file=sys.stderr)
     session = make_session()
@@ -262,19 +298,57 @@ def main():
     for stock in universe.values():
         by_industry[stock["industry"]].append(stock)
 
-    print("Fetching daily bhavcopy...", file=sys.stderr)
-    prices, bhav_date = fetch_bhavcopy()
+    today = datetime.now()
+
+    print(f"Fetching price history for {len(LOOKBACKS)} lookbacks...", file=sys.stderr)
+    with ThreadPoolExecutor(max_workers=6) as pool:
+        idx_now_future = pool.submit(index_closes_on, today)
+        stk_now_future = pool.submit(stock_closes_on, today)
+        idx_hist_futures = {
+            label: pool.submit(index_closes_on, today - timedelta(days=days))
+            for label, days in LOOKBACKS
+        }
+        stk_hist_futures = {
+            label: pool.submit(stock_closes_on, today - timedelta(days=days))
+            for label, days in LOOKBACKS
+        }
+
+        index_now, index_date = idx_now_future.result()
+        stock_now, stock_prev, bhav_date = stk_now_future.result()
+        index_hist = {label: f.result()[0] for label, f in idx_hist_futures.items()}
+        stock_hist = {label: f.result()[0] for label, f in stk_hist_futures.items()}
+
+    if not index_now or not stock_now:
+        raise RuntimeError("Could not fetch current NSE archives")
+
+    for label, _ in LOOKBACKS:
+        if not index_hist[label]:
+            print(f"  warning: no index archive for {label}", file=sys.stderr)
+
+    def index_returns(index_name):
+        now = index_now.get(index_name.upper())
+        return {label: pct_change(now, index_hist[label].get(index_name.upper()))
+                for label, _ in LOOKBACKS}
+
+    def stock_returns(symbol):
+        now = stock_now.get(symbol)
+        return {label: pct_change(now, stock_hist[label].get(symbol))
+                for label, _ in LOOKBACKS}
+
+    benchmark_returns = index_returns(BENCHMARK)
+    print(f"Benchmark {BENCHMARK}: "
+          + ", ".join(f"{k} {v}%" for k, v in benchmark_returns.items() if v is not None),
+          file=sys.stderr)
 
     index_map = {}
     if MAP_FILE.exists():
         index_map = json.loads(MAP_FILE.read_text(encoding="utf-8")).get("indices", {})
     else:
-        print("  note: index_map.json missing - run discover_indices.py for constituents",
-              file=sys.stderr)
+        print("  note: index_map.json missing - run discover_indices.py", file=sys.stderr)
 
     sectors = []
 
-    # --- 1. Official NSE broad / sectoral / thematic indices -----------------
+    # --- 1. Official NSE indices -------------------------------------------
     wanted = [
         (name, entry) for name, entry in index_map.items()
         if name not in EXCLUDED_INDICES and name in indices
@@ -302,23 +376,23 @@ def main():
 
     for index_name, entry in wanted:
         idx = indices[index_name]
-        stocks = build_stocks(members_by_index.get(index_name, []), prices)
+        stocks = build_stocks(members_by_index.get(index_name, []), stock_now, stock_prev)
         adv, dec, unch = breadth(stocks)
-        pchange = idx.get("percentChange")
+        returns = index_returns(index_name)
 
         sectors.append({
             "name": pretty_name(index_name),
             "indexName": index_name,
             "group": entry.get("group", "Sectoral"),
             "source": "index",
+            "isBenchmark": index_name == BENCHMARK,
             "last": idx.get("last"),
-            "pChange": pchange,
-            "pChange30d": idx.get("perChange30d"),
-            "pChange365d": idx.get("perChange365d"),
+            "pChange": idx.get("percentChange"),
+            "returns": returns,
+            "rs": relative_strength(returns, benchmark_returns),
             "advances": adv,
             "declines": dec,
             "unchanged": unch,
-            "status": classify(pchange),
             "stocks": stocks,
         })
 
@@ -329,63 +403,69 @@ def main():
             continue
         idx = indices[index_name]
         members = [m for ind in industries for m in by_industry.get(ind, [])]
-        stocks = build_stocks(members, prices)
+        stocks = build_stocks(members, stock_now, stock_prev)
         adv, dec, unch = breadth(stocks)
-        pchange = idx.get("percentChange")
+        returns = index_returns(index_name)
         sectors.append({
             "name": pretty_name(index_name),
             "indexName": index_name,
             "group": "Sectoral",
             "source": "index",
+            "isBenchmark": False,
             "last": idx.get("last"),
-            "pChange": pchange,
-            "pChange30d": idx.get("perChange30d"),
-            "pChange365d": idx.get("perChange365d"),
+            "pChange": idx.get("percentChange"),
+            "returns": returns,
+            "rs": relative_strength(returns, benchmark_returns),
             "advances": adv,
             "declines": dec,
             "unchanged": unch,
-            "status": classify(pchange),
             "stocks": stocks,
             "note": f"Constituents shown are the {'/'.join(industries)} industry group.",
         })
 
-    # --- 2. Industry groups (complete coverage of the universe) -------------
+    # --- 2. Industry groups -------------------------------------------------
     for industry, members in sorted(by_industry.items()):
-        stocks = build_stocks(members, prices)
-        rated = [s["pChange"] for s in stocks if s["pChange"] is not None]
-        avg = round(sum(rated) / len(rated), 2) if rated else None
+        stocks = build_stocks(members, stock_now, stock_prev)
         adv, dec, unch = breadth(stocks)
+
+        per_stock = {m["symbol"]: stock_returns(m["symbol"]) for m in members}
+        returns = {
+            label: average([r[label] for r in per_stock.values()])
+            for label, _ in LOOKBACKS
+        }
 
         sectors.append({
             "name": industry,
             "indexName": f"Industry group - {len(stocks)} stocks, equal-weighted",
             "group": "Industry",
             "source": "industry",
+            "isBenchmark": False,
             "last": None,
-            "pChange": avg,
-            "pChange30d": None,
-            "pChange365d": None,
+            "pChange": average([s["pChange"] for s in stocks]),
+            "returns": returns,
+            "rs": relative_strength(returns, benchmark_returns),
             "advances": adv,
             "declines": dec,
             "unchanged": unch,
-            "status": classify(avg),
             "stocks": stocks,
         })
 
     print("Computing constituent overlaps...", file=sys.stderr)
     annotate_overlaps(sectors)
 
-    sectors.sort(key=lambda s: -(s["pChange"] if s["pChange"] is not None else -999))
+    sectors.sort(key=lambda s: -(s["rs"].get(DEFAULT_PERIOD) if s["rs"].get(DEFAULT_PERIOD) is not None else -9999))
 
     output = {
         "updatedAt": datetime.now().isoformat(timespec="seconds"),
-        "bhavDate": bhav_date,
-        "thresholds": {
-            "strongBullish": STRONG_BULLISH,
-            "bullish": BULLISH_THRESHOLD,
-            "bearish": BEARISH_THRESHOLD,
-            "strongBearish": STRONG_BEARISH,
+        "bhavDate": bhav_date.strftime("%d-%b-%Y") if bhav_date else None,
+        "indexDate": index_date.strftime("%d-%b-%Y") if index_date else None,
+        "benchmark": {
+            "indexName": BENCHMARK,
+            "name": pretty_name(BENCHMARK),
+            "returns": benchmark_returns,
         },
+        "periods": [label for label, _ in LOOKBACKS],
+        "defaultPeriod": DEFAULT_PERIOD,
         "sectors": sectors,
     }
 

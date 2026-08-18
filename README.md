@@ -86,6 +86,36 @@ Data**, since there is no server behind it: the figures are frozen at whatever t
 last refresh fetched. Handy for sharing a view or checking it on a machine without
 Python.
 
+## How bullish / bearish is decided
+
+Put a sector and NIFTY 50 on one chart at the same percentage scale and see which
+line ends up higher. That is the whole idea, and subtracting the two returns is the
+same measurement:
+
+```
+relative strength = sector's return over the window − NIFTY 50's return over the same window
+```
+
+Above the benchmark → bullish. Below it → bearish. The size of the gap sets how deep
+the colour is.
+
+This matters because direction alone lies. On the data shipped here NIFTY IT was
+**down 1.93% on the day** but **3.95% ahead of NIFTY 50 over a month** — a naive
+"is it green today" reading calls that bearish when money has in fact been rotating
+into it.
+
+Pick the window from the **Over** dropdown: `1D, 1W, 1M, 3M, 6M, 1Y, 3Y, 5Y`. Every
+card, the colours, the ranking and the filters all follow that choice, and it is
+remembered between visits. A sector's detail page shows all eight windows at once —
+its return, the benchmark's, and the gap — so you can see whether the lead is recent
+or long-standing.
+
+Returns are computed from NSE's own daily archives: `ind_close_all_DDMMYYYY.csv` for
+index levels and the bhavcopy for stocks, pulled once per window. Industry groups have
+no index, so their return is the equal-weighted average of the constituents' returns.
+
+The benchmark is set by `BENCHMARK` in `fetch_data.py`, and the windows by `LOOKBACKS`.
+
 ## Colour scale
 
 Colour is banded, not bucketed: every *step* percent gets its own shade, sweeping
@@ -94,17 +124,18 @@ fixed number of levels — change the step and the whole scale re-bands itself, 
 included.
 
 The step is selectable at the top of the page (0.25% up to 10%) and is remembered
-between visits. Pick it to match what you're reading:
+between visits. It applies to the **gap against the benchmark**, so match it to the
+window you're looking at:
 
-| Looking at        | Useful step |
-|-------------------|-------------|
-| Today's move      | 0.25% – 0.5% |
-| 30-day momentum   | 2% – 5%      |
-| 1-year momentum   | 5% – 10%     |
+| Window        | Useful step |
+|---------------|-------------|
+| 1D            | 0.25% – 0.5% |
+| 1W – 1M       | 0.5% – 2%    |
+| 3M – 1Y       | 2% – 5%      |
+| 3Y – 5Y       | 5% – 10%     |
 
-A single day rarely moves a sector more than ±2%, so a 5% step will paint most of the
-daily column yellow — that is the scale working, not a bug. Drop to 0.5% for the daily
-view.
+Gaps over a single day are tiny, so a 5% step will paint the 1D view yellow — that is
+the scale working, not a bug.
 
 ## Comparing
 
