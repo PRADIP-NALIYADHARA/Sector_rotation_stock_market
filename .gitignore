@@ -1,3 +1,6 @@
 node_modules/
 .DS_Store
 *.log
+
+# generated standalone build
+sector_rotation_snapshot.html

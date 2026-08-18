@@ -128,6 +128,12 @@ function showStatus(message, kind) {
 /* ------------------------------------------------------------ data loading */
 
 async function loadCached() {
+  // Standalone snapshot builds inline the data and have no server to talk to.
+  if (window.EMBEDDED_DATA) {
+    applyData(window.EMBEDDED_DATA);
+    el('statusBar').classList.add('hidden');
+    return;
+  }
   try {
     const res = await fetch('/api/sectors');
     if (res.status === 404) {
@@ -145,6 +151,11 @@ async function loadCached() {
 
 async function refreshData() {
   const btn = el('refreshBtn');
+  if (window.EMBEDDED_DATA) {
+    showStatus('This is a standalone snapshot. Run "python app.py" and open '
+      + 'http://127.0.0.1:5000 to pull fresh data from NSE.', 'error');
+    return;
+  }
   btn.disabled = true;
   btn.classList.add('loading');
   showStatus('Fetching latest data from NSE… this usually takes a minute.', null);

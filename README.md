@@ -72,6 +72,20 @@ You can also refresh the data from the command line:
 python fetch_data.py
 ```
 
+## Standalone snapshot
+
+To get a copy that opens by double-clicking — no server, no Python, no internet —
+build a self-contained HTML file with the CSS, JS and current data all inlined:
+
+```bash
+python build_snapshot.py
+```
+
+It writes `sector_rotation_snapshot.html`. Everything works in it except **Update
+Data**, since there is no server behind it: the figures are frozen at whatever the
+last refresh fetched. Handy for sharing a view or checking it on a machine without
+Python.
+
 ## Colour scale
 
 Colour is banded, not bucketed: every *step* percent gets its own shade, sweeping
