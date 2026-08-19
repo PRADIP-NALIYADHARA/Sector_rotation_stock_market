@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sector Rotation Analysis</title>
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -15,6 +15,12 @@
     <h1>Sector Rotation Analysis</h1>
     <span class="byline">by Pradip</span>
   </div>
+  <div id="regimeBox" class="regime" title="NIFTY Composite G-Sec / NIFTY 50, against its 30-day average. Money moving into government bonds lifts this ratio, so above the average is risk-off.">
+    <span class="regime-label">Market</span>
+    <span class="regime-verdict" id="regimeVerdict">—</span>
+    <span class="regime-detail" id="regimeDetail">loading…</span>
+  </div>
+
   <div class="topbar-right">
     <div class="meta">
       <span id="marketDate" class="meta-line">—</span>
@@ -212,6 +218,6 @@
   <p>Data sourced from public NSE India endpoints. For research/educational use only — not investment advice.</p>
 </footer>
 
-<script src="js/app.js"></script>
+<script src="js/app.js?v=2"></script>
 </body>
 </html>

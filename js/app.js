@@ -562,6 +562,90 @@ function renderCompare() {
   }).join('');
 }
 
+/* ------------------------------------------------------------ market regime
+ * NIFTY Composite G-Sec / NIFTY 50 against its own 30-day average. Money moving
+ * into government bonds pushes the ratio up while equities fall, so the line runs
+ * roughly inverse to the market: above its average is risk-off, below it is
+ * risk-on. Colour therefore runs backwards to the reading -- well under the
+ * average is the deep green.
+ */
+
+const GSEC_INDEX = 'NIFTY COMPOSITE G-SEC INDEX';
+const REGIME_SMA = 30;
+const REGIME_STEP = 0.5;      // % away from the average per colour band
+
+/** Trailing run of consecutive trading days, ignoring the weekly/monthly tail. */
+function dailyTail(dates) {
+  const day = s => new Date(s + 'T00:00:00').getTime();
+  let start = dates.length - 1;
+  while (start > 0 && (day(dates[start]) - day(dates[start - 1])) / 86400000 <= 4) start--;
+  return start;
+}
+
+function computeRegime() {
+  if (!priceHistory) return null;
+  const gsec = priceHistory.series[GSEC_INDEX];
+  const nifty = priceHistory.series['NIFTY 50'];
+  if (!gsec || !nifty) return null;
+
+  const from = dailyTail(priceHistory.dates);
+  const points = [];
+  for (let i = from; i < priceHistory.dates.length; i++) {
+    if (gsec[i] && nifty[i]) points.push({ date: priceHistory.dates[i], ratio: gsec[i] / nifty[i] });
+  }
+  if (points.length < REGIME_SMA) return null;
+
+  const last = points.length - 1;
+  const window = points.slice(last - REGIME_SMA + 1, last + 1);
+  const sma = window.reduce((a, p) => a + p.ratio, 0) / REGIME_SMA;
+  const deviation = (points[last].ratio / sma - 1) * 100;
+
+  // Days since the ratio last sat on the other side of its average.
+  let flipped = null;
+  for (let i = last; i >= REGIME_SMA - 1; i--) {
+    const win = points.slice(i - REGIME_SMA + 1, i + 1);
+    const avg = win.reduce((a, p) => a + p.ratio, 0) / REGIME_SMA;
+    const above = points[i].ratio > avg;
+    if (above !== (deviation > 0)) { flipped = points[i + 1] ? points[i + 1].date : null; break; }
+  }
+
+  return {
+    deviation,
+    bullish: deviation < 0,
+    asOf: points[last].date,
+    since: flipped,
+    days: flipped ? Math.round((Date.now() - new Date(flipped + 'T00:00:00')) / 86400000) : null,
+  };
+}
+
+function renderRegime() {
+  const box = el('regimeBox');
+  const regime = computeRegime();
+
+  if (!regime) {
+    el('regimeVerdict').textContent = '—';
+    el('regimeDetail').textContent = historyError
+      ? 'needs price history' : 'not enough daily history yet';
+    box.style.borderColor = 'var(--border)';
+    return;
+  }
+
+  // Below the average is bullish, so the sign is flipped before colouring.
+  const colour = bandColour(bandOf(-regime.deviation, REGIME_STEP));
+
+  const verdict = el('regimeVerdict');
+  verdict.textContent = regime.bullish ? 'BULLISH' : 'BEARISH';
+  verdict.style.color = colour.fg;
+
+  const side = regime.bullish ? 'below' : 'above';
+  el('regimeDetail').textContent =
+    `G-Sec/Nifty ${Math.abs(regime.deviation).toFixed(2)}% ${side} its 30-day average`
+    + (regime.days !== null ? ` · ${regime.days}d` : '');
+
+  box.style.borderColor = colour.border;
+  box.style.background = colour.bg;
+}
+
 /* ------------------------------------------------- same-% chart + crossings
  * The chart is the point of the whole exercise: rebase every series to 0% at
  * the left edge and the vertical distance between two lines *is* their relative
@@ -578,15 +662,16 @@ const LINE_COLOURS = [
   '#22d3ee', '#fb923c', '#f87171', '#84cc16', '#e879f9',
 ];
 
-let history = null;          // {dates, series}
+let priceHistory = null;     // {dates, series} - not window.history
 let historyError = null;
 
 async function loadHistory() {
   // Standalone snapshots carry the series inline; there is no server to ask.
-  if (window.EMBEDDED_HISTORY) { history = window.EMBEDDED_HISTORY; return; }
+  if (window.EMBEDDED_HISTORY) { priceHistory = window.EMBEDDED_HISTORY; renderRegime(); return; }
   if (window.EMBEDDED_DATA) {
     historyError = 'This snapshot was built without price history, so the chart is '
       + 'unavailable. Run build_history.py, then build_snapshot.py again.';
+    renderRegime();
     return;
   }
   try {
@@ -596,22 +681,23 @@ async function loadHistory() {
       historyError = body.message || 'No price history available.';
       return;
     }
-    history = await res.json();
+    priceHistory = await res.json();
   } catch (e) {
     historyError = 'Could not load price history: ' + e.message;
   }
+  renderRegime();
 }
 
 // Industry groups have no index of their own, so they cannot be charted.
 const chartableSeries = (indexName) =>
-  history && history.series[(indexName || '').toUpperCase()] || null;
+  priceHistory && priceHistory.series[(indexName || '').toUpperCase()] || null;
 
 function windowSlice(days) {
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - days);
   const iso = cutoff.toISOString().slice(0, 10);
-  const from = history.dates.findIndex(d => d >= iso);
-  return from < 0 ? history.dates.length - 2 : from;
+  const from = priceHistory.dates.findIndex(d => d >= iso);
+  return from < 0 ? priceHistory.dates.length - 2 : from;
 }
 
 /** Rebase a series to 0% at `from`, skipping leading gaps. */
@@ -642,7 +728,7 @@ function chartState() {
   const days = parseInt(el('chartPeriod').value, 10);
   const baseName = el('baselineSelect').value;
   const from = windowSlice(days);
-  const dates = history.dates.slice(from);
+  const dates = priceHistory.dates.slice(from);
 
   const baseRaw = chartableSeries(baseName);
   const base = baseRaw && rebase(baseRaw, from);
@@ -663,7 +749,7 @@ function chartState() {
 
 function renderChart() {
   const host = el('chartHost');
-  if (!history) {
+  if (!priceHistory) {
     host.innerHTML = `<div class="chart-empty">${historyError ||
       'Price history not built yet. Run <code>python build_history.py</code>.'}</div>`;
     el('chartLegend').innerHTML = '';

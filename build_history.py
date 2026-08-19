@@ -29,8 +29,10 @@ BASE_DIR = Path(__file__).parent
 HISTORY_FILE = BASE_DIR / "data" / "index_history.json"
 
 # (days back from today, spacing in days)
+# The daily stretch has to be long enough to carry a 30-day moving average with
+# some history behind it, not just the 30 points themselves.
 RESOLUTION = [
-    (90, 1),       # last 3 months: daily
+    (220, 1),      # last ~7 months: daily
     (3 * 365, 7),  # out to 3 years: weekly
     (5 * 365, 30), # out to 5 years: monthly
 ]

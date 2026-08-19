@@ -6,7 +6,8 @@ Click into any sector to see its constituent stocks with the same colour coding.
 
 ## Features
 
-- Complete coverage — 97 sectors across four groups, kept in separate sections
+- Market regime indicator in the header — risk-on or risk-off at a glance
+- Complete coverage — 99 sectors across four groups, kept in separate sections
 - Banded colour scale with a selectable step, not a fixed set of buckets
 - Compare any number of sectors, indices or themes side by side
 - Today / 30-day / 1-year momentum on every card — rank by any of them
@@ -85,6 +86,28 @@ It writes `sector_rotation_snapshot.html`. Everything works in it except **Updat
 Data**, since there is no server behind it: the figures are frozen at whatever the
 last refresh fetched. Handy for sharing a view or checking it on a machine without
 Python.
+
+## Market regime — the header reading
+
+The panel at the top of every page answers one question before you look at anything
+else: is the market itself risk-on or risk-off?
+
+It tracks **NIFTY Composite G-Sec ÷ NIFTY 50** against that ratio's own 30-day average.
+Government bonds are where money goes when it leaves equities, so the ratio runs
+roughly inverse to the market:
+
+| Ratio vs its 30-day average | Reading  | Colour     |
+|-----------------------------|----------|------------|
+| well below                  | bullish  | dark green |
+| near it                     | undecided| yellow     |
+| well above                  | bearish  | dark red   |
+
+Colour runs backwards to the number on purpose — a *low* ratio is the bullish one. Each
+0.5% away from the average is another band, and the panel also shows how many days the
+current side has held.
+
+This is the same series you would get from `NSE:NIFTYGSCOMPOSITE/NSE:NIFTY` with an SMA
+30 on TradingView.
 
 ## How bullish / bearish is decided
 
@@ -240,8 +263,9 @@ one from NSE's `ind_close_all` archives:
 python build_history.py
 ```
 
-Resolution is deliberately uneven — daily for the last three months where crossings are
-decided, weekly out to three years, monthly out to five. That keeps a five-year view of
+Resolution is deliberately uneven — daily for the last seven months, which is where
+crossings are decided and what the header's 30-day average needs, weekly out to three
+years, monthly out to five. That keeps a five-year view of
 every index to roughly 1.3 MB. The cache is incremental: the first build takes a few
 minutes, after which only missing dates are fetched. Add `--rebuild` to start over.
 

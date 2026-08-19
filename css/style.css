@@ -54,6 +54,37 @@ body {
 .brand h1 { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em; }
 .byline { font-size: 0.8rem; color: var(--text-dim); font-weight: 500; }
 
+/* Market regime — the first thing worth reading, so it gets the weight */
+.regime {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.6rem 1.1rem;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-elev2);
+  min-width: 250px;
+  transition: border-color var(--t), background var(--t);
+  cursor: help;
+}
+
+.regime-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+}
+
+.regime-verdict {
+  font-size: 1.7rem;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+.regime-detail { font-size: 0.7rem; color: var(--text-dim); }
+
 .topbar-right { display: flex; align-items: center; gap: 1rem; }
 
 .meta { display: flex; flex-direction: column; text-align: right; line-height: 1.35; }
@@ -882,6 +913,10 @@ main { max-width: 1240px; margin: 0 auto; padding: 2rem; }
 
   .brand h1 { font-size: 1.05rem; }
   .byline { font-size: 0.7rem; }
+
+  .regime { width: 100%; min-width: 0; padding: 0.55rem 0.9rem; }
+  .regime-verdict { font-size: 1.35rem; }
+  .regime-detail { font-size: 0.66rem; }
 
   .topbar-right { width: 100%; justify-content: space-between; gap: 0.6rem; }
   .meta { text-align: left; }

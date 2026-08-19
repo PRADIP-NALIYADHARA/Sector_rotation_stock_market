@@ -39,6 +39,12 @@ class Handler(SimpleHTTPRequestHandler):
     def log_message(self, fmt, *args):
         sys.stderr.write("%s - %s\n" % (self.address_string(), fmt % args))
 
+    def end_headers(self):
+        # Without this the browser keeps serving an old app.js after an edit, and
+        # the page looks broken in ways the source doesn't explain.
+        self.send_header("Cache-Control", "no-store, must-revalidate")
+        super().end_headers()
+
     def send_json(self, payload, status=200):
         body = json.dumps(payload).encode("utf-8")
         self.send_response(status)
