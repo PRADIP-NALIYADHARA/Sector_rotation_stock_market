@@ -70,6 +70,7 @@ function toggleWatch(kind, key) {
   else bucket.push(key);
   saveWatchlists();
   renderWatchBar();
+  renderWatchStocks();
   renderSections();
   if (state.activeSector) renderDetail();
 }
@@ -304,6 +305,70 @@ function applyData(data) {
 
 /* -------------------------------------------------------------- rendering */
 
+/**
+ * The stocks in the active list.
+ *
+ * Starring a stock used to file it somewhere with no way back to it: the list
+ * filter only trimmed the sector grid, so a starred name was only visible if you
+ * happened to open the sector it belongs to.
+ */
+function renderWatchStocks() {
+  const box = el('watchStocks');
+  const list = activeList();
+
+  if (!list.stocks.length) { box.classList.add('hidden'); return; }
+  box.classList.remove('hidden');
+
+  el('watchStocksName').textContent = list.name;
+  el('watchRetHead').textContent = `${state.period} return`;
+  el('watchRsHead').textContent = `vs bench (${state.period})`;
+
+  const rows = list.stocks
+    .map(symbol => ({ symbol, s: stockBy(symbol) }))
+    .sort((a, b) => (stockStrength(b.symbol) ?? -1) - (stockStrength(a.symbol) ?? -1));
+
+  el('watchStocksCount').textContent =
+    `${rows.length} stock${rows.length === 1 ? '' : 's'}`;
+
+  el('watchStockBody').innerHTML = rows.map(({ symbol, s }) => {
+    if (!s) {
+      return `<tr><td class="pick-cell">
+          <button class="watch-star on" data-watch-stock="${symbol}" title="Remove">★</button>
+        </td><td class="sym">${symbol}</td>
+        <td colspan="8" class="dim">not in the current universe</td></tr>`;
+    }
+    const c = colourFor(s.pChange);
+    const rs = (s.rs || {})[state.period] ?? null;
+    const ret = (s.returns || {})[state.period] ?? null;
+    const rsC = colourFor(rs);
+    const fh = colourFor(s.fromHigh === null ? null : s.fromHigh + 5);
+    const score = stockStrength(symbol);
+
+    return `
+      <tr class="${s.nearHigh ? 'near-high' : ''}" style="border-left:3px solid ${c.border}">
+        <td class="pick-cell">
+          <button class="watch-star on" data-watch-stock="${symbol}" title="Remove from list">★</button>
+        </td>
+        <td class="sym">
+          ${symbol}${s.nearHigh ? ' <span class="near-flag">⚡</span>' : ''}
+          ${score !== null ? `<span class="score">${score}</span>` : ''}
+        </td>
+        <td>${s.company}</td>
+        <td class="right">${fmt(s.close)}</td>
+        <td class="pchange" style="color:${c.fg}">${signedPct(s.pChange)}</td>
+        <td class="right">${signedPct(ret)}</td>
+        <td class="right" style="color:${rsC.fg};font-weight:700">${signedPct(rs)}</td>
+        <td class="right">${s.rangePos === null || s.rangePos === undefined ? '—' : s.rangePos + '%'}</td>
+        <td class="right" style="color:${fh.fg};font-weight:700">${signedPct(s.fromHigh)}</td>
+        <td class="dim">${s.capBand || '—'}</td>
+      </tr>`;
+  }).join('');
+
+  el('watchStockBody').querySelectorAll('.watch-star').forEach(btn => {
+    btn.addEventListener('click', () => toggleWatch('stock', btn.dataset.watchStock));
+  });
+}
+
 function renderWatchBar() {
   const select = el('watchSelect');
   select.innerHTML = watchlists.lists
@@ -323,6 +388,7 @@ function renderWatchBar() {
 
 function render() {
   renderWatchBar();
+  renderWatchStocks();
   renderRrg();
   renderBenchmarkStrip();
   renderScaleLegend();
@@ -375,6 +441,25 @@ function sortSectors(list) {
   });
 }
 
+/* Sections collapse so the page opens as an index rather than a wall of cards.
+   Which ones are open is remembered. */
+function collapsedGroups() {
+  try {
+    const raw = JSON.parse(localStorage.getItem('collapsedGroups'));
+    if (Array.isArray(raw)) return new Set(raw);
+  } catch (e) { /* fall through */ }
+  return new Set(GROUP_ORDER);          // start closed
+}
+
+let collapsed = collapsedGroups();
+
+function toggleGroup(group) {
+  if (collapsed.has(group)) collapsed.delete(group);
+  else collapsed.add(group);
+  localStorage.setItem('collapsedGroups', JSON.stringify([...collapsed]));
+  renderSections();
+}
+
 function renderSections() {
   const container = el('sectionsContainer');
   if (!state.data) { container.innerHTML = ''; return; }
@@ -385,18 +470,24 @@ function renderSections() {
   const html = GROUP_ORDER.map(group => {
     const list = sortSectors(visible.filter(s => s.group === group));
     if (!list.length) return '';
+    const shut = collapsed.has(group);
     return `
-      <section class="group-section">
-        <div class="group-header">
+      <section class="group-section ${shut ? 'collapsed' : ''}">
+        <button class="group-header" data-group="${group}" aria-expanded="${!shut}">
+          <span class="group-caret">▾</span>
           <h2>${group}</h2>
           <span class="group-count">${list.length}</span>
           <span class="group-blurb dim">${GROUP_BLURB[group]}</span>
-        </div>
-        <div class="sector-grid">${list.map(sectorCard).join('')}</div>
+        </button>
+        ${shut ? '' : `<div class="sector-grid">${list.map(sectorCard).join('')}</div>`}
       </section>`;
   }).join('');
 
   container.innerHTML = html || '<div class="empty-state"><p>Nothing matches this filter.</p></div>';
+
+  container.querySelectorAll('.group-header').forEach(head => {
+    head.addEventListener('click', () => toggleGroup(head.dataset.group));
+  });
 
   container.querySelectorAll('.sector-card').forEach(card => {
     card.addEventListener('click', (e) => {

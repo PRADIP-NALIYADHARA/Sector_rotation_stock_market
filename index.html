@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sector Rotation Analysis</title>
-<link rel="stylesheet" href="css/style.css?v=13">
+<link rel="stylesheet" href="css/style.css?v=14">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -119,6 +119,32 @@
       <button id="watchDelete" class="icon-btn small" title="Delete this list">🗑</button>
       <button id="watchOnly" class="chip" aria-pressed="false">Show only this list</button>
       <span class="dim" id="watchCount"></span>
+    </div>
+
+    <div id="watchStocks" class="watch-stocks hidden">
+      <div class="watch-stocks-head">
+        <h3>Stocks in <span id="watchStocksName">this list</span></h3>
+        <span class="dim" id="watchStocksCount"></span>
+      </div>
+      <div class="table-wrap">
+        <table class="stock-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Symbol</th>
+              <th>Company</th>
+              <th class="right">Close</th>
+              <th class="right">Today</th>
+              <th class="right" id="watchRetHead">Return</th>
+              <th class="right" id="watchRsHead">vs bench</th>
+              <th class="right">52w range</th>
+              <th class="right">From high</th>
+              <th>Cap</th>
+            </tr>
+          </thead>
+          <tbody id="watchStockBody"></tbody>
+        </table>
+      </div>
     </div>
 
     <div class="rrg-strip">
@@ -312,6 +338,6 @@
   <p>Data sourced from public NSE India endpoints. For research/educational use only — not investment advice.</p>
 </footer>
 
-<script src="js/app.js?v=13"></script>
+<script src="js/app.js?v=14"></script>
 </body>
 </html>

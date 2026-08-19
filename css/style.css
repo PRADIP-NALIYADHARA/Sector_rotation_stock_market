@@ -477,6 +477,25 @@ main { max-width: 1240px; margin: 0 auto; padding: 2rem; }
 
 .card-actions { display: flex; align-items: center; gap: 0.2rem; flex-shrink: 0; }
 
+.watch-stocks {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.4rem;
+}
+
+.watch-stocks-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.7rem;
+}
+
+.watch-stocks-head h3 { font-size: 1rem; font-weight: 700; }
+.watch-stocks .table-wrap { margin-bottom: 0; }
+
 /* ---------------------------------------------------------- rotation map */
 
 .rrg-strip {
@@ -602,10 +621,30 @@ main { max-width: 1240px; margin: 0 auto; padding: 2rem; }
   align-items: baseline;
   gap: 0.8rem;
   flex-wrap: wrap;
-  padding-bottom: 0.7rem;
+  width: 100%;
+  padding: 0.5rem 0.2rem 0.7rem;
   margin-bottom: 1.2rem;
+  border: none;
   border-bottom: 1px solid var(--border);
+  background: none;
+  color: inherit;
+  font-family: var(--font);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--t);
 }
+
+.group-header:hover { border-bottom-color: var(--accent); }
+
+.group-caret {
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  transition: transform var(--t);
+}
+
+.group-section.collapsed .group-caret { transform: rotate(-90deg); }
+.group-section.collapsed .group-header { margin-bottom: 0; }
+.group-section.collapsed { margin-bottom: 0.9rem; }
 
 .group-header h2 {
   font-size: 1.15rem;
