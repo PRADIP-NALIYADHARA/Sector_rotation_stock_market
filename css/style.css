@@ -71,9 +71,16 @@ body {
 
 .brand:hover { background: var(--bg-elev2); }
 
-.brand-mark { display: block; flex-shrink: 0; }
+/* Fixed box, and the painting stays inside it -- letting the ring overflow put
+   it on top of the byline. */
+.brand-mark {
+  display: block;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+}
 
-.brand-svg { width: 42px; height: 42px; display: block; overflow: visible; }
+.brand-svg { width: 100%; height: 100%; display: block; overflow: hidden; }
 
 .brand-ring circle {
   fill: none;
@@ -81,11 +88,13 @@ body {
   stroke-linecap: round;
   /* Circumference is 2*pi*17 = 106.8, so 22 on / 84.8 off draws a quarter. */
   stroke-dasharray: 22 84.8;
-  transform-origin: 24px 24px;
 }
 
+/* transform-box: view-box makes the origin resolve in viewBox units, so
+   "center" really is the middle of the ring rather than a point in CSS pixels. */
 .brand-ring {
-  transform-origin: 24px 24px;
+  transform-box: view-box;
+  transform-origin: center;
   transition: transform 0.65s cubic-bezier(0.34, 1.3, 0.64, 1);
 }
 
@@ -93,7 +102,8 @@ body {
 
 .brand-arrow {
   fill: var(--accent);
-  transform-origin: 24px 24px;
+  transform-box: view-box;
+  transform-origin: center;
   transition: transform 0.65s cubic-bezier(0.34, 1.3, 0.64, 1);
 }
 
