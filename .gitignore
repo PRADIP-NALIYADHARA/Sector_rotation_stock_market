@@ -9,3 +9,6 @@ __pycache__/
 
 # never commit the bot token
 telegram_config.json
+
+# per-machine runtime state
+data/alert_state.json
