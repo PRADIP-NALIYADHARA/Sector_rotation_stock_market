@@ -633,6 +633,41 @@ function renderFreshness() {
 
 setInterval(renderFreshness, 30000);
 
+/*
+ * The scheduled refresh writes new figures on the server, but an open page would
+ * happily keep showing the ones it loaded an hour ago -- which matters most on a
+ * phone, where the tab tends to be left open rather than reloaded.
+ *
+ * So the page checks for itself. It only redraws when the server reports a newer
+ * timestamp, and it stays quiet while the tab is hidden so a backgrounded phone
+ * isn't polling all day.
+ */
+const POLL_MS = 60000;
+
+async function pollForUpdate() {
+  if (window.EMBEDDED_DATA) return;          // snapshot: nothing to poll
+  if (document.hidden) return;
+  if (!state.data) return;
+
+  try {
+    const res = await fetch('/api/sectors', { cache: 'no-store' });
+    if (!res.ok) return;
+    const fresh = await res.json();
+    if (fresh.updatedAt && fresh.updatedAt !== state.data.updatedAt) {
+      applyData(fresh);
+      showStatus('Figures refreshed.', 'success');
+    }
+  } catch (e) {
+    /* server asleep or network dropped - the badge will show the data ageing */
+  }
+}
+
+setInterval(pollForUpdate, POLL_MS);
+// A tab returning to the foreground is the moment its data is most likely stale.
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) { renderFreshness(); pollForUpdate(); }
+});
+
 /* ------------------------------------------------------------ market regime
  * NIFTY Composite G-Sec / NIFTY 50 against its own 30-day average. Money moving
  * into government bonds pushes the ratio up while equities fall, so the line runs
