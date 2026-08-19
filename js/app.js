@@ -1030,12 +1030,27 @@ function seriesFor(item) {
   });
 }
 
+/**
+ * Where a window of `days` starts in the index date array.
+ *
+ * Takes the last date at or *before* the cutoff, not the first one after it.
+ * Picking the first date after meant a window always began late -- and where the
+ * sampling is weekly it began up to a week late, which is how a one-year chart
+ * came to start on 21 August instead of 11 August and reported TVSMOTOR at +33%
+ * where TradingView said +47%.
+ */
 function windowSlice(days) {
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - days);
   const iso = cutoff.toISOString().slice(0, 10);
-  const from = priceHistory.dates.findIndex(d => d >= iso);
-  return from < 0 ? priceHistory.dates.length - 2 : from;
+
+  const dates = priceHistory.dates;
+  let from = -1;
+  for (let i = 0; i < dates.length; i++) {
+    if (dates[i] <= iso) from = i; else break;
+  }
+  if (from < 0) from = 0;                       // window predates the history
+  return Math.min(from, dates.length - 2);
 }
 
 /** Rebase a series to 0% at `from`, skipping leading gaps. */

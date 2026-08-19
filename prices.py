@@ -34,11 +34,10 @@ BATCH = 120
 
 # Daily for the recent stretch, weekly further out.
 #
-# The daily window matches the index history's 220 days deliberately. When it was
-# three months, a 6M chart drew sector lines daily and stock lines weekly over the
-# same stretch, so a crossing between them could only be dated to the nearest week
-# on one side and the day on the other.
-DAILY_PERIOD = "8mo"
+# The daily window deliberately reaches past a year, matching the index history.
+# Weekly sampling put the start of a one-year window up to a week off, which had
+# TVSMOTOR reading +33% against TradingView's +47% for the same period.
+DAILY_PERIOD = "2y"
 WEEKLY_PERIOD = "6y"
 
 

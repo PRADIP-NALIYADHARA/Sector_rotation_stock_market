@@ -57,6 +57,15 @@ MAP_FILE = BASE_DIR / "index_map.json"
 CACHE_MEMBERS = BASE_DIR / "data" / "constituents.json"
 CACHE_PRICES = BASE_DIR / "data" / "price_book.json"
 
+# Today's closes, written by the live refresh and overlaid on the book above.
+#
+# The live job used to load the whole book, merge into it and write it back. Run
+# every five minutes it would inevitably start before a full rebuild finished and
+# save its stale copy afterwards, silently undoing the rebuild -- which is how the
+# price book kept its weekly-only history through three full runs. Keeping the two
+# in separate files means the live job can never clobber the long history.
+LIVE_PRICES = BASE_DIR / "data" / "live_prices.json"
+
 # The yardstick every sector is measured against.
 BENCHMARK = "NIFTY 50"
 
@@ -666,9 +675,16 @@ def main(live=False):
         # Long history is settled once a day has closed; only today moves.
         yahoo = json.loads(CACHE_PRICES.read_text(encoding="utf-8"))
         print(f"Refreshing today's prices for {len(needed)} symbols...", file=sys.stderr)
-        for symbol, recent in prices.fetch_live(needed).items():
+
+        recent_all = prices.fetch_live(needed)
+        for symbol, recent in recent_all.items():
             yahoo.setdefault(symbol, {}).update(recent)
         print(f"  Yahoo covered {len(yahoo)}/{len(needed)} symbols", file=sys.stderr)
+
+        # Only the few days just fetched are saved -- never the whole book.
+        if recent_all:
+            LIVE_PRICES.parent.mkdir(exist_ok=True)
+            LIVE_PRICES.write_text(json.dumps(recent_all), encoding="utf-8")
     else:
         print(f"Fetching adjusted prices for {len(needed)} symbols from Yahoo...",
               file=sys.stderr)
@@ -678,9 +694,17 @@ def main(live=False):
         else:
             print("  Yahoo unavailable - falling back to the NSE bhavcopy", file=sys.stderr)
 
-    if yahoo:
-        CACHE_PRICES.parent.mkdir(exist_ok=True)
-        CACHE_PRICES.write_text(json.dumps(yahoo), encoding="utf-8")
+        if yahoo:
+            CACHE_PRICES.parent.mkdir(exist_ok=True)
+            CACHE_PRICES.write_text(json.dumps(yahoo), encoding="utf-8")
+            # The rebuild supersedes anything the live job had layered on top.
+            LIVE_PRICES.unlink(missing_ok=True)
+
+    # A full run that happened while this was assembling would have rewritten the
+    # book; layering the live file on top keeps today's prices either way.
+    if live and LIVE_PRICES.exists():
+        for symbol, recent in json.loads(LIVE_PRICES.read_text(encoding="utf-8")).items():
+            yahoo.setdefault(symbol, {}).update(recent)
 
     for index_name, entry in wanted:
         idx = indices[index_name]

@@ -32,7 +32,7 @@ HISTORY_FILE = BASE_DIR / "data" / "index_history.json"
 # The daily stretch has to be long enough to carry a 30-day moving average with
 # some history behind it, not just the 30 points themselves.
 RESOLUTION = [
-    (220, 1),      # last ~7 months: daily
+    (400, 1),      # past a full year: daily
     (3 * 365, 7),  # out to 3 years: weekly
     (5 * 365, 30), # out to 5 years: monthly
 ]

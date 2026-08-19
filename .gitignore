@@ -21,3 +21,4 @@ data/constituents.json
 logs/
 
 data/stocks.json
+data/live_prices.json
