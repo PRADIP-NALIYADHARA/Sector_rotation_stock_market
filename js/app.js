@@ -661,8 +661,10 @@ function renderTray() {
     });
   });
 
-  el('openCompare').textContent = `Compare ${total}`;
-  el('openCompare').disabled = total < 2;
+  // One selection is enough: the benchmark is always drawn as the baseline, so
+  // a single stock still gets the comparison that matters most.
+  el('openCompare').textContent = total === 1 ? 'Compare vs benchmark' : `Compare ${total}`;
+  el('openCompare').disabled = total < 1;
 }
 
 function compareRows() {
@@ -1351,7 +1353,7 @@ el('baselineSelect').addEventListener('change', renderChart);
 el('chartPeriod').addEventListener('change', renderChart);
 
 el('openCompare').addEventListener('click', () => {
-  if (state.selected.length + state.selectedStocks.length < 2) return;
+  if (state.selected.length + state.selectedStocks.length < 1) return;
   pushView('compare');
   showView('compare');
   renderCompare();
