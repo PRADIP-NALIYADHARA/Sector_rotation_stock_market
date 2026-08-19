@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sector Rotation Analysis</title>
-<link rel="stylesheet" href="css/style.css?v=4">
+<link rel="stylesheet" href="css/style.css?v=5">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -38,7 +38,12 @@
 
   <div class="topbar-right">
     <div class="meta">
-      <span id="marketDate" class="meta-line">—</span>
+      <span class="meta-top">
+        <span id="freshness" class="freshness" title="How fresh the figures are">
+          <i class="pulse"></i><span id="freshLabel">—</span>
+        </span>
+        <span id="marketDate" class="meta-line">—</span>
+      </span>
       <span id="updatedAt" class="meta-line dim">Not loaded</span>
     </div>
     <button id="refreshBtn" class="btn-refresh">
@@ -233,6 +238,6 @@
   <p>Data sourced from public NSE India endpoints. For research/educational use only — not investment advice.</p>
 </footer>
 
-<script src="js/app.js?v=4"></script>
+<script src="js/app.js?v=5"></script>
 </body>
 </html>

@@ -190,6 +190,62 @@ body {
 .meta { display: flex; flex-direction: column; text-align: right; line-height: 1.35; }
 .meta-line { font-size: 0.78rem; }
 
+.meta-top {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+/* Freshness badge — pulses only while the figures are actually keeping up */
+.freshness {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 0.15rem 0.45rem;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  white-space: nowrap;
+  cursor: help;
+}
+
+.freshness .pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.freshness.live {
+  color: #16c784;
+  border-color: #16c784;
+  background: rgba(22, 199, 132, 0.12);
+}
+
+.freshness.live .pulse { animation: pulse 1.6s ease-in-out infinite; }
+
+.freshness.stale {
+  color: #f0b90b;
+  border-color: #f0b90b;
+  background: rgba(240, 185, 11, 0.1);
+}
+
+.freshness.closed { color: var(--text-dim); }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 currentColor; }
+  70% { opacity: 0.55; box-shadow: 0 0 0 5px rgba(22, 199, 132, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .freshness.live .pulse { animation: none; }
+}
+
 .btn-refresh {
   display: inline-flex;
   align-items: center;

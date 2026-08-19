@@ -194,6 +194,7 @@ function applyData(data) {
     .map(p => `<option value="${p}" ${p === state.period ? 'selected' : ''}>${p}</option>`)
     .join('');
   if (data.benchmark) el('bmName').textContent = data.benchmark.name;
+  renderFreshness();
 
   // Drop selections that no longer exist.
   state.selected = state.selected.filter(sectorBy);
@@ -561,6 +562,76 @@ function renderCompare() {
     return `<tr><th class="row-label">${s.name}</th>${cells}</tr>`;
   }).join('');
 }
+
+/* --------------------------------------------------------------- freshness
+ * A number with no age on it invites being trusted more than it deserves. This
+ * says whether the figures are keeping up with a running market, lagging it, or
+ * simply the last close, and it re-renders on a timer so the age stays true
+ * without anyone reloading.
+ */
+
+// NSE trades 09:15 to 15:30 IST. Computed against IST explicitly rather than the
+// viewer's clock, so it stays right when the page is open from another timezone.
+const IST_OFFSET_MIN = 330;
+const MARKET_OPEN_MIN = 9 * 60 + 15;
+const MARKET_CLOSE_MIN = 15 * 60 + 30;
+
+// A live refresh runs every 15 minutes, so anything inside 20 counts as current.
+const FRESH_MINUTES = 20;
+
+function istNow(now = new Date()) {
+  return new Date(now.getTime() + (IST_OFFSET_MIN + now.getTimezoneOffset()) * 60000);
+}
+
+function marketIsOpen(now = new Date()) {
+  const ist = istNow(now);
+  const day = ist.getDay();
+  if (day === 0 || day === 6) return false;
+  const minutes = ist.getHours() * 60 + ist.getMinutes();
+  return minutes >= MARKET_OPEN_MIN && minutes <= MARKET_CLOSE_MIN;
+}
+
+function ageText(minutes) {
+  if (minutes < 1) return 'just now';
+  if (minutes < 60) return `${Math.round(minutes)}m ago`;
+  const hours = minutes / 60;
+  if (hours < 24) return `${Math.round(hours)}h ago`;
+  return `${Math.round(hours / 24)}d ago`;
+}
+
+function renderFreshness() {
+  const box = el('freshness');
+  const label = el('freshLabel');
+  if (!state.data || !state.data.updatedAt) {
+    box.className = 'freshness';
+    label.textContent = '—';
+    return;
+  }
+
+  const minutes = (Date.now() - new Date(state.data.updatedAt).getTime()) / 60000;
+  const open = marketIsOpen();
+
+  let mode, text;
+  if (open && minutes <= FRESH_MINUTES) {
+    mode = 'live';
+    text = 'LIVE';
+  } else if (open) {
+    // Market moving but nothing has refreshed -- say so rather than imply live.
+    mode = 'stale';
+    text = `DELAYED · ${ageText(minutes)}`;
+  } else {
+    mode = 'closed';
+    text = `CLOSED · ${ageText(minutes)}`;
+  }
+
+  box.className = 'freshness ' + mode;
+  label.textContent = text;
+  box.title = `Figures updated ${ageText(minutes)}`
+    + ` · ${state.data.refreshMode === 'live' ? 'live refresh' : 'full rebuild'}`
+    + ` · market ${open ? 'open' : 'closed'}`;
+}
+
+setInterval(renderFreshness, 30000);
 
 /* ------------------------------------------------------------ market regime
  * NIFTY Composite G-Sec / NIFTY 50 against its own 30-day average. Money moving
