@@ -28,7 +28,14 @@ import sys
 from pathlib import Path
 
 BASE_DIR = Path(__file__).parent
-PY = sys.executable
+
+# pythonw has no console, so a refresh firing every five minutes doesn't throw a
+# black window over whatever you were doing.
+PYW = Path(sys.executable).with_name("pythonw.exe")
+if not PYW.exists():
+    PYW = Path(sys.executable)
+
+RUNNER = BASE_DIR / "run_refresh.py"
 
 MORNING = "Sector Rotation - Morning"
 LIVE = "Sector Rotation - Live"
@@ -48,34 +55,19 @@ def powershell(script):
     )
 
 
-def write_runners():
-    """
-    Small .cmd wrappers. The morning job is two steps, and quoting a chain of
-    Python calls through the scheduler is a reliable way to get it subtly wrong.
-    """
-    morning = BASE_DIR / "run_morning.cmd"
-    morning.write_text(
-        "@echo off\r\n"
-        f'cd /d "{BASE_DIR}"\r\n'
-        f'"{PY}" fetch_data.py\r\n'
-        f'"{PY}" telegram_alerts.py\r\n',
-        encoding="utf-8",
-    )
-
-    live = BASE_DIR / "run_live.cmd"
-    live.write_text(
-        "@echo off\r\n"
-        f'cd /d "{BASE_DIR}"\r\n'
-        f'"{PY}" fetch_data.py --live\r\n',
-        encoding="utf-8",
-    )
-    return morning, live
+def cleanup_old_runners():
+    """The .cmd wrappers this used to create are what flashed a console window."""
+    for stale in ("run_morning.cmd", "run_live.cmd"):
+        path = BASE_DIR / stale
+        if path.exists():
+            path.unlink()
 
 
-def register(name, runner, trigger_script, minutes_limit):
+def register(name, argument, trigger_script, minutes_limit):
     script = f"""
 $ErrorActionPreference = 'Stop'
-$action = New-ScheduledTaskAction -Execute '{runner}' -WorkingDirectory '{BASE_DIR}'
+$action = New-ScheduledTaskAction -Execute '{PYW}' `
+    -Argument '{argument}' -WorkingDirectory '{BASE_DIR}'
 {trigger_script}
 $settings = New-ScheduledTaskSettingsSet `
     -StartWhenAvailable `
@@ -94,7 +86,7 @@ Write-Output 'ok'
 
 
 def create():
-    morning_cmd, live_cmd = write_runners()
+    cleanup_old_runners()
 
     weekdays = "Monday,Tuesday,Wednesday,Thursday,Friday"
 
@@ -115,14 +107,15 @@ def create():
     )
 
     jobs = [
-        (MORNING, morning_cmd, morning_trigger, 30,
+        (MORNING, f'"{RUNNER}" --morning', morning_trigger, 30,
          f"weekdays at {MORNING_AT}, plus a catch-up run if the machine was off"),
-        (LIVE, live_cmd, live_trigger, 10,
-         f"weekdays every {LIVE_EVERY_MIN} min from {LIVE_START}, through the {LIVE_MINUTES // 60}h{LIVE_MINUTES % 60}m session"),
+        (LIVE, f'"{RUNNER}" --live', live_trigger, 10,
+         f"weekdays every {LIVE_EVERY_MIN} min from {LIVE_START}, "
+         f"through the {LIVE_MINUTES // 60}h{LIVE_MINUTES % 60}m session"),
     ]
 
-    for name, runner, trigger, limit, description in jobs:
-        ok, error = register(name, runner, trigger, limit)
+    for name, argument, trigger, limit, description in jobs:
+        ok, error = register(name, argument, trigger, limit)
         if ok:
             print(f"  created  {name}\n           {description}")
         else:

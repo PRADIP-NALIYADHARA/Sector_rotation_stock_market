@@ -1,0 +1,75 @@
+"""
+Silent entry point for the scheduled refreshes.
+
+Run under pythonw.exe this opens no console window, which matters when it fires
+every five minutes while someone is trying to work. The previous .cmd wrappers
+went through cmd.exe and flashed a black window each time.
+
+Nothing is shelled out to, either -- fetch_data and telegram_alerts are imported
+and called in-process, so no child ever gets a console of its own. pythonw
+discards stdout and stderr, so both are redirected to logs/refresh.log, which is
+the only record of what these runs did.
+
+    pythonw run_refresh.py --live       intraday refresh
+    pythonw run_refresh.py --morning    full rebuild, then the Telegram digest
+"""
+import sys
+import traceback
+from datetime import datetime
+from pathlib import Path
+
+BASE_DIR = Path(__file__).parent
+LOG_DIR = BASE_DIR / "logs"
+LOG_FILE = LOG_DIR / "refresh.log"
+
+# A few hundred KB of history is plenty to see what happened last week.
+MAX_LOG_BYTES = 512 * 1024
+
+
+def trim_log():
+    if LOG_FILE.exists() and LOG_FILE.stat().st_size > MAX_LOG_BYTES:
+        text = LOG_FILE.read_text(encoding="utf-8", errors="replace")
+        LOG_FILE.write_text(text[-MAX_LOG_BYTES // 2:], encoding="utf-8")
+
+
+def main():
+    live = "--live" in sys.argv
+    morning = "--morning" in sys.argv
+
+    LOG_DIR.mkdir(exist_ok=True)
+    trim_log()
+
+    with open(LOG_FILE, "a", encoding="utf-8", buffering=1) as log:
+        sys.stdout = log
+        sys.stderr = log
+
+        started = datetime.now()
+        mode = "live" if live else "morning" if morning else "full"
+        log.write(f"\n===== {started:%Y-%m-%d %H:%M:%S} · {mode} refresh =====\n")
+
+        try:
+            import fetch_data
+            fetch_data.main(live=live)
+
+            if morning:
+                # Alerts run only after a full rebuild, so a notification arrives
+                # once a day rather than every five minutes.
+                try:
+                    import telegram_alerts
+                    telegram_alerts.main()
+                except SystemExit:
+                    pass                       # no data or no credentials: already logged
+                except Exception:
+                    log.write("alerts failed:\n" + traceback.format_exc())
+
+            took = (datetime.now() - started).total_seconds()
+            log.write(f"----- done in {took:.0f}s -----\n")
+            return 0
+
+        except Exception:
+            log.write("refresh failed:\n" + traceback.format_exc())
+            return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

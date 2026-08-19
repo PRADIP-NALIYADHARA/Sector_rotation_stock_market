@@ -292,6 +292,35 @@ corporate-action factors are applied only to NSE's, never on top of Yahoo's.
 | Per-stock prices and history | Yahoo via `yfinance` (adjusted, intraday) |
 | Per-stock prices, fallback | `nsearchives.nseindia.com/products/content/sec_bhavdata_full_DDMMYYYY.csv` (daily bhavcopy) |
 
+## Keeping it current
+
+Two Windows scheduled tasks do the work, registered by:
+
+```bash
+python setup_schedule.py            # create or update
+python setup_schedule.py --show     # what is registered, and when it next runs
+python setup_schedule.py --remove    # undo
+```
+
+| Task | When | What |
+|------|------|------|
+| Morning | weekdays 08:15 | full rebuild, then the Telegram digest |
+| Live | weekdays every 5 min, 09:15–15:45 | index levels and prices only |
+
+Both carry **StartWhenAvailable**, so a machine that was off at 08:15 runs the missed
+job when it comes back rather than skipping the day. Overlapping runs are ignored
+rather than queued.
+
+They run under `pythonw.exe` via `run_refresh.py`, which has no console — a job firing
+every five minutes has no business throwing a window over what you are doing. Since
+pythonw discards output, both streams go to `logs/refresh.log`, which is the only
+record of what those runs did.
+
+An open page notices the new figures on its own: it checks for a newer timestamp once
+a minute, redraws only when the server actually has one, and stays quiet while the tab
+is hidden so a phone left open isn't polling all day. The **Update Data** button still
+forces a refresh whenever you want one.
+
 ## Telegram alerts
 
 The dashboard only speaks when you open it, and rotation rarely waits for that.
