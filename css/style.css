@@ -157,33 +157,65 @@ body {
 /* Market regime — the first thing worth reading, so it gets the weight */
 .regime {
   display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-  padding: 0.6rem 1.1rem;
-  border: 2px solid var(--border);
-  border-radius: 12px;
+  align-items: stretch;
+  gap: 0.8rem;
+  padding: 0.55rem 1rem 0.55rem 0;
+  border: 1px solid var(--border);
+  border-radius: 14px;
   background: var(--bg-elev2);
-  min-width: 250px;
-  transition: border-color var(--t), background var(--t);
+  min-width: 300px;
+  overflow: hidden;
+  transition: border-color var(--t), background var(--t), box-shadow var(--t);
   cursor: help;
 }
 
+/* A solid bar of the state's colour, so the reading registers before it is read */
+.regime-rail {
+  width: 5px;
+  flex-shrink: 0;
+  background: var(--border);
+  border-radius: 0 3px 3px 0;
+  transition: background var(--t);
+}
+
+.regime-body { display: flex; flex-direction: column; gap: 0.15rem; flex: 1; }
+
+.regime-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
 .regime-label {
-  font-size: 0.62rem;
-  font-weight: 700;
+  font-size: 0.6rem;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   color: var(--text-dim);
 }
 
-.regime-verdict {
-  font-size: 1.7rem;
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -0.01em;
+.regime-days { font-size: 0.62rem; font-weight: 600; }
+
+.regime-mid {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
 }
 
-.regime-detail { font-size: 0.7rem; color: var(--text-dim); }
+.regime-verdict {
+  font-size: 1.65rem;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.regime-spark { display: block; width: 96px; flex-shrink: 0; }
+.spark-svg { width: 96px; height: 30px; display: block; }
+.spark-svg .spark-zero { stroke: var(--text-dim); stroke-width: 1; stroke-dasharray: 3 3; opacity: 0.5; }
+
+.regime-detail { font-size: 0.68rem; color: var(--text-dim); }
 
 .topbar-right { display: flex; align-items: center; gap: 1rem; }
 
@@ -1329,9 +1361,10 @@ main { max-width: 1240px; margin: 0 auto; padding: 2rem; }
   .brand h1 { font-size: 1.05rem; }
   .byline { font-size: 0.7rem; }
 
-  .regime { width: 100%; min-width: 0; padding: 0.55rem 0.9rem; }
+  .regime { width: 100%; min-width: 0; padding: 0.5rem 0.8rem 0.5rem 0; }
   .regime-verdict { font-size: 1.35rem; }
-  .regime-detail { font-size: 0.66rem; }
+  .regime-detail { font-size: 0.64rem; }
+  .regime-spark, .spark-svg { width: 78px; }
 
   .topbar-right { width: 100%; justify-content: space-between; gap: 0.6rem; }
   .meta { text-align: left; }

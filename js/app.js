@@ -1104,13 +1104,50 @@ function computeRegime() {
     if (above !== (deviation > 0)) { flipped = points[i + 1] ? points[i + 1].date : null; break; }
   }
 
+  // A short run of the deviation, so the header can show which way it is heading
+  // rather than only where it stands.
+  const trail = [];
+  for (let i = Math.max(REGIME_SMA - 1, last - 59); i <= last; i++) {
+    const win = points.slice(i - REGIME_SMA + 1, i + 1);
+    const avg = win.reduce((a, p) => a + p.ratio, 0) / REGIME_SMA;
+    trail.push((points[i].ratio / avg - 1) * 100);
+  }
+
   return {
     deviation,
     bullish: deviation < 0,
     asOf: points[last].date,
     since: flipped,
     days: flipped ? Math.round((Date.now() - new Date(flipped + 'T00:00:00')) / 86400000) : null,
+    trail,
   };
+}
+
+/**
+ * The recent run of the ratio against its average, as a small line.
+ *
+ * Drawn upside down on purpose: below the average is the bullish side, so the
+ * line rising means conditions improving, which is the way anyone reads a chart.
+ */
+function regimeSparkline(trail, colour) {
+  if (!trail || trail.length < 4) return '';
+
+  const W = 96, H = 30, pad = 3;
+  const span = Math.max(...trail.map(Math.abs)) || 1;
+  const x = i => (i / (trail.length - 1)) * W;
+  const y = v => pad + (1 - (-v + span) / (2 * span)) * (H - 2 * pad);
+
+  const d = trail.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)} ${y(v).toFixed(1)}`).join(' ');
+  const area = `${d} L${W} ${H} L0 ${H} Z`;
+
+  return `
+    <svg viewBox="0 0 ${W} ${H}" class="spark-svg" aria-hidden="true">
+      <path d="${area}" fill="${colour}" opacity="0.14"/>
+      <line x1="0" x2="${W}" y1="${y(0).toFixed(1)}" y2="${y(0).toFixed(1)}" class="spark-zero"/>
+      <path d="${d}" fill="none" stroke="${colour}" stroke-width="1.8"
+            stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="${W}" cy="${y(trail[trail.length - 1]).toFixed(1)}" r="2.6" fill="${colour}"/>
+    </svg>`;
 }
 
 function renderRegime() {
@@ -1121,6 +1158,8 @@ function renderRegime() {
     el('regimeVerdict').textContent = '—';
     el('regimeDetail').textContent = historyError
       ? 'needs price history' : 'not enough daily history yet';
+    el('regimeDays').textContent = '';
+    el('regimeSpark').innerHTML = '';
     box.style.borderColor = 'var(--border)';
     return;
   }
@@ -1134,11 +1173,17 @@ function renderRegime() {
 
   const side = regime.bullish ? 'below' : 'above';
   el('regimeDetail').textContent =
-    `G-Sec/Nifty ${Math.abs(regime.deviation).toFixed(2)}% ${side} its 30-day average`
-    + (regime.days !== null ? ` · ${regime.days}d` : '');
+    `G-Sec/Nifty ${Math.abs(regime.deviation).toFixed(2)}% ${side} its 30-day average`;
+
+  el('regimeDays').textContent = regime.days !== null
+    ? `${regime.days} day${regime.days === 1 ? '' : 's'}` : '';
+
+  el('regimeSpark').innerHTML = regimeSparkline(regime.trail, colour.fg);
+  el('regimeRail').style.background = colour.fg;
 
   box.style.borderColor = colour.border;
-  box.style.background = colour.bg;
+  box.style.background = `linear-gradient(135deg, ${colour.bg}, transparent 70%)`;
+  box.style.boxShadow = `0 0 0 1px ${colour.bg}, 0 6px 18px ${colour.bg}`;
 }
 
 /* ------------------------------------------------------------- rotation map
