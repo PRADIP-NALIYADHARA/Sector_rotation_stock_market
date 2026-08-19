@@ -1177,6 +1177,89 @@ function rrgPoints(group) {
     .filter(Boolean);
 }
 
+/**
+ * What the map is actually saying today, in words.
+ *
+ * A scatter of twenty-odd dots is only useful if you can already read one. This
+ * picks out the four things worth acting on -- where the money is, what is
+ * quietly rolling over, what is turning up first, and what to leave alone -- and
+ * names them.
+ */
+function renderRrgReading(points) {
+  const box = el('rrgReading');
+  if (!points.length) { box.innerHTML = ''; return; }
+
+  const byQuad = q => points.filter(p => p.quadrant === q);
+  const strongest = list => [...list].sort((a, b) => b.x - a.x)[0];
+  const fastestUp = list => [...list].sort((a, b) => b.y - a.y)[0];
+  const fastestDown = list => [...list].sort((a, b) => a.y - b.y)[0];
+
+  const leading = byQuad('leading');
+  const weakening = byQuad('weakening');
+  const improving = byQuad('improving');
+  const lagging = byQuad('lagging');
+
+  const bm = state.data.benchmark;
+  const regime = bm.rangePos === null || bm.rangePos === undefined ? null : bm.rangePos;
+
+  const cards = [];
+
+  if (leading.length) {
+    const best = fastestUp(leading);
+    cards.push({
+      key: 'leading',
+      title: 'Money is here',
+      body: `<b>${leading.length}</b> ahead of ${bm.name} and still widening. `
+        + `<b>${best.name}</b> is pulling away fastest, ${signedPct(best.y)} above its own three-month pace.`,
+    });
+  }
+
+  if (weakening.length) {
+    const slipping = fastestDown(weakening);
+    cards.push({
+      key: 'weakening',
+      title: 'Quietly rolling over',
+      body: `<b>${slipping.name}</b> is still <b>${signedPct(slipping.x)}</b> ahead — near the top of any ranking — `
+        + `but losing ground fastest of anything here. ${weakening.length > 1
+          ? `${weakening.length - 1} other${weakening.length > 2 ? 's are' : ' is'} doing the same.` : ''}`,
+    });
+  }
+
+  if (improving.length) {
+    const turning = fastestUp(improving);
+    cards.push({
+      key: 'improving',
+      title: 'Turning up first',
+      body: `<b>${turning.name}</b> is still <b>${signedPct(turning.x)}</b> behind, so the ranking shows it red — `
+        + `but it is improving faster than anything on the board. This is where the next leader usually appears.`,
+    });
+  }
+
+  if (lagging.length) {
+    const worst = fastestDown(lagging);
+    cards.push({
+      key: 'lagging',
+      title: 'Leave alone for now',
+      body: `<b>${lagging.length}</b> behind and still falling further`
+        + (worst ? `, ${worst.name} the weakest.` : '.'),
+    });
+  }
+
+  const headline = regime === null ? '' : `
+    <p class="rrg-headline">
+      ${bm.name} sits <b>${regime}%</b> up its own 52-week range.
+      ${regime < 50
+        ? 'With the index itself going nowhere, what leads here is leading on its own strength rather than being carried.'
+        : 'The index is near the top of its own range, so most of these are rising with it rather than despite it.'}
+    </p>`;
+
+  box.innerHTML = headline + `<div class="rrg-reading-grid">` + cards.map(c => `
+    <div class="rrg-read ${c.key}">
+      <div class="rrg-read-title">${c.title}</div>
+      <p>${c.body}</p>
+    </div>`).join('') + `</div>`;
+}
+
 function renderRrg() {
   const panel = el('rrgPanel');
   if (panel.classList.contains('hidden')) return;
@@ -1194,7 +1277,7 @@ function renderRrg() {
   const spanX = Math.max(...points.map(p => Math.abs(p.x))) * 1.15 || 1;
   const spanY = Math.max(...points.map(p => Math.abs(p.y))) * 1.15 || 1;
 
-  const W = 1000, H = 460, M = 40;
+  const W = 1000, H = 620, M = 52;
   const x = v => M + ((v + spanX) / (2 * spanX)) * (W - 2 * M);
   const y = v => M + (1 - (v + spanY) / (2 * spanY)) * (H - 2 * M);
   const midX = x(0), midY = y(0);
@@ -1205,6 +1288,19 @@ function renderRrg() {
     lagging:   'rgba(234, 57, 67, 0.07)',
     improving: 'rgba(75, 159, 255, 0.07)',
   };
+
+  // With twenty-odd sectors the names collide; nudge overlapping ones apart and
+  // draw a short leader line back to the dot so it stays clear which is which.
+  const placed = points
+    .map(p => ({ ...p, labelY: y(p.y), nudged: false }))
+    .sort((a, b) => a.labelY - b.labelY);
+  for (let i = 1; i < placed.length; i++) {
+    const gap = placed[i].labelY - placed[i - 1].labelY;
+    if (gap < 15 && Math.abs(x(placed[i].x) - x(placed[i - 1].x)) < 150) {
+      placed[i].labelY = placed[i - 1].labelY + 15;
+      placed[i].nudged = true;
+    }
+  }
 
   host.innerHTML = `
     <svg viewBox="0 0 ${W} ${H}" class="rrg-svg" role="img" aria-label="Rotation map">
@@ -1224,14 +1320,19 @@ function renderRrg() {
       <text x="${W - M}" y="${midY - 8}" class="rrg-axis-label" text-anchor="end">ahead of benchmark →</text>
       <text x="${midX + 8}" y="${M + 4}" class="rrg-axis-label">↑ lead growing</text>
 
-      ${points.map(p => `
+      ${placed.map(p => `
         <g class="rrg-point" data-sector="${p.indexName}">
-          <circle cx="${x(p.x).toFixed(1)}" cy="${y(p.y).toFixed(1)}" r="5"
+          ${p.nudged ? `<line x1="${x(p.x).toFixed(1)}" y1="${y(p.y).toFixed(1)}"
+                x2="${(x(p.x) + 10).toFixed(1)}" y2="${p.labelY.toFixed(1)}"
+                class="rrg-leader"/>` : ''}
+          <circle cx="${x(p.x).toFixed(1)}" cy="${y(p.y).toFixed(1)}" r="6.5"
                   class="rrg-dot ${p.quadrant}"/>
-          <text x="${(x(p.x) + 9).toFixed(1)}" y="${(y(p.y) + 4).toFixed(1)}"
+          <text x="${(x(p.x) + 12).toFixed(1)}" y="${(p.labelY + 4).toFixed(1)}"
                 class="rrg-name">${p.name}</text>
         </g>`).join('')}
     </svg>`;
+
+  renderRrgReading(points);
 
   el('rrgLists').innerHTML = RRG_QUADRANTS.map(q => {
     const inQuad = points.filter(p => p.quadrant === q.key)

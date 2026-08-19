@@ -1390,3 +1390,48 @@ main { max-width: 1240px; margin: 0 auto; padding: 2rem; }
 
 .mom.up { color: #16c784; }
 .mom.down { color: #ea3943; }
+
+/* Rotation map: the plain-language read under the plot */
+.rrg-reading { margin-top: 1.1rem; }
+
+.rrg-headline {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  padding: 0.7rem 0.9rem;
+  background: var(--bg-elev2);
+  border-radius: 9px;
+  margin-bottom: 0.9rem;
+}
+
+.rrg-reading-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 0.9rem;
+}
+
+.rrg-read {
+  border: 1px solid var(--border);
+  border-left-width: 3px;
+  border-radius: 10px;
+  padding: 0.7rem 0.85rem;
+}
+
+.rrg-read.leading { border-left-color: #16c784; }
+.rrg-read.weakening { border-left-color: #f0b90b; }
+.rrg-read.improving { border-left-color: #4b9fff; }
+.rrg-read.lagging { border-left-color: #ea3943; }
+
+.rrg-read-title {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  margin-bottom: 0.35rem;
+}
+
+.rrg-read p { font-size: 0.82rem; line-height: 1.55; }
+
+.rrg-svg { height: 620px; }
+.rrg-svg .rrg-name { font-size: 12px; }
+.rrg-svg .rrg-leader { stroke: var(--border); stroke-width: 1; }
