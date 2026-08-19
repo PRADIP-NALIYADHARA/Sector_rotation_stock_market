@@ -22,6 +22,7 @@ let state = {
   stockSort: 'strength',
   capFilter: 'all',
   watchOnly: false,
+  rrgView: 'board',
   selected: [],        // indexNames chosen for comparison
   selectedStocks: [],  // symbols chosen for comparison
   lastView: 'overview',
@@ -1178,6 +1179,64 @@ function rrgPoints(group) {
 }
 
 /**
+ * The quadrants as four panels laid out where they belong.
+ *
+ * A scatter carrying twenty-odd labelled points is dense however large it is
+ * drawn. The board keeps the same mental model -- the four quadrants in their
+ * usual corners, money travelling clockwise between them -- but each is a list
+ * you can simply read, with a bar for how far from the benchmark a sector is and
+ * the momentum figure that decided which quadrant it landed in.
+ */
+function renderRrgBoard(points) {
+  const host = el('rrgBoard');
+  if (!points.length) { host.innerHTML = ''; return; }
+
+  const widest = Math.max(...points.map(p => Math.abs(p.x))) || 1;
+
+  // Top row is the two "behind"/"ahead but improving" halves, so the clockwise
+  // path reads Improving -> Leading -> Weakening -> Lagging around the board.
+  const cells = [
+    { key: 'improving', label: 'Improving', note: 'behind, but turning up' },
+    { key: 'leading',   label: 'Leading',   note: 'ahead and pulling away' },
+    { key: 'lagging',   label: 'Lagging',   note: 'behind and falling further' },
+    { key: 'weakening', label: 'Weakening', note: 'still ahead, losing ground' },
+  ];
+
+  host.innerHTML = cells.map(cell => {
+    const inCell = points.filter(p => p.quadrant === cell.key)
+      .sort((a, b) => b.x - a.x);
+
+    const rows = inCell.map(p => {
+      const width = Math.max(4, Math.abs(p.x) / widest * 100);
+      const rising = p.y >= 0;
+      return `
+        <button class="board-row" data-sector="${p.indexName}">
+          <span class="board-name">${p.name}</span>
+          <span class="board-bar"><i style="width:${width.toFixed(0)}%"></i></span>
+          <span class="board-x">${signedPct(p.x)}</span>
+          <span class="board-y ${rising ? 'up' : 'down'}"
+                title="${rising ? 'Lead widening' : 'Lead narrowing'} by ${signedPct(p.y)} against its three-month pace">
+            ${rising ? '▲' : '▼'} ${signedPct(p.y)}
+          </span>
+        </button>`;
+    }).join('');
+
+    return `
+      <div class="board-cell ${cell.key}">
+        <div class="board-head">
+          <span class="board-title">${cell.label}</span>
+          <span class="board-count">${inCell.length}</span>
+          <span class="board-note dim">${cell.note}</span>
+        </div>
+        <div class="board-rows">${rows || '<p class="dim board-empty">nothing here</p>'}</div>
+      </div>`;
+  }).join('');
+
+  host.querySelectorAll('.board-row').forEach(b =>
+    b.addEventListener('click', () => openSector(b.dataset.sector)));
+}
+
+/**
  * What the map is actually saying today, in words.
  *
  * A scatter of twenty-odd dots is only useful if you can already read one. This
@@ -1267,6 +1326,10 @@ function renderRrg() {
   const points = rrgPoints(el('rrgGroup').value);
   const host = el('rrgHost');
 
+  const scatter = state.rrgView === 'scatter';
+  host.classList.toggle('hidden', !scatter);
+  el('rrgBoard').classList.toggle('hidden', scatter);
+
   if (!points.length) {
     host.innerHTML = '<div class="chart-empty">Nothing to plot for this group.</div>';
     el('rrgLists').innerHTML = '';
@@ -1332,9 +1395,10 @@ function renderRrg() {
         </g>`).join('')}
     </svg>`;
 
+  renderRrgBoard(points);
   renderRrgReading(points);
 
-  el('rrgLists').innerHTML = RRG_QUADRANTS.map(q => {
+  el('rrgLists').innerHTML = state.rrgView === 'scatter' ? RRG_QUADRANTS.map(q => {
     const inQuad = points.filter(p => p.quadrant === q.key)
       .sort((a, b) => b.x - a.x);
     if (!inQuad.length) return '';
@@ -1346,7 +1410,7 @@ function renderRrg() {
             ${p.name}<b>${signedPct(p.x)}</b>
           </button>`).join('')}
       </div>`;
-  }).join('');
+  }).join('') : '';
 
   host.querySelectorAll('.rrg-point').forEach(g =>
     g.addEventListener('click', () => openSector(g.dataset.sector)));
@@ -1887,6 +1951,16 @@ el('rrgToggle').addEventListener('click', () => {
   if (open) renderRrg();
 });
 
+el('rrgView').addEventListener('click', (e) => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  el('rrgView').querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  state.rrgView = chip.dataset.view;
+  localStorage.setItem('rrgView', state.rrgView);
+  renderRrg();
+});
+
 el('rrgGroup').addEventListener('change', () => {
   localStorage.setItem('rrgGroup', el('rrgGroup').value);
   renderRrg();
@@ -1963,6 +2037,13 @@ if (savedPeriod) state.period = savedPeriod;
 // the way for whoever doesn't.
 const savedGroup = localStorage.getItem('rrgGroup');
 if (savedGroup) el('rrgGroup').value = savedGroup;
+
+const savedView = localStorage.getItem('rrgView');
+if (savedView) {
+  state.rrgView = savedView;
+  el('rrgView').querySelectorAll('.chip').forEach(c =>
+    c.classList.toggle('active', c.dataset.view === savedView));
+}
 if (localStorage.getItem('rrgOpen') === '1') {
   el('rrgPanel').classList.remove('hidden');
   el('rrgToggle').classList.add('active');
