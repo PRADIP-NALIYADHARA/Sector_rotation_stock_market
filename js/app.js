@@ -20,12 +20,59 @@ let state = {
   stockSearch: '',
   stockFilter: 'all',
   stockSort: 'strength',
+  watchOnly: false,
   selected: [],        // indexNames chosen for comparison
   selectedStocks: [],  // symbols chosen for comparison
   lastView: 'overview',
 };
 
 let stockBook = null;    // {symbol: {returns, rs, rangePos, ...}} from /api/stocks
+
+/* ---------------------------------------------------------------- watchlists
+ * Several named lists rather than one, each holding sectors and stocks, kept in
+ * the browser so nothing has to be set up server-side. Research is only worth
+ * the effort if what you found is still there next week.
+ */
+
+const WATCHLIST_KEY = 'watchlists';
+
+function loadWatchlists() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(WATCHLIST_KEY));
+    if (raw && Array.isArray(raw.lists) && raw.lists.length) return raw;
+  } catch (e) { /* corrupt or absent: start fresh */ }
+  return { active: 0, lists: [{ name: 'My list', sectors: [], stocks: [] }] };
+}
+
+function saveWatchlists() {
+  localStorage.setItem(WATCHLIST_KEY, JSON.stringify(watchlists));
+}
+
+let watchlists = loadWatchlists();
+
+const activeList = () => watchlists.lists[watchlists.active] || watchlists.lists[0];
+
+function inWatchlist(kind, key) {
+  const list = activeList();
+  return (kind === 'stock' ? list.stocks : list.sectors).includes(key);
+}
+
+/** Present in any list, not just the active one — worth showing on a card. */
+function watchedAnywhere(kind, key) {
+  return watchlists.lists.some(l => (kind === 'stock' ? l.stocks : l.sectors).includes(key));
+}
+
+function toggleWatch(kind, key) {
+  const list = activeList();
+  const bucket = kind === 'stock' ? list.stocks : list.sectors;
+  const i = bucket.indexOf(key);
+  if (i >= 0) bucket.splice(i, 1);
+  else bucket.push(key);
+  saveWatchlists();
+  renderWatchBar();
+  renderSections();
+  if (state.activeSector) renderDetail();
+}
 
 const stockBy = (symbol) =>
   stockBook && stockBook.stocks ? stockBook.stocks[symbol] || null : null;
@@ -257,7 +304,25 @@ function applyData(data) {
 
 /* -------------------------------------------------------------- rendering */
 
+function renderWatchBar() {
+  const select = el('watchSelect');
+  select.innerHTML = watchlists.lists
+    .map((l, i) => `<option value="${i}" ${i === watchlists.active ? 'selected' : ''}>${l.name}</option>`)
+    .join('');
+
+  const list = activeList();
+  const total = list.sectors.length + list.stocks.length;
+  el('watchCount').textContent = total
+    ? `${list.sectors.length} sectors · ${list.stocks.length} stocks`
+    : 'empty — star a sector or stock to add it';
+
+  el('watchDelete').disabled = watchlists.lists.length < 2;
+  el('watchOnly').classList.toggle('active', state.watchOnly);
+  el('watchOnly').setAttribute('aria-pressed', String(state.watchOnly));
+}
+
 function render() {
+  renderWatchBar();
   renderRrg();
   renderBenchmarkStrip();
   renderScaleLegend();
@@ -290,6 +355,7 @@ function visibleSectors() {
     if (state.filter === 'bull' && !(rs > 0)) return false;
     if (state.filter === 'bear' && !(rs < 0)) return false;
     if (state.filter === 'breakout' && !(s.lead && s.lead.breakingOut)) return false;
+    if (state.watchOnly && !inWatchlist('sector', s.indexName)) return false;
     if (state.search) {
       const q = state.search;
       if (!s.name.toLowerCase().includes(q) && !s.indexName.toLowerCase().includes(q)) return false;
@@ -344,6 +410,12 @@ function renderSections() {
       toggleCompare(box.dataset.sector);
     });
   });
+  container.querySelectorAll('.watch-star').forEach(star => {
+    star.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleWatch('sector', star.dataset.watchSector);
+    });
+  });
 }
 
 function sectorCard(s) {
@@ -365,8 +437,12 @@ function sectorCard(s) {
           <div class="sector-name">${s.name}</div>
           <div class="sector-index">${s.indexName}</div>
         </div>
-        <button class="compare-toggle ${picked ? 'on' : ''}" data-sector="${s.indexName}"
-                title="Add to comparison">${picked ? '✓' : '+'}</button>
+        <div class="card-actions">
+          <button class="watch-star ${watchedAnywhere('sector', s.indexName) ? 'on' : ''}"
+                  data-watch-sector="${s.indexName}" title="Add to watchlist">★</button>
+          <button class="compare-toggle ${picked ? 'on' : ''}" data-sector="${s.indexName}"
+                  title="Add to comparison">${picked ? '✓' : '+'}</button>
+        </div>
       </div>
       ${lead.breakingOut ? '<div class="breakout-badge">⚡ Leading breakout</div>' : ''}
       <div class="sector-figures">
@@ -484,6 +560,8 @@ function renderDetail() {
     return `
       <tr class="${st.nearHigh ? 'near-high' : ''}" style="border-left:3px solid ${c.border}">
         <td class="pick-cell">
+          <button class="watch-star small ${watchedAnywhere('stock', st.symbol) ? 'on' : ''}"
+                  data-watch-stock="${st.symbol}" title="Add to watchlist">★</button>
           <button class="compare-toggle small ${picked ? 'on' : ''}" data-stock="${st.symbol}"
                   title="Add to comparison">${picked ? '✓' : '+'}</button>
         </td>
@@ -504,6 +582,9 @@ function renderDetail() {
 
   el('stockBody').querySelectorAll('.compare-toggle').forEach(btn => {
     btn.addEventListener('click', () => toggleStock(btn.dataset.stock));
+  });
+  el('stockBody').querySelectorAll('.watch-star').forEach(btn => {
+    btn.addEventListener('click', () => toggleWatch('stock', btn.dataset.watchStock));
   });
 }
 
@@ -1514,6 +1595,45 @@ el('statusFilter').addEventListener('click', (e) => {
 el('sortBy').addEventListener('change', (e) => {
   state.sortBy = e.target.value;
   renderSections();
+});
+
+el('watchSelect').addEventListener('change', (e) => {
+  watchlists.active = parseInt(e.target.value, 10);
+  saveWatchlists();
+  render();
+});
+
+el('watchNew').addEventListener('click', () => {
+  const name = prompt('Name for the new watchlist:', `List ${watchlists.lists.length + 1}`);
+  if (!name) return;
+  watchlists.lists.push({ name: name.trim(), sectors: [], stocks: [] });
+  watchlists.active = watchlists.lists.length - 1;
+  saveWatchlists();
+  render();
+});
+
+el('watchRename').addEventListener('click', () => {
+  const list = activeList();
+  const name = prompt('Rename this watchlist:', list.name);
+  if (!name) return;
+  list.name = name.trim();
+  saveWatchlists();
+  render();
+});
+
+el('watchDelete').addEventListener('click', () => {
+  if (watchlists.lists.length < 2) return;
+  const list = activeList();
+  if (!confirm(`Delete "${list.name}"? Its ${list.sectors.length + list.stocks.length} entries go with it.`)) return;
+  watchlists.lists.splice(watchlists.active, 1);
+  watchlists.active = 0;
+  saveWatchlists();
+  render();
+});
+
+el('watchOnly').addEventListener('click', () => {
+  state.watchOnly = !state.watchOnly;
+  render();
 });
 
 el('rrgToggle').addEventListener('click', () => {

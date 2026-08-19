@@ -414,6 +414,69 @@ main { max-width: 1240px; margin: 0 auto; padding: 2rem; }
 
 .sort-control select:focus { outline: none; border-color: var(--accent); }
 
+/* ------------------------------------------------------------ watchlists */
+
+.watch-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  padding: 0.7rem 0.9rem;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.watch-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+}
+
+.watch-select {
+  background: var(--bg-elev2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.4rem 0.6rem;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-width: 130px;
+}
+
+.watch-select:focus { outline: none; border-color: var(--accent); }
+
+.icon-btn.small {
+  width: 30px;
+  height: 30px;
+  font-size: 0.8rem;
+  border-radius: 7px;
+}
+
+.icon-btn.small:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.watch-star {
+  background: none;
+  border: none;
+  color: var(--border);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.1rem 0.2rem;
+  transition: color var(--t), transform var(--t);
+}
+
+.watch-star:hover { color: var(--text-dim); transform: scale(1.15); }
+.watch-star.on { color: #f0b90b; }
+.watch-star.small { font-size: 0.85rem; }
+
+.card-actions { display: flex; align-items: center; gap: 0.2rem; flex-shrink: 0; }
+
 /* ---------------------------------------------------------- rotation map */
 
 .rrg-strip {
