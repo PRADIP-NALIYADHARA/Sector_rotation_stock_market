@@ -919,10 +919,15 @@ def main(live=False):
                     "capBand": bands.get(symbol),
                     **moving_averages(yahoo.get(symbol), today),
                     "sectors": [],
+                    # Every index the stock belongs to, broad ones included, so a
+                    # screener can be pointed at "NIFTY 500" rather than only at
+                    # a sector.
+                    "indices": [],
                 }
                 stock_detail[symbol] = entry
             # Which sectors a stock sits in is the quickest way to see whether a
             # name is a pure play or is being carried by a broader theme.
+            entry["indices"].append(sector["indexName"])
             if sector["group"] != "Broad":
                 entry["sectors"].append(sector["indexName"])
 
