@@ -18,9 +18,56 @@ let state = {
   period: '1M',
   activeSector: null,
   stockSearch: '',
-  selected: [],      // indexNames chosen for comparison
+  stockFilter: 'all',
+  stockSort: 'strength',
+  selected: [],        // indexNames chosen for comparison
+  selectedStocks: [],  // symbols chosen for comparison
   lastView: 'overview',
 };
+
+let stockBook = null;    // {symbol: {returns, rs, rangePos, ...}} from /api/stocks
+
+const stockBy = (symbol) =>
+  stockBook && stockBook.stocks ? stockBook.stocks[symbol] || null : null;
+
+const stockRs = (symbol) => {
+  const s = stockBy(symbol);
+  return s ? (s.rs || {})[state.period] ?? null : null;
+};
+
+const stockRet = (symbol) => {
+  const s = stockBy(symbol);
+  return s ? (s.returns || {})[state.period] ?? null : null;
+};
+
+/*
+ * Ranking a sector's names for "which one is actually breaking out".
+ *
+ * Two things have to be true at once, so they are multiplied rather than added:
+ * a stock has to be beating the market *and* be up near its own 52-week high.
+ * Either alone is a common and much weaker setup -- a laggard bouncing off the
+ * floor beats the market for a week, and a stock can sit at its high while the
+ * whole market runs harder. A high set recently counts for more than one set
+ * eleven months ago, which is the difference between breaking out and drifting.
+ */
+function stockStrength(symbol) {
+  const s = stockBy(symbol);
+  if (!s) return null;
+
+  const rs = (s.rs || {})[state.period];
+  const range = s.rangePos;
+  if (rs === null || rs === undefined || range === null || range === undefined) return null;
+
+  const beating = Math.max(0, Math.min(rs, 40)) / 40;      // 0..1
+  const nearHigh = Math.max(0, Math.min(range, 100)) / 100; // 0..1
+
+  let freshness = 0.6;
+  if (s.daysSinceHigh !== null && s.daysSinceHigh !== undefined) {
+    freshness = s.daysSinceHigh <= 10 ? 1 : s.daysSinceHigh <= 45 ? 0.85 : 0.6;
+  }
+
+  return Math.round(beating * nearHigh * freshness * 100);
+}
 
 // The signal: how far a sector's return sits above or below the benchmark's over
 // the selected window. Same reading as two lines on one same-% chart.
@@ -407,25 +454,113 @@ function renderDetail() {
     return st.symbol.toLowerCase().includes(q) || st.company.toLowerCase().includes(q);
   });
 
+  const filtered = stocks.filter(st => {
+    if (state.stockFilter === 'strong') return (stockRs(st.symbol) ?? -1) > 0;
+    if (state.stockFilter === 'breakout') return st.nearHigh;
+    return true;
+  });
+
+  const sorted = sortStocks(filtered);
   const near = s.stocks.filter(st => st.nearHigh).length;
   el('stockCount').textContent =
-    `${stocks.length} of ${s.stocks.length} stocks · ${near} within 5% of a 52-week high`;
+    `${sorted.length} of ${s.stocks.length} stocks · ${near} within 5% of a 52-week high`;
 
-  el('stockBody').innerHTML = stocks.map(st => {
+  el('stockRetHead').textContent = `${state.period} return`;
+  el('stockRsHead').textContent = `vs bench (${state.period})`;
+
+  el('stockBody').innerHTML = sorted.map(st => {
     const c = colourFor(st.pChange);
-    const fh = colourFor(st.fromHigh === null ? null : st.fromHigh + 5);  // near high reads green
-    const fresh = st.daysSinceHigh !== null && st.daysSinceHigh !== undefined && st.daysSinceHigh <= 10;
+    const rs = stockRs(st.symbol);
+    const ret = stockRet(st.symbol);
+    const rsC = colourFor(rs);
+    // Being near the high is the good end, so the sign is flipped for colour.
+    const fh = colourFor(st.fromHigh === null ? null : st.fromHigh + 5);
+    const fresh = st.daysSinceHigh !== null && st.daysSinceHigh !== undefined
+                  && st.daysSinceHigh <= 10;
+    const picked = state.selectedStocks.includes(st.symbol);
+    const score = stockStrength(st.symbol);
+
     return `
       <tr class="${st.nearHigh ? 'near-high' : ''}" style="border-left:3px solid ${c.border}">
-        <td class="sym">${st.symbol}${st.nearHigh ? ' <span class="near-flag">⚡</span>' : ''}</td>
+        <td class="pick-cell">
+          <button class="compare-toggle small ${picked ? 'on' : ''}" data-stock="${st.symbol}"
+                  title="Add to comparison">${picked ? '✓' : '+'}</button>
+        </td>
+        <td class="sym">
+          ${st.symbol}${st.nearHigh ? ' <span class="near-flag">⚡</span>' : ''}
+          ${score !== null ? `<span class="score" title="Beating the benchmark and near its own high">${score}</span>` : ''}
+        </td>
         <td>${st.company}</td>
         <td class="right">${fmt(st.close)}</td>
         <td class="pchange" style="color:${c.fg}">${signedPct(st.pChange)}</td>
-        <td class="right">${fmt(st.high52)}</td>
+        <td class="right">${signedPct(ret)}</td>
+        <td class="right" style="color:${rsC.fg};font-weight:700">${signedPct(rs)}</td>
+        <td class="right">${st.rangePos === null || st.rangePos === undefined ? '—' : st.rangePos + '%'}</td>
         <td class="right" style="color:${fh.fg};font-weight:700">${signedPct(st.fromHigh)}</td>
         <td class="${fresh ? 'fresh-high' : 'dim'}">${st.highDate || '—'}</td>
       </tr>`;
   }).join('');
+
+  el('stockBody').querySelectorAll('.compare-toggle').forEach(btn => {
+    btn.addEventListener('click', () => toggleStock(btn.dataset.stock));
+  });
+}
+
+const STOCK_COMPARE_ROWS = [
+  ['Company', s => s.company],
+  ['Close', s => fmt(s.close)],
+  ['Today', s => s.pChange, true],
+  ['52w range position', s => s.rangePos === null ? '—' : s.rangePos + '%'],
+  ['From 52w high', s => s.fromHigh, true],
+  ['High set', s => s.highDate || '—'],
+  ['Days since high', s => s.daysSinceHigh === null || s.daysSinceHigh === undefined
+                          ? '—' : s.daysSinceHigh],
+  ['Also in', s => (s.sectors || []).length],
+];
+
+function renderStockTable(stocks) {
+  const box = el('stockCompareBox');
+  if (!stocks.length) { box.classList.add('hidden'); return; }
+  box.classList.remove('hidden');
+
+  const periods = (state.data.periods) || [];
+
+  el('stockCompareHead').innerHTML = '<th>Metric</th>' + stocks.map(s =>
+    `<th><div>${s.symbol}</div><span class="dim th-sub">${
+      stockStrength(s.symbol) !== null ? 'strength ' + stockStrength(s.symbol) : ''
+    }</span></th>`).join('');
+
+  const row = (label, get, isPct) => `
+    <tr>
+      <th class="row-label">${label}</th>
+      ${stocks.map(s => {
+        const v = get(s);
+        if (!isPct) return `<td>${v}</td>`;
+        return `<td style="color:${colourFor(v).fg};font-weight:700">${signedPct(v)}</td>`;
+      }).join('')}
+    </tr>`;
+
+  el('stockCompareBody').innerHTML =
+    STOCK_COMPARE_ROWS.map(([label, get, isPct]) => row(label, get, isPct)).join('')
+    + periods.map(p => row(`${p} return`, s => (s.returns || {})[p], true)).join('')
+    + periods.map(p => row(`${p} vs benchmark`, s => (s.rs || {})[p], true)).join('');
+}
+
+function sortStocks(list) {
+  const key = state.stockSort;
+  const value = (st) => {
+    if (key === 'strength') return stockStrength(st.symbol);
+    if (key === 'rs') return stockRs(st.symbol);
+    if (key === 'ret') return stockRet(st.symbol);
+    if (key === 'rangePos') return st.rangePos;
+    return st.pChange;
+  };
+  return [...list].sort((a, b) => {
+    const av = value(a), bv = value(b);
+    if (av === null || av === undefined) return 1;
+    if (bv === null || bv === undefined) return -1;
+    return bv - av;
+  });
 }
 
 // Every window at once: the row that matters is the last one, which is the gap
@@ -485,26 +620,49 @@ function toggleCompare(indexName) {
   if (!el('compareView').classList.contains('hidden')) renderCompare();
 }
 
+function toggleStock(symbol) {
+  const i = state.selectedStocks.indexOf(symbol);
+  if (i >= 0) state.selectedStocks.splice(i, 1);
+  else state.selectedStocks.push(symbol);
+  if (state.activeSector) renderDetail();
+  renderTray();
+  if (!el('compareView').classList.contains('hidden')) renderCompare();
+}
+
 function renderTray() {
   const tray = el('compareTray');
-  if (!state.selected.length) { tray.classList.add('hidden'); return; }
+  const total = state.selected.length + state.selectedStocks.length;
+  if (!total) { tray.classList.add('hidden'); return; }
 
   tray.classList.remove('hidden');
-  el('trayItems').innerHTML = state.selected.map(name => {
+
+  const sectorChips = state.selected.map(name => {
     const s = sectorBy(name);
     if (!s) return '';
-    const c = colourFor(s.pChange);
+    const c = colourFor(rsOf(s));
     return `<span class="tray-chip" style="border-color:${c.border}">
       ${s.name}<button class="tray-remove" data-sector="${name}" aria-label="Remove">×</button>
     </span>`;
   }).join('');
 
+  const stockChips = state.selectedStocks.map(symbol => {
+    const c = colourFor(stockRs(symbol));
+    return `<span class="tray-chip stock" style="border-color:${c.border}">
+      ${symbol}<button class="tray-remove" data-stock="${symbol}" aria-label="Remove">×</button>
+    </span>`;
+  }).join('');
+
+  el('trayItems').innerHTML = sectorChips + stockChips;
+
   el('trayItems').querySelectorAll('.tray-remove').forEach(btn => {
-    btn.addEventListener('click', () => toggleCompare(btn.dataset.sector));
+    btn.addEventListener('click', () => {
+      if (btn.dataset.stock) toggleStock(btn.dataset.stock);
+      else toggleCompare(btn.dataset.sector);
+    });
   });
 
-  el('openCompare').textContent = `Compare ${state.selected.length}`;
-  el('openCompare').disabled = state.selected.length < 2;
+  el('openCompare').textContent = `Compare ${total}`;
+  el('openCompare').disabled = total < 2;
 }
 
 function compareRows() {
@@ -529,12 +687,17 @@ function topStock(s, which) {
   return `${pick.symbol} ${signedPct(pick.pChange)}`;
 }
 
-function renderCompare() {
+async function renderCompare() {
   const chosen = state.selected.map(sectorBy).filter(Boolean);
-  el('compareCount').textContent = chosen.length;
+  const chosenStocks = state.selectedStocks.map(stockBy).filter(Boolean);
+  el('compareCount').textContent = chosen.length + chosenStocks.length;
+
+  // Stock series arrive per request, so they have to be here before drawing.
+  await ensureStockHistory(state.selectedStocks);
 
   renderChartControls();
   renderChart();
+  renderStockTable(chosenStocks);
 
   el('compareHead').innerHTML = '<th>Metric</th>' +
     chosen.map(s => `<th><div>${s.name}</div><span class="dim th-sub">${s.group}</span></th>`).join('');
@@ -770,6 +933,27 @@ const LINE_COLOURS = [
 
 let priceHistory = null;     // {dates, series} - not window.history
 let historyError = null;
+let stockHistory = {};       // symbol -> {isoDate: close}, fetched on demand
+
+/**
+ * Pull price series for stocks that are about to be charted.
+ *
+ * The full price book is 7.5 MB, so it is never shipped whole -- only the
+ * handful of symbols actually selected, and only once each.
+ */
+async function ensureStockHistory(symbols) {
+  const missing = symbols.filter(s => !stockHistory[s]);
+  if (!missing.length) return;
+  try {
+    const res = await fetch('/api/stock-history?symbols='
+      + encodeURIComponent(missing.join(',')));
+    if (!res.ok) return;
+    const body = await res.json();
+    Object.assign(stockHistory, body.series || {});
+  } catch (e) {
+    /* charted lines will simply be absent */
+  }
+}
 
 async function loadHistory() {
   // Standalone snapshots carry the series inline; there is no server to ask.
@@ -797,6 +981,41 @@ async function loadHistory() {
 // Industry groups have no index of their own, so they cannot be charted.
 const chartableSeries = (indexName) =>
   priceHistory && priceHistory.series[(indexName || '').toUpperCase()] || null;
+
+/** Sectors and stocks in one list, so the chart can mix them freely. */
+function selections() {
+  const out = state.selected.map(indexName => {
+    const sector = sectorBy(indexName);
+    return { kind: 'sector', key: indexName,
+             name: sector ? sector.name : indexName,
+             tag: sector ? sector.group : '' };
+  });
+  state.selectedStocks.forEach(symbol => {
+    const stock = stockBy(symbol);
+    out.push({ kind: 'stock', key: symbol, name: symbol,
+               tag: stock ? stock.company : 'stock' });
+  });
+  return out;
+}
+
+/**
+ * A series aligned to the index calendar.
+ *
+ * Stock history is keyed by date while index history is a positional array, so
+ * stock closes are looked up per index date -- carrying the last known price
+ * forward across a gap rather than breaking the line.
+ */
+function seriesFor(item) {
+  if (item.kind === 'sector') return chartableSeries(item.key);
+  const byDate = stockHistory[item.key];
+  if (!byDate || !priceHistory) return null;
+
+  let carried = null;
+  return priceHistory.dates.map(date => {
+    if (byDate[date] !== undefined) carried = byDate[date];
+    return carried;
+  });
+}
 
 function windowSlice(days) {
   const cutoff = new Date();
@@ -836,17 +1055,20 @@ function chartState() {
   const from = windowSlice(days);
   const dates = priceHistory.dates.slice(from);
 
-  const baseRaw = chartableSeries(baseName);
+  const all = selections();
+  const baseItem = all.find(i => i.key === baseName)
+    || { kind: 'sector', key: baseName, name: baselineLabel(baseName) };
+  const baseRaw = seriesFor(baseItem);
   const base = baseRaw && rebase(baseRaw, from);
 
-  const lines = state.selected.map(name => {
-    const sector = sectorBy(name);
-    const raw = chartableSeries(name);
+  const lines = all.map(item => {
+    const raw = seriesFor(item);
     return {
-      name: sector ? sector.name : name,
-      indexName: name,
+      name: item.name,
+      indexName: item.key,
+      kind: item.kind,
       values: raw ? rebase(raw, from) : null,
-      isBase: name === baseName,
+      isBase: item.key === baseName,
     };
   });
 
@@ -984,19 +1206,19 @@ function renderCrossings(dates, base, lines, baseName) {
 
 function renderChartControls() {
   const baseSel = el('baselineSelect');
-  const options = state.selected
-    .map(sectorBy)
-    .filter(s => s && chartableSeries(s.indexName));
+  // Anything with a series can be the yardstick -- including a stock, so one
+  // name can be measured against the leader rather than against the index.
+  const options = selections().filter(i => seriesFor(i));
 
   const bmName = state.data.benchmark.indexName;
-  const all = options.some(o => o.indexName === bmName)
+  const all = options.some(o => o.key === bmName)
     ? options
-    : [{ indexName: bmName, name: state.data.benchmark.name }, ...options];
+    : [{ key: bmName, name: state.data.benchmark.name }, ...options];
 
   const previous = baseSel.value;
   baseSel.innerHTML = all
-    .map(o => `<option value="${o.indexName}">${o.name}</option>`).join('');
-  baseSel.value = all.some(o => o.indexName === previous) ? previous : bmName;
+    .map(o => `<option value="${o.key}">${o.name}</option>`).join('');
+  baseSel.value = all.some(o => o.key === previous) ? previous : bmName;
 
   if (!el('chartPeriod').options.length) {
     el('chartPeriod').innerHTML = CHART_WINDOWS
@@ -1129,15 +1351,30 @@ el('baselineSelect').addEventListener('change', renderChart);
 el('chartPeriod').addEventListener('change', renderChart);
 
 el('openCompare').addEventListener('click', () => {
-  if (state.selected.length < 2) return;
+  if (state.selected.length + state.selectedStocks.length < 2) return;
   pushView('compare');
   showView('compare');
   renderCompare();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
+el('stockFilter').addEventListener('click', (e) => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  el('stockFilter').querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  state.stockFilter = chip.dataset.sfilter;
+  renderDetail();
+});
+
+el('stockSort').addEventListener('change', (e) => {
+  state.stockSort = e.target.value;
+  renderDetail();
+});
+
 el('clearCompare').addEventListener('click', () => {
   state.selected = [];
+  state.selectedStocks = [];
   renderSections();
   renderTray();
   if (!el('compareView').classList.contains('hidden')) goBack();
@@ -1159,5 +1396,18 @@ if (savedPeriod) state.period = savedPeriod;
 // Anchor the stack so the first back press has somewhere to land.
 try { history.replaceState({ view: 'overview', indexName: null }, ''); } catch (e) { /* ignore */ }
 
+async function loadStocks() {
+  if (window.EMBEDDED_STOCKS) { stockBook = window.EMBEDDED_STOCKS; return; }
+  if (window.EMBEDDED_DATA) return;         // snapshot built without stock detail
+  try {
+    const res = await fetch('/api/stocks');
+    if (res.ok) stockBook = await res.json();
+  } catch (e) {
+    /* stock detail is an enhancement; the sector view works without it */
+  }
+  if (state.activeSector) renderDetail();
+}
+
 loadCached();
 loadHistory();
+loadStocks();

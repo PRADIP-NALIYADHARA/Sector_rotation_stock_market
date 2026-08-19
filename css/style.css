@@ -834,6 +834,32 @@ main { max-width: 1240px; margin: 0 auto; padding: 2rem; }
 .stock-table td { white-space: nowrap; }
 .stock-table td:nth-child(2) { white-space: normal; min-width: 150px; }
 
+.pick-cell { width: 1%; padding-right: 0 !important; }
+
+.compare-toggle.small {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+}
+
+/* Combined reading: beating the benchmark and near its own high */
+.score {
+  display: inline-block;
+  min-width: 22px;
+  text-align: center;
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: var(--accent);
+  background: rgba(75, 159, 255, 0.12);
+  border: 1px solid rgba(75, 159, 255, 0.4);
+  border-radius: 4px;
+  padding: 0.02rem 0.25rem;
+  margin-left: 0.35rem;
+}
+
+.tray-chip.stock { font-family: var(--font); letter-spacing: 0.02em; }
+
 .stock-table tbody tr.near-high { background: rgba(240, 185, 11, 0.06); }
 .near-flag { color: #f0b90b; }
 .fresh-high { color: #f0b90b; font-weight: 600; }

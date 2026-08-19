@@ -14,10 +14,13 @@ import sys
 import threading
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from urllib.parse import parse_qs, urlparse
 
 BASE_DIR = Path(__file__).parent
 DATA_FILE = BASE_DIR / "data" / "sectors_data.json"
+STOCKS_FILE = BASE_DIR / "data" / "stocks.json"
 HISTORY_FILE = BASE_DIR / "data" / "index_history.json"
+PRICE_BOOK = BASE_DIR / "data" / "price_book.json"
 LOG_FILE = BASE_DIR / "logs" / "server.log"
 PORT = 5000
 
@@ -91,6 +94,34 @@ class Handler(SimpleHTTPRequestHandler):
                 )
                 return
             self.send_json(json.loads(DATA_FILE.read_text(encoding="utf-8")))
+            return
+
+        if route == "/api/stocks":
+            if not STOCKS_FILE.exists():
+                self.send_json(
+                    {"error": "no_stocks", "message": "No stock detail yet. Run fetch_data.py."},
+                    404,
+                )
+                return
+            self.send_json(json.loads(STOCKS_FILE.read_text(encoding="utf-8")))
+            return
+
+        if route == "/api/stock-history":
+            # Only the requested symbols: the whole price book is 7.5 MB, which
+            # is no way to treat a phone for the sake of charting four names.
+            wanted = parse_qs(urlparse(self.path).query).get("symbols", [""])[0]
+            symbols = [s.strip().upper() for s in wanted.split(",") if s.strip()]
+            if not symbols:
+                self.send_json({"error": "no_symbols",
+                                "message": "Pass ?symbols=A,B,C"}, 400)
+                return
+            if not PRICE_BOOK.exists():
+                self.send_json({"error": "no_history",
+                                "message": "No price book yet. Run fetch_data.py."}, 404)
+                return
+
+            book = json.loads(PRICE_BOOK.read_text(encoding="utf-8"))
+            self.send_json({"series": {s: book[s] for s in symbols if s in book}})
             return
 
         if route == "/api/history":

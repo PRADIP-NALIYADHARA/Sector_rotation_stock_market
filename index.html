@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sector Rotation Analysis</title>
-<link rel="stylesheet" href="css/style.css?v=6">
+<link rel="stylesheet" href="css/style.css?v=7">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -151,6 +151,21 @@
 
     <div class="controls">
       <input type="search" id="stockSearch" placeholder="Search stock…">
+      <div class="filter-group" id="stockFilter">
+        <button class="chip active" data-sfilter="all">All</button>
+        <button class="chip" data-sfilter="strong">Beating benchmark</button>
+        <button class="chip" data-sfilter="breakout" title="Within 5% of its own 52-week high">⚡ Near 52w high</button>
+      </div>
+      <label class="sort-control">
+        Sort by
+        <select id="stockSort">
+          <option value="strength">strength</option>
+          <option value="rs">vs benchmark</option>
+          <option value="ret">own return</option>
+          <option value="rangePos">52w range position</option>
+          <option value="pChange">today</option>
+        </select>
+      </label>
       <span class="dim" id="stockCount"></span>
     </div>
 
@@ -158,11 +173,14 @@
       <table class="stock-table">
         <thead>
           <tr>
+            <th></th>
             <th>Symbol</th>
             <th>Company</th>
             <th class="right">Close</th>
-            <th class="right">% Change</th>
-            <th class="right">52w high</th>
+            <th class="right">Today</th>
+            <th class="right" id="stockRetHead">Return</th>
+            <th class="right" id="stockRsHead">vs bench</th>
+            <th class="right">52w range</th>
             <th class="right">From high</th>
             <th>High set</th>
           </tr>
@@ -204,11 +222,29 @@
       <div id="crossList" class="cross-list"></div>
     </div>
 
+    <div id="stockCompareBox" class="hidden">
+      <h3 class="compare-subheading">Stocks side by side</h3>
+      <p class="dim compare-hint">
+        The one worth trading is beating the benchmark <em>and</em> sitting near its
+        own 52-week high, with that high set recently. Any one of those alone is a
+        weaker setup.
+      </p>
+      <div class="table-wrap">
+        <table class="compare-table">
+          <thead><tr id="stockCompareHead"></tr></thead>
+          <tbody id="stockCompareBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="sectorCompareBox">
+    <h3 class="compare-subheading">Sectors side by side</h3>
     <div class="table-wrap">
       <table class="compare-table">
         <thead><tr id="compareHead"></tr></thead>
         <tbody id="compareBody"></tbody>
       </table>
+    </div>
     </div>
 
     <h3 class="compare-subheading">Shared constituents</h3>
@@ -238,6 +274,6 @@
   <p>Data sourced from public NSE India endpoints. For research/educational use only — not investment advice.</p>
 </footer>
 
-<script src="js/app.js?v=6"></script>
+<script src="js/app.js?v=7"></script>
 </body>
 </html>

@@ -48,6 +48,7 @@ import prices
 
 BASE_DIR = Path(__file__).parent
 DATA_FILE = BASE_DIR / "data" / "sectors_data.json"
+STOCKS_FILE = BASE_DIR / "data" / "stocks.json"
 MAP_FILE = BASE_DIR / "index_map.json"
 
 # Written by a full refresh, reused by the live one. Constituent lists change a
@@ -590,6 +591,15 @@ def main(live=False):
             out[label] = ret
         return out
 
+    # Worked out once per symbol and reused. Industry groups average these, and
+    # the stock table needs them per name, so computing them twice would be silly.
+    _returns_cache = {}
+
+    def returns_for(symbol):
+        if symbol not in _returns_cache:
+            _returns_cache[symbol] = stock_returns(symbol)
+        return _returns_cache[symbol]
+
     benchmark_returns = index_returns(BENCHMARK)
     print(f"Benchmark {BENCHMARK}: "
           + ", ".join(f"{k} {v}%" for k, v in benchmark_returns.items() if v is not None),
@@ -741,7 +751,7 @@ def main(live=False):
         stocks = build_stocks(members, price_now, price_prev, week52, today)
         adv, dec, unch = breadth(stocks)
 
-        per_stock = {m["symbol"]: stock_returns(m["symbol"]) for m in members}
+        per_stock = {m["symbol"]: returns_for(m["symbol"]) for m in members}
         returns = {
             label: average([r[label] for r in per_stock.values()])
             for label, _ in LOOKBACKS
@@ -788,6 +798,52 @@ def main(live=False):
     if dropped:
         summary = ", ".join(f"{label} {n}" for label, n in sorted(dropped.items()))
         print(f"Withheld (rights issue, not adjustable): {summary}", file=sys.stderr)
+
+    # --- 3. Per-stock detail -------------------------------------------------
+    # Kept in its own file rather than on the sector entries: a stock belongs to
+    # six sectors on average, so returns and relative strength inlined there
+    # would be stored six times over.
+    print("Building per-stock strength...", file=sys.stderr)
+    stock_detail = {}
+    for sector in sectors:
+        for stock in sector["stocks"]:
+            symbol = stock["symbol"]
+            entry = stock_detail.get(symbol)
+            if entry is None:
+                returns = returns_for(symbol)
+                entry = {
+                    "symbol": symbol,
+                    "company": stock["company"],
+                    "industry": stock["industry"],
+                    "close": stock["close"],
+                    "prevClose": stock["prevClose"],
+                    "pChange": stock["pChange"],
+                    "high52": stock["high52"],
+                    "low52": stock["low52"],
+                    "rangePos": stock["rangePos"],
+                    "fromHigh": stock["fromHigh"],
+                    "highDate": stock["highDate"],
+                    "daysSinceHigh": stock["daysSinceHigh"],
+                    "nearHigh": stock["nearHigh"],
+                    "returns": returns,
+                    "rs": relative_strength(returns, benchmark_returns),
+                    "sectors": [],
+                }
+                stock_detail[symbol] = entry
+            # Which sectors a stock sits in is the quickest way to see whether a
+            # name is a pure play or is being carried by a broader theme.
+            if sector["group"] != "Broad":
+                entry["sectors"].append(sector["indexName"])
+
+    STOCKS_FILE.parent.mkdir(exist_ok=True)
+    STOCKS_FILE.write_text(json.dumps({
+        "updatedAt": datetime.now().isoformat(timespec="seconds"),
+        "benchmark": {"indexName": BENCHMARK, "name": pretty_name(BENCHMARK),
+                      "returns": benchmark_returns, "rangePos": benchmark_range_pos},
+        "periods": [key for key, _ in LOOKBACKS],
+        "stocks": stock_detail,
+    }), encoding="utf-8")
+    print(f"  {len(stock_detail)} stocks written to {STOCKS_FILE.name}", file=sys.stderr)
 
     print("Computing constituent overlaps...", file=sys.stderr)
     annotate_overlaps(sectors)

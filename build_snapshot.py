@@ -32,6 +32,11 @@ def main():
 
     # The comparison chart reads its series over /api/history, which a file on
     # disk has no way to call, so it travels inside the page too.
+    # Per-stock returns and strength, so the stock table works offline too.
+    stocks_file = BASE_DIR / "data" / "stocks.json"
+    stocks = (json.loads(stocks_file.read_text(encoding="utf-8"))
+              if stocks_file.exists() else None)
+
     history_file = BASE_DIR / "data" / "index_history.json"
     history = None
     if history_file.exists():
@@ -54,6 +59,8 @@ def main():
     preamble = f"window.EMBEDDED_DATA = {embed(data)};"
     if history:
         preamble += f"\nwindow.EMBEDDED_HISTORY = {embed(history)};"
+    if stocks:
+        preamble += f"\nwindow.EMBEDDED_STOCKS = {embed(stocks)};"
 
     html, n = re.subn(r'<script src="js/app\.js[^"]*"></script>',
                       lambda _: f"<script>{preamble}</script>\n<script>\n{js}\n</script>",
