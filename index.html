@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sector Rotation Analysis</title>
-<link rel="stylesheet" href="css/style.css?v=14">
+<link rel="stylesheet" href="css/style.css?v=15">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -139,6 +139,7 @@
               <th class="right" id="watchRsHead">vs bench</th>
               <th class="right">52w range</th>
               <th class="right">From high</th>
+              <th class="right">vs 50 / 200 DMA</th>
               <th>Cap</th>
             </tr>
           </thead>
@@ -219,7 +220,18 @@
         <button class="chip active" data-sfilter="all">All</button>
         <button class="chip" data-sfilter="strong">Beating benchmark</button>
         <button class="chip" data-sfilter="breakout" title="Within 5% of its own 52-week high">⚡ Near 52w high</button>
+        <button class="chip" data-sfilter="uptrend" title="Trading above both its 50 and 200-day averages">Above 50 &amp; 200 DMA</button>
       </div>
+      <label class="sort-control">
+        Cap
+        <select id="capFilter">
+          <option value="all">All caps</option>
+          <option value="Large">Large</option>
+          <option value="Mid">Mid</option>
+          <option value="Small">Small</option>
+          <option value="Micro">Micro</option>
+        </select>
+      </label>
       <label class="sort-control">
         Sort by
         <select id="stockSort">
@@ -246,6 +258,8 @@
             <th class="right" id="stockRsHead">vs bench</th>
             <th class="right">52w range</th>
             <th class="right">From high</th>
+            <th class="right">vs 50 / 200 DMA</th>
+            <th>Cap</th>
             <th>High set</th>
           </tr>
         </thead>
@@ -338,6 +352,6 @@
   <p>Data sourced from public NSE India endpoints. For research/educational use only — not investment advice.</p>
 </footer>
 
-<script src="js/app.js?v=14"></script>
+<script src="js/app.js?v=16"></script>
 </body>
 </html>

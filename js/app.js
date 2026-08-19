@@ -20,6 +20,7 @@ let state = {
   stockSearch: '',
   stockFilter: 'all',
   stockSort: 'strength',
+  capFilter: 'all',
   watchOnly: false,
   selected: [],        // indexNames chosen for comparison
   selectedStocks: [],  // symbols chosen for comparison
@@ -332,10 +333,11 @@ function renderWatchStocks() {
 
   el('watchStockBody').innerHTML = rows.map(({ symbol, s }) => {
     if (!s) {
+      const why = stockBook ? 'not in the current universe' : 'loading…';
       return `<tr><td class="pick-cell">
           <button class="watch-star on" data-watch-stock="${symbol}" title="Remove">★</button>
         </td><td class="sym">${symbol}</td>
-        <td colspan="8" class="dim">not in the current universe</td></tr>`;
+        <td colspan="9" class="dim">${why}</td></tr>`;
     }
     const c = colourFor(s.pChange);
     const rs = (s.rs || {})[state.period] ?? null;
@@ -360,6 +362,7 @@ function renderWatchStocks() {
         <td class="right" style="color:${rsC.fg};font-weight:700">${signedPct(rs)}</td>
         <td class="right">${s.rangePos === null || s.rangePos === undefined ? '—' : s.rangePos + '%'}</td>
         <td class="right" style="color:${fh.fg};font-weight:700">${signedPct(s.fromHigh)}</td>
+        ${maCell(s)}
         <td class="dim">${s.capBand || '—'}</td>
       </tr>`;
   }).join('');
@@ -509,6 +512,23 @@ function renderSections() {
   });
 }
 
+
+/**
+ * Whether the gap against the benchmark is opening or closing.
+ *
+ * A sector 8% ahead and slipping is a different proposition from one 8% ahead
+ * and pulling away, and the ranking alone cannot tell them apart.
+ */
+function momentumArrow(s) {
+  const m = s.rsMomentum;
+  if (m === null || m === undefined) return '';
+  const rising = m > 0;
+  const title = rising
+    ? `Lead widening (${signedPct(m)} vs its 3-month pace)`
+    : `Lead narrowing (${signedPct(m)} vs its 3-month pace)`;
+  return `<span class="mom ${rising ? 'up' : 'down'}" title="${title}">${rising ? '▲' : '▼'}</span>`;
+}
+
 function sectorCard(s) {
   const rs = rsOf(s);
   const ret = retOf(s);
@@ -539,6 +559,7 @@ function sectorCard(s) {
       <div class="sector-figures">
         <span class="sector-value" style="color:${c.fg}">${signedPct(rs)}</span>
         <span class="rs-tag" style="color:${c.fg}">${verdict} benchmark</span>
+        ${momentumArrow(s)}
       </div>
       <div class="trend-row">
         <span>${state.period} return <b>${signedPct(ret)}</b></span>
@@ -625,7 +646,12 @@ function renderDetail() {
   const filtered = stocks.filter(st => {
     if (state.stockFilter === 'strong') return (stockRs(st.symbol) ?? -1) > 0;
     if (state.stockFilter === 'breakout') return st.nearHigh;
+    if (state.stockFilter === 'uptrend') return aboveBothMas(stockBy(st.symbol));
     return true;
+  }).filter(st => {
+    if (state.capFilter === 'all') return true;
+    const detail = stockBy(st.symbol);
+    return detail && detail.capBand === state.capFilter;
   });
 
   const sorted = sortStocks(filtered);
@@ -647,6 +673,7 @@ function renderDetail() {
                   && st.daysSinceHigh <= 10;
     const picked = state.selectedStocks.includes(st.symbol);
     const score = stockStrength(st.symbol);
+    const detail = stockBy(st.symbol);
 
     return `
       <tr class="${st.nearHigh ? 'near-high' : ''}" style="border-left:3px solid ${c.border}">
@@ -667,6 +694,8 @@ function renderDetail() {
         <td class="right" style="color:${rsC.fg};font-weight:700">${signedPct(rs)}</td>
         <td class="right">${st.rangePos === null || st.rangePos === undefined ? '—' : st.rangePos + '%'}</td>
         <td class="right" style="color:${fh.fg};font-weight:700">${signedPct(st.fromHigh)}</td>
+        ${maCell(detail || st)}
+        <td class="dim">${(detail && detail.capBand) || '—'}</td>
         <td class="${fresh ? 'fresh-high' : 'dim'}">${st.highDate || '—'}</td>
       </tr>`;
   }).join('');
@@ -678,6 +707,27 @@ function renderDetail() {
     btn.addEventListener('click', () => toggleWatch('stock', btn.dataset.watchStock));
   });
 }
+
+
+/**
+ * Distance from the 50 and 200-day averages, in one cell.
+ *
+ * Above both, with the shorter above the longer, is the textbook uptrend; the
+ * two numbers side by side say that faster than either alone does.
+ */
+function maCell(s) {
+  if (s.fromMa50 === null && s.fromMa200 === null) return '<td class="right dim">—</td>';
+  const c50 = colourFor(s.fromMa50);
+  const c200 = colourFor(s.fromMa200);
+  return `<td class="right ma-cell">
+      <span style="color:${c50.fg}">${signedPct(s.fromMa50)}</span>
+      <span class="dim"> / </span>
+      <span style="color:${c200.fg}">${signedPct(s.fromMa200)}</span>
+    </td>`;
+}
+
+const aboveBothMas = (s) =>
+  s && s.fromMa50 !== null && s.fromMa200 !== null && s.fromMa50 > 0 && s.fromMa200 > 0;
 
 const STOCK_COMPARE_ROWS = [
   ['Company', s => s.company],
@@ -1777,6 +1827,11 @@ el('stockFilter').addEventListener('click', (e) => {
   renderDetail();
 });
 
+el('capFilter').addEventListener('change', (e) => {
+  state.capFilter = e.target.value;
+  renderDetail();
+});
+
 el('stockSort').addEventListener('change', (e) => {
   state.stockSort = e.target.value;
   renderDetail();
@@ -1825,6 +1880,10 @@ async function loadStocks() {
   } catch (e) {
     /* stock detail is an enhancement; the sector view works without it */
   }
+  // The watchlist table and the grid both read from this, and both may have
+  // rendered before it arrived.
+  renderWatchStocks();
+  renderSections();
   if (state.activeSector) renderDetail();
 }
 

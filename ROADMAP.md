@@ -14,7 +14,7 @@ with the reason.
 ## 1. Research depth — where the real edge is
 
 ### 1.1 Relative Rotation Graph (RRG)
-**Status:** in progress · **Effort:** medium · **Data:** already have it
+**Status:** done · **Effort:** medium · **Data:** already have it
 
 The standard sector-rotation picture: a quadrant chart plotting relative strength
 against the *momentum of* that strength. Sectors travel clockwise through
@@ -27,7 +27,7 @@ laggard turning before it leads. That is the single biggest gap in what exists.
 Needs only the price history already cached.
 
 ### 1.2 Is the lead widening or narrowing?
-**Status:** data done, UI pending · **Effort:** small · **Data:** already have it
+**Status:** done · **Effort:** small · **Data:** already have it
 
 Every RS figure is a snapshot. A sector +8% ahead and slipping is a different
 trade from one +8% ahead and pulling away. Adding the slope of RS over the last
@@ -49,7 +49,7 @@ delivery percentage alongside a breakout is a genuine confirmation, and it is
 specific to Indian market data.
 
 ### 1.5 Distance from 50 / 200-day moving average
-**Status:** data done, UI pending · **Effort:** small · **Data:** computed from the cached price history
+**Status:** done · **Effort:** small · **Data:** computed from the cached price history
 
 The most commonly quoted trend check. Above both and the 50 above the 200 is the
 classic uptrend structure. Cheap to add as two columns and a filter.
@@ -72,7 +72,7 @@ for whatever sector you have open, and cache for a week — fundamentals do not 
 daily.
 
 ### 2.0 Market-cap filter
-**Status:** data done, UI pending · **Effort:** small · **Data:** NSE index membership
+**Status:** done · **Effort:** small · **Data:** NSE index membership
 
 Large / Mid / Small / Micro per stock, so a list can be cut down to "the large caps
 in NIFTY 500". This needs no extra fetching at all: NSE's own ranking is already
@@ -122,7 +122,7 @@ sector has run 40%.
 ## 3. Workflow — making it yours
 
 ### 3.1 Watchlists
-**Status:** in progress · **Effort:** small
+**Status:** done · **Effort:** small
 
 Several named lists rather than one, each editable.
 

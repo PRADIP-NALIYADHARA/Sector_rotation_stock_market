@@ -1378,3 +1378,15 @@ main { max-width: 1240px; margin: 0 auto; padding: 2rem; }
   .tray-chip { font-size: 0.72rem; }
   .tray-btn { padding: 0.5rem 0.9rem; font-size: 0.8rem; }
 }
+
+/* Moving-average cell and the lead-direction arrow */
+.ma-cell { white-space: nowrap; font-weight: 600; }
+
+.mom {
+  font-size: 0.72rem;
+  cursor: help;
+  margin-left: 0.1rem;
+}
+
+.mom.up { color: #16c784; }
+.mom.down { color: #ea3943; }
