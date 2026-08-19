@@ -50,6 +50,12 @@ BASE_DIR = Path(__file__).parent
 DATA_FILE = BASE_DIR / "data" / "sectors_data.json"
 MAP_FILE = BASE_DIR / "index_map.json"
 
+# Written by a full refresh, reused by the live one. Constituent lists change a
+# few times a year and long price history only changes when a day closes, so an
+# intraday refresh has no reason to pull either again.
+CACHE_MEMBERS = BASE_DIR / "data" / "constituents.json"
+CACHE_PRICES = BASE_DIR / "data" / "price_book.json"
+
 # The yardstick every sector is measured against.
 BENCHMARK = "NIFTY 50"
 
@@ -438,7 +444,12 @@ def annotate_overlaps(sectors, max_related=4, min_share=0.30):
 
 # ----------------------------------------------------------------------- main
 
-def main():
+def main(live=False):
+    """
+    live=False rebuilds everything from NSE's archives -- the daily job.
+    live=True reuses the cached constituent lists and price history and only
+    re-reads what actually moves during a session: index levels and prices.
+    """
     print("Connecting to NSE...", file=sys.stderr)
     session = make_session()
 
@@ -453,37 +464,57 @@ def main():
 
     today = datetime.now()
 
-    print(f"Fetching price history for {len(LOOKBACKS)} lookbacks...", file=sys.stderr)
+    label = "live" if live else "full"
+    print(f"Fetching price history for {len(LOOKBACKS)} lookbacks ({label} refresh)...",
+          file=sys.stderr)
     with ThreadPoolExecutor(max_workers=6) as pool:
         idx_now_future = pool.submit(index_closes_on, today)
-        stk_now_future = pool.submit(stock_closes_on, today)
         wk52_future = pool.submit(week52_on, today)
         idx_hist_futures = {
-            label: pool.submit(index_closes_on, today - timedelta(days=days))
-            for label, days in LOOKBACKS
+            key: pool.submit(index_closes_on, today - timedelta(days=days))
+            for key, days in LOOKBACKS
         }
-        stk_hist_futures = {
-            label: pool.submit(stock_closes_on, today - timedelta(days=days))
-            for label, days in LOOKBACKS
+        # The bhavcopy is only a fallback for Yahoo, and it is the slowest thing
+        # here, so an intraday refresh skips it entirely.
+        stk_now_future = None if live else pool.submit(stock_closes_on, today)
+        stk_hist_futures = {} if live else {
+            key: pool.submit(stock_closes_on, today - timedelta(days=days))
+            for key, days in LOOKBACKS
         }
 
         index_now, index_date = idx_now_future.result()
-        stock_now, stock_prev, bhav_date = stk_now_future.result()
         week52, wk52_date = wk52_future.result()
-        index_hist = {label: f.result()[0] for label, f in idx_hist_futures.items()}
-        stock_hist = {label: f.result()[0] for label, f in stk_hist_futures.items()}
+        index_hist = {key: f.result()[0] for key, f in idx_hist_futures.items()}
 
-    if not index_now or not stock_now:
-        raise RuntimeError("Could not fetch current NSE archives")
+        if live:
+            stock_now, stock_prev, bhav_date = {}, {}, None
+            stock_hist = {key: {} for key, _ in LOOKBACKS}
+        else:
+            stock_now, stock_prev, bhav_date = stk_now_future.result()
+            stock_hist = {key: f.result()[0] for key, f in stk_hist_futures.items()}
 
-    for label, _ in LOOKBACKS:
-        if not index_hist[label]:
-            print(f"  warning: no index archive for {label}", file=sys.stderr)
+    if not index_now:
+        raise RuntimeError("Could not fetch the current NSE index archive")
+
+    for key, _ in LOOKBACKS:
+        if not index_hist[key]:
+            print(f"  warning: no index archive for {key}", file=sys.stderr)
+
+    def index_level(index_name):
+        """
+        Live level where NSE gives one, the last published close otherwise.
+
+        The ind_close_all archive for today only appears after the session ends,
+        so during market hours it holds yesterday's close -- which would leave
+        index returns a day behind the stock prices sitting next to them.
+        """
+        live_level = (indices.get(index_name) or {}).get("last")
+        return live_level if live_level else index_now.get(index_name.upper())
 
     def index_returns(index_name):
-        now = index_now.get(index_name.upper())
-        return {label: pct_change(now, index_hist[label].get(index_name.upper()))
-                for label, _ in LOOKBACKS}
+        now = index_level(index_name)
+        return {key: pct_change(now, index_hist[key].get(index_name.upper()))
+                for key, _ in LOOKBACKS}
 
     # Pulled on every refresh: a split that goes ex today has to be known before
     # any return spanning it is computed, or the number is quietly wrong.
@@ -601,20 +632,45 @@ def main():
             for r in rows
         ]
 
-    with ThreadPoolExecutor(max_workers=8) as pool:
-        members_by_index = dict(pool.map(load_members, wanted))
+    cached_members = {}
+    if live and CACHE_MEMBERS.exists():
+        cached_members = json.loads(CACHE_MEMBERS.read_text(encoding="utf-8"))
+
+    if cached_members:
+        members_by_index = cached_members
+        print(f"Reusing cached constituents for {len(members_by_index)} indices",
+              file=sys.stderr)
+    else:
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            members_by_index = dict(pool.map(load_members, wanted))
+        CACHE_MEMBERS.parent.mkdir(exist_ok=True)
+        CACHE_MEMBERS.write_text(json.dumps(members_by_index), encoding="utf-8")
 
     # Every symbol the dashboard will show, so Yahoo is asked once rather than
     # per sector -- constituent lists overlap heavily.
     needed = {s for members in members_by_index.values() for s in
               (m["symbol"] for m in members)}
     needed |= set(universe)
-    print(f"Fetching adjusted prices for {len(needed)} symbols from Yahoo...", file=sys.stderr)
-    yahoo = prices.fetch(needed)
-    if yahoo:
+
+    if live and CACHE_PRICES.exists():
+        # Long history is settled once a day has closed; only today moves.
+        yahoo = json.loads(CACHE_PRICES.read_text(encoding="utf-8"))
+        print(f"Refreshing today's prices for {len(needed)} symbols...", file=sys.stderr)
+        for symbol, recent in prices.fetch_live(needed).items():
+            yahoo.setdefault(symbol, {}).update(recent)
         print(f"  Yahoo covered {len(yahoo)}/{len(needed)} symbols", file=sys.stderr)
     else:
-        print("  Yahoo unavailable - falling back to the NSE bhavcopy", file=sys.stderr)
+        print(f"Fetching adjusted prices for {len(needed)} symbols from Yahoo...",
+              file=sys.stderr)
+        yahoo = prices.fetch(needed)
+        if yahoo:
+            print(f"  Yahoo covered {len(yahoo)}/{len(needed)} symbols", file=sys.stderr)
+        else:
+            print("  Yahoo unavailable - falling back to the NSE bhavcopy", file=sys.stderr)
+
+    if yahoo:
+        CACHE_PRICES.parent.mkdir(exist_ok=True)
+        CACHE_PRICES.write_text(json.dumps(yahoo), encoding="utf-8")
 
     for index_name, entry in wanted:
         idx = indices[index_name]
@@ -740,7 +796,9 @@ def main():
 
     output = {
         "updatedAt": datetime.now().isoformat(timespec="seconds"),
-        "bhavDate": bhav_date.strftime("%d-%b-%Y") if bhav_date else None,
+        "bhavDate": (bhav_date.strftime("%d-%b-%Y") if bhav_date
+                     else (index_date.strftime("%d-%b-%Y") if index_date else None)),
+        "refreshMode": "live" if live else "full",
         "indexDate": index_date.strftime("%d-%b-%Y") if index_date else None,
         "week52Date": wk52_date.strftime("%d-%b-%Y") if wk52_date else None,
         "priceSource": "yahoo" if sourced.get("yahoo") else "nse",
@@ -776,4 +834,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main(live="--live" in sys.argv)

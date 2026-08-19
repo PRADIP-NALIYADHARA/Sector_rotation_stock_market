@@ -100,6 +100,34 @@ def fetch(symbols, quiet=False):
     return out
 
 
+def fetch_live(symbols, quiet=False):
+    """
+    Just the last two closes per symbol -- enough for the current price and the
+    day's move, and far cheaper than pulling six years of history.
+
+    This is what an intraday refresh needs. The long series only changes when a
+    new day closes, so it is fetched once in the morning and reused.
+    """
+    if not AVAILABLE:
+        return {}
+
+    symbols = sorted({s.strip().upper() for s in symbols if s})
+    out = {}
+
+    for start in range(0, len(symbols), BATCH):
+        chunk = symbols[start:start + BATCH]
+        try:
+            close = _download([ticker(s) for s in chunk], "5d", "1d")
+        except Exception as e:
+            if not quiet:
+                print(f"  Yahoo live batch failed: {e}", file=sys.stderr)
+            continue
+        if len(close):
+            _series_by_symbol(close, out)
+
+    return out
+
+
 def close_on_or_before(series, target, tolerance_days=10):
     """
     Closing price at `target`, or the most recent one before it.

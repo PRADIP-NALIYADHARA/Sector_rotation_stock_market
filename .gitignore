@@ -12,3 +12,7 @@ telegram_config.json
 
 # per-machine runtime state
 data/alert_state.json
+
+# rebuilt by a full refresh
+data/price_book.json
+data/constituents.json
