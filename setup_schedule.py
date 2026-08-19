@@ -1,7 +1,7 @@
 """
 Registers the Windows scheduled tasks that keep the dashboard current.
 
-Two jobs, because the data has two speeds:
+Three jobs: one to serve the dashboard, two to keep its data current.
 
   Sector Rotation - Morning   08:15 on weekdays. A full rebuild: NSE archives,
                               constituent lists, 52-week levels, corporate
@@ -12,12 +12,17 @@ Two jobs, because the data has two speeds:
                               Reuses what the morning job cached and re-reads
                               only what moves -- index levels and prices.
 
-Both are registered with StartWhenAvailable, so a laptop that was off at 08:15
+  Sector Rotation - Server    a Startup-folder shortcut, so the web server comes
+                              back at logon. Without it the dashboard is only up
+                              while someone remembers to start it, which takes
+                              the phone down with it.
+
+The refresh jobs are registered with StartWhenAvailable, so a laptop that was off at 08:15
 runs the missed job shortly after it comes back rather than skipping the day.
 That is the setting schtasks cannot express, which is why this goes through
 PowerShell's ScheduledTasks module instead.
 
-Neither replaces the Update Data button.
+None of them replace the Update Data button.
 
     python setup_schedule.py            create or update the tasks
     python setup_schedule.py --show     what is registered, and when it next runs
@@ -39,6 +44,7 @@ RUNNER = BASE_DIR / "run_refresh.py"
 
 MORNING = "Sector Rotation - Morning"
 LIVE = "Sector Rotation - Live"
+SERVER = "Sector Rotation - Server"
 
 MORNING_AT = "08:15"
 LIVE_START = "09:15"
@@ -63,7 +69,51 @@ def cleanup_old_runners():
             path.unlink()
 
 
+def install_server_autostart():
+    """
+    Start the web server at logon, via a Startup-folder shortcut.
+
+    A scheduled task with a logon trigger would be tidier, but registering one
+    needs elevation, and a dashboard that only comes back when you remember to
+    run something as administrator is not much of an improvement. A shortcut in
+    the user's own Startup folder needs no such thing.
+    """
+    script = f"""
+$startup = [Environment]::GetFolderPath('Startup')
+$link = Join-Path $startup 'Sector Rotation Server.lnk'
+$shell = New-Object -ComObject WScript.Shell
+$s = $shell.CreateShortcut($link)
+$s.TargetPath = '{PYW}'
+$s.Arguments = '"{BASE_DIR / "app.py"}" --lan'
+$s.WorkingDirectory = '{BASE_DIR}'
+$s.Description = 'Sector Rotation Analysis - local web server'
+$s.WindowStyle = 7
+$s.Save()
+Write-Output $link
+"""
+    result = powershell(script)
+    if result.returncode == 0 and result.stdout.strip():
+        print(f"  created  {SERVER}\n           starts at logon via "
+              f"{result.stdout.strip()}")
+    else:
+        print(f"  FAILED   {SERVER}\n           "
+              f"{(result.stderr or result.stdout).strip()[:200]}", file=sys.stderr)
+
+
+def remove_server_autostart():
+    result = powershell(
+        "$p = Join-Path ([Environment]::GetFolderPath('Startup')) "
+        "'Sector Rotation Server.lnk'; "
+        "if (Test-Path $p) { Remove-Item $p -Force; Write-Output 'removed' } "
+        "else { Write-Output 'absent' }"
+    )
+    print(f"  {'removed ' if 'removed' in result.stdout else 'absent  '} {SERVER}")
+
+
 def register(name, argument, trigger_script, minutes_limit):
+    # 0 minutes means no limit, which is what a server that should stay up needs.
+    limit = ("(New-TimeSpan -Minutes 0)" if minutes_limit == 0
+             else f"(New-TimeSpan -Minutes {minutes_limit})")
     script = f"""
 $ErrorActionPreference = 'Stop'
 $action = New-ScheduledTaskAction -Execute '{PYW}' `
@@ -74,7 +124,7 @@ $settings = New-ScheduledTaskSettingsSet `
     -DontStopIfGoingOnBatteries `
     -AllowStartIfOnBatteries `
     -MultipleInstances IgnoreNew `
-    -ExecutionTimeLimit (New-TimeSpan -Minutes {minutes_limit})
+    -ExecutionTimeLimit {limit}
 Register-ScheduledTask -TaskName '{name}' -Action $action -Trigger $trigger `
     -Settings $settings -Force | Out-Null
 Write-Output 'ok'
@@ -105,6 +155,8 @@ def create():
         f"-RepetitionDuration (New-TimeSpan -Minutes {LIVE_MINUTES})\n"
         f"$trigger.Repetition = $repeat.Repetition"
     )
+
+    install_server_autostart()
 
     jobs = [
         (MORNING, f'"{RUNNER}" --morning', morning_trigger, 30,
@@ -137,11 +189,20 @@ foreach ($n in @('{MORNING}','{LIVE}')) {{
     for line in (result.stdout or "").splitlines():
         if line.strip():
             print("  " + line.strip())
+
+    present = powershell(
+        "$p = Join-Path ([Environment]::GetFolderPath('Startup')) "
+        "'Sector Rotation Server.lnk'; "
+        "if (Test-Path $p) { Write-Output 'installed' } else { Write-Output 'missing' }"
+    )
+    state = "installed at logon" if "installed" in present.stdout else "not installed"
+    print(f"  {SERVER} | {state}")
     if result.returncode != 0 and result.stderr:
         print("  " + result.stderr.strip()[:200], file=sys.stderr)
 
 
 def remove():
+    remove_server_autostart()
     for name in (MORNING, LIVE):
         result = powershell(
             f"Unregister-ScheduledTask -TaskName '{name}' -Confirm:$false "

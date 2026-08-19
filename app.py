@@ -3,6 +3,9 @@ Sector Rotation Analysis - local web server (Python standard library only).
 
     python app.py            serve on this machine only
     python app.py --lan      also serve to phones/tablets on the same Wi-Fi
+
+Started under pythonw so it runs without a console, sys.stderr is None, and every
+request log would raise on the write. Output goes to logs/server.log in that case.
 """
 import json
 import socket
@@ -15,7 +18,24 @@ from pathlib import Path
 BASE_DIR = Path(__file__).parent
 DATA_FILE = BASE_DIR / "data" / "sectors_data.json"
 HISTORY_FILE = BASE_DIR / "data" / "index_history.json"
+LOG_FILE = BASE_DIR / "logs" / "server.log"
 PORT = 5000
+
+
+def open_log():
+    """
+    Somewhere to write when there is no console.
+
+    pythonw leaves sys.stdout and sys.stderr as None, so anything that logs -- and
+    BaseHTTPRequestHandler logs every request -- dies on the first write unless
+    they are pointed somewhere real.
+    """
+    if sys.stderr is not None:
+        return None
+    LOG_FILE.parent.mkdir(exist_ok=True)
+    handle = open(LOG_FILE, "a", encoding="utf-8", buffering=1)
+    sys.stdout = sys.stderr = handle
+    return handle
 
 
 def lan_ip():
@@ -37,7 +57,13 @@ class Handler(SimpleHTTPRequestHandler):
         super().__init__(*args, directory=str(BASE_DIR), **kwargs)
 
     def log_message(self, fmt, *args):
-        sys.stderr.write("%s - %s\n" % (self.address_string(), fmt % args))
+        stream = sys.stderr
+        if stream is None:                  # no console and no log file: stay quiet
+            return
+        try:
+            stream.write("%s - %s\n" % (self.address_string(), fmt % args))
+        except (ValueError, OSError):
+            pass                            # a closed handle must not kill a request
 
     def end_headers(self):
         # Without this the browser keeps serving an old app.js after an edit, and
@@ -115,6 +141,8 @@ class Handler(SimpleHTTPRequestHandler):
 
 
 if __name__ == "__main__":
+    open_log()
+
     share = "--lan" in sys.argv
     host = "0.0.0.0" if share else "127.0.0.1"
 
