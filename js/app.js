@@ -1146,7 +1146,9 @@ function renderChart() {
   const pad = (max - min) * 0.08 || 1;
   const lo = min - pad, hi = max + pad;
 
-  const W = 900, H = 340, L = 52, R = 12, T = 14, B = 26;
+  // Room on the right for the end labels, the way a price chart carries its
+  // scale and last value there rather than making you trace a line to a legend.
+  const W = 1000, H = 380, L = 8, R = 96, T = 16, B = 30;
   const x = i => L + (i / Math.max(dates.length - 1, 1)) * (W - L - R);
   const y = v => T + (1 - (v - lo) / (hi - lo)) * (H - T - B);
 
@@ -1161,30 +1163,57 @@ function renderChart() {
   };
 
   const ticks = [];
-  for (let k = 0; k <= 4; k++) ticks.push(lo + (hi - lo) * (k / 4));
+  for (let k = 0; k <= 5; k++) ticks.push(lo + (hi - lo) * (k / 5));
 
-  const dateLabels = [0, Math.floor(dates.length / 2), dates.length - 1]
-    .filter((v, i, a) => a.indexOf(v) === i);
+  // Roughly monthly gridlines, so the horizontal axis is readable at any window.
+  const step = Math.max(1, Math.round(dates.length / 7));
+  const dateTicks = [];
+  for (let i = 0; i < dates.length; i += step) dateTicks.push(i);
+  if (dateTicks[dateTicks.length - 1] !== dates.length - 1) dateTicks.push(dates.length - 1);
+
+  const colourOf = (s, i) =>
+    s.baseline ? 'var(--text-dim)' : LINE_COLOURS[i % LINE_COLOURS.length];
+
+  // End labels, stacked apart when lines finish close together.
+  const ends = series.map((s, i) => {
+    const last = [...s.values].reverse().find(v => v !== null);
+    return { name: s.name, value: last, colour: colourOf(s, i), y: y(last ?? 0), baseline: s.baseline };
+  }).filter(e => e.value !== undefined).sort((a, b) => a.y - b.y);
+
+  for (let i = 1; i < ends.length; i++) {
+    if (ends[i].y - ends[i - 1].y < 17) ends[i].y = ends[i - 1].y + 17;
+  }
 
   host.innerHTML = `
-    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" class="chart-svg" role="img"
+    <svg viewBox="0 0 ${W} ${H}" class="chart-svg" role="img"
          aria-label="Rebased performance comparison">
       ${ticks.map(t => `
-        <line x1="${L}" x2="${W - R}" y1="${y(t).toFixed(1)}" y2="${y(t).toFixed(1)}"
-              class="grid ${Math.abs(t) < 1e-9 ? 'zero' : ''}"/>
-        <text x="${L - 8}" y="${(y(t) + 4).toFixed(1)}" class="axis" text-anchor="end">
-          ${t > 0 ? '+' : ''}${t.toFixed(0)}%
+        <line x1="${L}" x2="${(W - R).toFixed(1)}" y1="${y(t).toFixed(1)}" y2="${y(t).toFixed(1)}"
+              class="grid ${Math.abs(t) < (hi - lo) / 200 ? 'zero' : ''}"/>
+        <text x="${(W - R + 6).toFixed(1)}" y="${(y(t) + 4).toFixed(1)}" class="axis">
+          ${t > 0 ? '+' : ''}${t.toFixed(t >= 100 || t <= -100 ? 0 : 1)}%
         </text>`).join('')}
-      ${dateLabels.map(i => `
-        <text x="${x(i).toFixed(1)}" y="${H - 8}" class="axis"
+
+      ${dateTicks.map(i => `
+        <line x1="${x(i).toFixed(1)}" x2="${x(i).toFixed(1)}" y1="${T}" y2="${H - B}"
+              class="grid vertical"/>
+        <text x="${x(i).toFixed(1)}" y="${H - 10}" class="axis"
               text-anchor="${i === 0 ? 'start' : i === dates.length - 1 ? 'end' : 'middle'}">
-          ${dates[i]}
+          ${dates[i].slice(2)}
         </text>`).join('')}
+
       ${series.map((s, i) => `
-        <path d="${path(s.values)}" fill="none"
-              stroke="${s.baseline ? 'var(--text-dim)' : LINE_COLOURS[i % LINE_COLOURS.length]}"
-              stroke-width="${s.baseline ? 2.5 : 2}"
-              stroke-dasharray="${s.baseline ? '6 4' : ''}"/>`).join('')}
+        <path d="${path(s.values)}" fill="none" class="series-line"
+              stroke="${colourOf(s, i)}"
+              stroke-width="${s.baseline ? 2 : 2.2}"
+              stroke-dasharray="${s.baseline ? '5 4' : ''}"/>`).join('')}
+
+      ${ends.map(e => `
+        <rect x="${(W - R + 2).toFixed(1)}" y="${(e.y - 9).toFixed(1)}" width="${R - 6}" height="18"
+              rx="3" fill="${e.colour}" opacity="${e.baseline ? 0.55 : 1}"/>
+        <text x="${(W - R + 7).toFixed(1)}" y="${(e.y + 4).toFixed(1)}" class="end-label">
+          ${signedPct(e.value)}
+        </text>`).join('')}
     </svg>`;
 
   el('chartLegend').innerHTML = series.map((s, i) => {

@@ -14,7 +14,7 @@ with the reason.
 ## 1. Research depth — where the real edge is
 
 ### 1.1 Relative Rotation Graph (RRG)
-**Status:** not started · **Effort:** medium · **Data:** already have it
+**Status:** in progress · **Effort:** medium · **Data:** already have it
 
 The standard sector-rotation picture: a quadrant chart plotting relative strength
 against the *momentum of* that strength. Sectors travel clockwise through
@@ -27,7 +27,7 @@ laggard turning before it leads. That is the single biggest gap in what exists.
 Needs only the price history already cached.
 
 ### 1.2 Is the lead widening or narrowing?
-**Status:** not started · **Effort:** small · **Data:** already have it
+**Status:** data done, UI pending · **Effort:** small · **Data:** already have it
 
 Every RS figure is a snapshot. A sector +8% ahead and slipping is a different
 trade from one +8% ahead and pulling away. Adding the slope of RS over the last
@@ -49,7 +49,7 @@ delivery percentage alongside a breakout is a genuine confirmation, and it is
 specific to Indian market data.
 
 ### 1.5 Distance from 50 / 200-day moving average
-**Status:** not started · **Effort:** small · **Data:** Yahoo (`fiftyDayAverage`, `twoHundredDayAverage`)
+**Status:** data done, UI pending · **Effort:** small · **Data:** computed from the cached price history
 
 The most commonly quoted trend check. Above both and the 50 above the 200 is the
 classic uptrend structure. Cheap to add as two columns and a filter.
@@ -70,6 +70,19 @@ the design:** these come one request per symbol, so pulling all 750 on every
 refresh is not realistic. The sane approach is to fetch them for a watchlist and
 for whatever sector you have open, and cache for a week — fundamentals do not move
 daily.
+
+### 2.0 Market-cap filter
+**Status:** data done, UI pending · **Effort:** small · **Data:** NSE index membership
+
+Large / Mid / Small / Micro per stock, so a list can be cut down to "the large caps
+in NIFTY 500". This needs no extra fetching at all: NSE's own ranking is already
+expressed by index membership -- NIFTY 100 is the top hundred by market cap,
+MIDCAP 150 the next hundred and fifty, and so on down to MICROCAP 250. That is the
+same basis AMFI's classification uses, and it covers 752 of the 755 names.
+
+An exact rupee market cap is a separate matter: Yahoo has it, but one request per
+symbol, about sixteen minutes for the universe. Worth doing weekly for a watchlist,
+not on every refresh.
 
 ### 2.1 Valuation
 **Status:** not started · **Effort:** medium
@@ -108,8 +121,10 @@ sector has run 40%.
 
 ## 3. Workflow — making it yours
 
-### 3.1 Watchlist
-**Status:** not started · **Effort:** small
+### 3.1 Watchlists
+**Status:** in progress · **Effort:** small
+
+Several named lists rather than one, each editable.
 
 Star stocks and sectors; a view showing only those, with the same strength and
 breakout columns. Also the natural scope for fundamentals and alerts, given the

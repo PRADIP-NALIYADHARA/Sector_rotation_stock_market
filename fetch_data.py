@@ -399,6 +399,66 @@ def leadership(range_pos, stocks, benchmark_range_pos):
     }
 
 
+# NSE's own market-cap ranking, which is what AMFI's classification rests on:
+# NIFTY 100 is the top 100 by market cap, MIDCAP 150 the next 150, and so on.
+# Membership is already downloaded, so the bands cost nothing extra.
+CAP_BANDS = [
+    ("Large", "NIFTY 100"),
+    ("Mid", "NIFTY MIDCAP 150"),
+    ("Small", "NIFTY SMALLCAP 250"),
+    ("Micro", "NIFTY MICROCAP 250"),
+]
+
+
+def cap_bands(members_by_index):
+    """symbol -> Large / Mid / Small / Micro, first band wins."""
+    bands, seen = {}, set()
+    for label, index_name in CAP_BANDS:
+        for member in members_by_index.get(index_name, []):
+            symbol = member["symbol"]
+            if symbol not in seen:
+                seen.add(symbol)
+                bands[symbol] = label
+    return bands
+
+
+def moving_averages(series, today):
+    """
+    50 and 200-day averages, and how far price sits from each.
+
+    Computed from the price history already cached rather than asked of Yahoo per
+    symbol, which would be a quarter of an hour for the universe.
+    """
+    if not series:
+        return {}
+    closes = [series[day] for day in sorted(series)]
+    last = closes[-1]
+
+    out = {"ma50": None, "ma200": None, "fromMa50": None, "fromMa200": None}
+    for window, key in ((50, "ma50"), (200, "ma200")):
+        if len(closes) < window:
+            continue
+        avg = sum(closes[-window:]) / window
+        out[key] = round(avg, 2)
+        out["from" + key.capitalize()] = round((last / avg - 1) * 100, 2)
+    return out
+
+
+def rs_momentum(rs):
+    """
+    Is the lead widening or narrowing?
+
+    The recent month's gap against the benchmark, minus the average monthly gap
+    over three. Positive means the sector is pulling away faster than it has been;
+    negative means it is still ahead but losing ground -- the difference between a
+    leader worth holding and one worth leaving.
+    """
+    near, far = rs.get("1M"), rs.get("3M")
+    if near is None or far is None:
+        return None
+    return round(near - far / 3, 2)
+
+
 def relative_strength(returns, benchmark_returns):
     """How far a sector's line sits above the benchmark's on a same-% chart."""
     rs = {}
@@ -727,6 +787,7 @@ def main(live=False):
             "fromHigh": pct_from_high(idx.get("last"), idx.get("yearHigh")),
             "returns": returns,
             "rs": relative_strength(returns, benchmark_returns),
+            "rsMomentum": rs_momentum(relative_strength(returns, benchmark_returns)),
             "lead": leadership(range_pos, stocks, benchmark_range_pos),
             "advances": adv,
             "declines": dec,
@@ -762,6 +823,7 @@ def main(live=False):
             "fromHigh": pct_from_high(idx.get("last"), idx.get("yearHigh")),
             "returns": returns,
             "rs": relative_strength(returns, benchmark_returns),
+            "rsMomentum": rs_momentum(relative_strength(returns, benchmark_returns)),
             "lead": leadership(range_pos, stocks, benchmark_range_pos),
             "advances": adv,
             "declines": dec,
@@ -804,6 +866,7 @@ def main(live=False):
             "coverage": coverage,
             "memberCount": len(members),
             "rs": relative_strength(returns, benchmark_returns),
+            "rsMomentum": rs_momentum(relative_strength(returns, benchmark_returns)),
             "lead": leadership(range_pos, stocks, benchmark_range_pos),
             "advances": adv,
             "declines": dec,
@@ -828,6 +891,7 @@ def main(live=False):
     # six sectors on average, so returns and relative strength inlined there
     # would be stored six times over.
     print("Building per-stock strength...", file=sys.stderr)
+    bands = cap_bands(members_by_index)
     stock_detail = {}
     for sector in sectors:
         for stock in sector["stocks"]:
@@ -851,6 +915,9 @@ def main(live=False):
                     "nearHigh": stock["nearHigh"],
                     "returns": returns,
                     "rs": relative_strength(returns, benchmark_returns),
+                    "rsMomentum": rs_momentum(relative_strength(returns, benchmark_returns)),
+                    "capBand": bands.get(symbol),
+                    **moving_averages(yahoo.get(symbol), today),
                     "sectors": [],
                 }
                 stock_detail[symbol] = entry

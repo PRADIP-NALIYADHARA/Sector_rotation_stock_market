@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-08-19T16:00:45",
-  "bhavDate": "18-Aug-2026",
+  "updatedAt": "2026-08-19T18:34:15",
+  "bhavDate": "19-Aug-2026",
   "refreshMode": "full",
-  "indexDate": "18-Aug-2026",
+  "indexDate": "19-Aug-2026",
   "week52Date": "19-Aug-2026",
   "priceSource": "yahoo",
   "priceCoverage": {
@@ -75,6 +75,7 @@
         "3Y": 64.93,
         "5Y": 144.56
       },
+      "rsMomentum": 5.02,
       "lead": {
         "rangePos": 89.2,
         "nearHighPct": 40,
@@ -391,6 +392,7 @@
         "3Y": 82.72,
         "5Y": 276.93
       },
+      "rsMomentum": 3.01,
       "lead": {
         "rangePos": 62.9,
         "nearHighPct": 27,
@@ -1183,6 +1185,7 @@
         "3Y": null,
         "5Y": null
       },
+      "rsMomentum": 3.73,
       "lead": {
         "rangePos": null,
         "nearHighPct": null,
@@ -1230,6 +1233,7 @@
         "3Y": null,
         "5Y": null
       },
+      "rsMomentum": 2.17,
       "lead": {
         "rangePos": 84.4,
         "nearHighPct": null,
@@ -1277,6 +1281,7 @@
         "3Y": 56.1,
         "5Y": null
       },
+      "rsMomentum": 2.94,
       "lead": {
         "rangePos": 92.5,
         "nearHighPct": 20,
@@ -1807,6 +1812,7 @@
         "3Y": 60.52,
         "5Y": null
       },
+      "rsMomentum": 2.61,
       "lead": {
         "rangePos": null,
         "nearHighPct": 20,
@@ -2337,6 +2343,7 @@
         "3Y": 18.25,
         "5Y": null
       },
+      "rsMomentum": 3.18,
       "lead": {
         "rangePos": 58.2,
         "nearHighPct": 6,
@@ -3158,6 +3165,7 @@
         "3Y": 199.79,
         "5Y": null
       },
+      "rsMomentum": 3.04,
       "lead": {
         "rangePos": 94.3,
         "nearHighPct": 33,
@@ -3507,6 +3515,7 @@
         "3Y": -25.25,
         "5Y": -54.34
       },
+      "rsMomentum": 4.18,
       "lead": {
         "rangePos": 32.4,
         "nearHighPct": 10,
@@ -3740,6 +3749,7 @@
         "3Y": 58.77,
         "5Y": 135.1
       },
+      "rsMomentum": 1.81,
       "lead": {
         "rangePos": 42.4,
         "nearHighPct": 9,
@@ -4477,6 +4487,7 @@
         "3Y": 75.86,
         "5Y": 83.05
       },
+      "rsMomentum": 5.48,
       "lead": {
         "rangePos": 81.1,
         "nearHighPct": 13,
@@ -4782,6 +4793,7 @@
         "3Y": 6.25,
         "5Y": null
       },
+      "rsMomentum": 2.45,
       "lead": {
         "rangePos": 76.5,
         "nearHighPct": null,
@@ -4829,6 +4841,7 @@
         "3Y": 50.93,
         "5Y": 131.91
       },
+      "rsMomentum": 0.36,
       "lead": {
         "rangePos": 97.7,
         "nearHighPct": 12,
@@ -8676,6 +8689,7 @@
         "3Y": 150.05,
         "5Y": 627.64
       },
+      "rsMomentum": 1.01,
       "lead": {
         "rangePos": 59.5,
         "nearHighPct": 18,
@@ -10433,6 +10447,7 @@
         "3Y": null,
         "5Y": null
       },
+      "rsMomentum": 0.55,
       "lead": {
         "rangePos": null,
         "nearHighPct": null,
@@ -10480,6 +10495,7 @@
         "3Y": -54.18,
         "5Y": -50.07
       },
+      "rsMomentum": 0.0,
       "lead": {
         "rangePos": 82.4,
         "nearHighPct": 20,
@@ -10686,6 +10702,7 @@
         "3Y": 47.68,
         "5Y": 72.9
       },
+      "rsMomentum": 2.61,
       "lead": {
         "rangePos": null,
         "nearHighPct": 22,
@@ -11882,6 +11899,7 @@
         "3Y": null,
         "5Y": null
       },
+      "rsMomentum": 1.99,
       "lead": {
         "rangePos": 89.3,
         "nearHighPct": null,
@@ -11929,6 +11947,7 @@
         "3Y": null,
         "5Y": null
       },
+      "rsMomentum": 2.17,
       "lead": {
         "rangePos": 92.2,
         "nearHighPct": null,
@@ -11987,6 +12006,7 @@
         "3Y": 98.4,
         "5Y": 86.63
       },
+      "rsMomentum": -0.04,
       "lead": {
         "rangePos": 66.9,
         "nearHighPct": 26,
@@ -13093,6 +13113,7 @@
         "3Y": 60.64,
         "5Y": 49.4
       },
+      "rsMomentum": -0.22,
       "lead": {
         "rangePos": 94.8,
         "nearHighPct": 16,
@@ -13923,6 +13944,7 @@
         "3Y": null,
         "5Y": null
       },
+      "rsMomentum": 2.89,
       "lead": {
         "rangePos": 55.9,
         "nearHighPct": null,
@@ -13970,6 +13992,7 @@
         "3Y": 44.49,
         "5Y": 39.55
       },
+      "rsMomentum": 1.06,
       "lead": {
         "rangePos": 93.5,
         "nearHighPct": 22,
@@ -14800,6 +14823,7 @@
         "3Y": 43.99,
         "5Y": 50.41
       },
+      "rsMomentum": -0.21,
       "lead": {
         "rangePos": 95.4,
         "nearHighPct": 10,
@@ -16380,6 +16404,7 @@
         "3Y": 21.19,
         "5Y": 35.57
       },
+      "rsMomentum": 1.18,
       "lead": {
         "rangePos": 69.8,
         "nearHighPct": 23,
@@ -16877,6 +16902,7 @@
         "3Y": null,
         "5Y": null
       },
+      "rsMomentum": -0.31,
       "lead": {
         "rangePos": 96.7,
         "nearHighPct": null,
@@ -16935,6 +16961,7 @@
         "3Y": -22.06,
         "5Y": 10.68
       },
+      "rsMomentum": 3.32,
       "lead": {
         "rangePos": 53.0,
         "nearHighPct": 0,
@@ -16997,6 +17024,7 @@
         "3Y": 19.59,
         "5Y": 19.82
       },
+      "rsMomentum": -2.27,
       "lead": {
         "rangePos": 93.7,
         "nearHighPct": 8,
@@ -17272,6 +17300,7 @@
         "3Y": 27.83,
         "5Y": 36.0
       },
+      "rsMomentum": 1.39,
       "lead": {
         "rangePos": 85.1,
         "nearHighPct": 17,
@@ -17789,6 +17818,7 @@
         "3Y": 35.88,
         "5Y": 115.83
       },
+      "rsMomentum": 0.87,
       "lead": {
         "rangePos": 42.3,
         "nearHighPct": 16,
@@ -18531,6 +18561,7 @@
         "3Y": 12.39,
         "5Y": 78.56
       },
+      "rsMomentum": -0.92,
       "lead": {
         "rangePos": 56.3,
         "nearHighPct": 25,
@@ -18707,6 +18738,7 @@
         "3Y": 47.62,
         "5Y": 41.68
       },
+      "rsMomentum": 0.47,
       "lead": {
         "rangePos": 91.4,
         "nearHighPct": 40,
@@ -19098,6 +19130,7 @@
         "3Y": 7.05,
         "5Y": 14.28
       },
+      "rsMomentum": 0.72,
       "lead": {
         "rangePos": 37.0,
         "nearHighPct": 3,
@@ -19694,6 +19727,7 @@
         "3Y": 36.11,
         "5Y": 63.63
       },
+      "rsMomentum": -0.71,
       "lead": {
         "rangePos": 95.4,
         "nearHighPct": 12,
@@ -23524,6 +23558,7 @@
         "3Y": 46.43,
         "5Y": null
       },
+      "rsMomentum": 1.46,
       "lead": {
         "rangePos": 85.6,
         "nearHighPct": 17,
@@ -24038,6 +24073,7 @@
         "3Y": null,
         "5Y": null
       },
+      "rsMomentum": 0.13,
       "lead": {
         "rangePos": 95.2,
         "nearHighPct": null,
@@ -24085,6 +24121,7 @@
         "3Y": 76.37,
         "5Y": null
       },
+      "rsMomentum": 0.24,
       "lead": {
         "rangePos": 90.0,
         "nearHighPct": 30,
@@ -24607,6 +24644,7 @@
         "3Y": 38.17,
         "5Y": 73.01
       },
+      "rsMomentum": 0.4,
       "lead": {
         "rangePos": 95.0,
         "nearHighPct": 12,
@@ -30687,6 +30725,7 @@
         "3Y": 43.64,
         "5Y": 98.76
       },
+      "rsMomentum": 0.88,
       "lead": {
         "rangePos": 94.9,
         "nearHighPct": 16,
@@ -31517,6 +31556,7 @@
         "3Y": 42.99,
         "5Y": 83.78
       },
+      "rsMomentum": 1.09,
       "lead": {
         "rangePos": 94.0,
         "nearHighPct": 13,
@@ -33097,6 +33137,7 @@
         "3Y": 39.51,
         "5Y": 77.66
       },
+      "rsMomentum": 0.94,
       "lead": {
         "rangePos": 94.5,
         "nearHighPct": 13,
@@ -35438,6 +35479,7 @@
         "3Y": 102.11,
         "5Y": 241.19
       },
+      "rsMomentum": 3.9,
       "lead": {
         "rangePos": 50.0,
         "nearHighPct": 4,
@@ -35854,6 +35896,7 @@
         "3Y": 88.71,
         "5Y": null
       },
+      "rsMomentum": 1.42,
       "lead": {
         "rangePos": 94.6,
         "nearHighPct": null,
@@ -35901,6 +35944,7 @@
         "3Y": 14.54,
         "5Y": 3.44
       },
+      "rsMomentum": 0.3,
       "lead": {
         "rangePos": null,
         "nearHighPct": null,
@@ -35948,6 +35992,7 @@
         "3Y": 14.39,
         "5Y": 3.44
       },
+      "rsMomentum": 0.29,
       "lead": {
         "rangePos": null,
         "nearHighPct": null,
@@ -36006,6 +36051,7 @@
         "3Y": 28.84,
         "5Y": 87.22
       },
+      "rsMomentum": -0.66,
       "lead": {
         "rangePos": 49.6,
         "nearHighPct": 13,
@@ -36737,6 +36783,7 @@
         "3Y": null,
         "5Y": null
       },
+      "rsMomentum": 0.16,
       "lead": {
         "rangePos": 92.7,
         "nearHighPct": null,
@@ -36784,6 +36831,7 @@
         "3Y": null,
         "5Y": null
       },
+      "rsMomentum": -1.66,
       "lead": {
         "rangePos": 51.6,
         "nearHighPct": 7,
@@ -37065,6 +37113,7 @@
         "3Y": 48.79,
         "5Y": null
       },
+      "rsMomentum": 0.69,
       "lead": {
         "rangePos": 93.1,
         "nearHighPct": 20,
@@ -37520,6 +37569,7 @@
         "3Y": 22.3,
         "5Y": 36.53
       },
+      "rsMomentum": 0.17,
       "lead": {
         "rangePos": 91.0,
         "nearHighPct": null,
@@ -37567,6 +37617,7 @@
         "3Y": 22.71,
         "5Y": 38.83
       },
+      "rsMomentum": 0.57,
       "lead": {
         "rangePos": 88.6,
         "nearHighPct": 15,
@@ -41397,6 +41448,7 @@
         "3Y": 16.06,
         "5Y": null
       },
+      "rsMomentum": 0.28,
       "lead": {
         "rangePos": 84.1,
         "nearHighPct": 13,
@@ -52757,6 +52809,7 @@
         "3Y": null,
         "5Y": null
       },
+      "rsMomentum": -0.21,
       "lead": {
         "rangePos": 91.8,
         "nearHighPct": null,
@@ -52804,6 +52857,7 @@
         "3Y": null,
         "5Y": null
       },
+      "rsMomentum": 0.66,
       "lead": {
         "rangePos": null,
         "nearHighPct": null,
@@ -52851,6 +52905,7 @@
         "3Y": null,
         "5Y": null
       },
+      "rsMomentum": 0.57,
       "lead": {
         "rangePos": 66.7,
         "nearHighPct": null,
@@ -52898,6 +52953,7 @@
         "3Y": 14.86,
         "5Y": 20.59
       },
+      "rsMomentum": 0.27,
       "lead": {
         "rangePos": 79.8,
         "nearHighPct": 13,
@@ -60478,6 +60534,7 @@
         "3Y": 5.81,
         "5Y": null
       },
+      "rsMomentum": -0.15,
       "lead": {
         "rangePos": 55.7,
         "nearHighPct": null,
@@ -60536,6 +60593,7 @@
         "3Y": 109.79,
         "5Y": 132.09
       },
+      "rsMomentum": -2.69,
       "lead": {
         "rangePos": 45.0,
         "nearHighPct": 2,
@@ -61207,6 +61265,7 @@
         "3Y": null,
         "5Y": null
       },
+      "rsMomentum": 0.51,
       "lead": {
         "rangePos": 74.8,
         "nearHighPct": null,
@@ -61254,6 +61313,7 @@
         "3Y": 12.29,
         "5Y": 15.36
       },
+      "rsMomentum": 0.37,
       "lead": {
         "rangePos": 70.5,
         "nearHighPct": 16,
@@ -64334,6 +64394,7 @@
         "3Y": 62.49,
         "5Y": 224.76
       },
+      "rsMomentum": -1.42,
       "lead": {
         "rangePos": 59.2,
         "nearHighPct": 0,
@@ -64589,6 +64650,7 @@
         "3Y": 37.11,
         "5Y": 66.53
       },
+      "rsMomentum": -2.09,
       "lead": {
         "rangePos": 48.8,
         "nearHighPct": 4,
@@ -65026,6 +65088,7 @@
         "3Y": 6.72,
         "5Y": 5.12
       },
+      "rsMomentum": 0.2,
       "lead": {
         "rangePos": 59.3,
         "nearHighPct": 18,
@@ -66606,6 +66669,7 @@
         "3Y": null,
         "5Y": null
       },
+      "rsMomentum": -0.59,
       "lead": {
         "rangePos": 78.8,
         "nearHighPct": null,
@@ -66664,6 +66728,7 @@
         "3Y": 56.05,
         "5Y": 144.61
       },
+      "rsMomentum": -2.66,
       "lead": {
         "rangePos": 46.5,
         "nearHighPct": 6,
@@ -66983,6 +67048,7 @@
         "3Y": 47.18,
         "5Y": 37.05
       },
+      "rsMomentum": -0.4,
       "lead": {
         "rangePos": 85.0,
         "nearHighPct": 35,
@@ -67363,6 +67429,7 @@
         "3Y": 23.5,
         "5Y": null
       },
+      "rsMomentum": -1.22,
       "lead": {
         "rangePos": 71.6,
         "nearHighPct": 10,
@@ -67869,6 +67936,7 @@
         "3Y": 0.0,
         "5Y": 0.0
       },
+      "rsMomentum": 0.0,
       "lead": {
         "rangePos": 45.2,
         "nearHighPct": 14,
@@ -68699,6 +68767,7 @@
         "3Y": null,
         "5Y": null
       },
+      "rsMomentum": -0.28,
       "lead": {
         "rangePos": 87.9,
         "nearHighPct": null,
@@ -68757,6 +68826,7 @@
         "3Y": 69.84,
         "5Y": 147.89
       },
+      "rsMomentum": -1.81,
       "lead": {
         "rangePos": 52.9,
         "nearHighPct": 12,
@@ -70630,6 +70700,7 @@
         "3Y": 80.75,
         "5Y": 205.44
       },
+      "rsMomentum": -3.4,
       "lead": {
         "rangePos": 51.4,
         "nearHighPct": 25,
@@ -70857,6 +70928,7 @@
         "3Y": 8.97,
         "5Y": null
       },
+      "rsMomentum": -2.12,
       "lead": {
         "rangePos": 77.3,
         "nearHighPct": 13,
@@ -71371,6 +71443,7 @@
         "3Y": 5.84,
         "5Y": 15.67
       },
+      "rsMomentum": -2.26,
       "lead": {
         "rangePos": 61.7,
         "nearHighPct": 21,
@@ -71661,6 +71734,7 @@
         "3Y": null,
         "5Y": null
       },
+      "rsMomentum": -3.1,
       "lead": {
         "rangePos": 81.0,
         "nearHighPct": null,
@@ -71708,6 +71782,7 @@
         "3Y": null,
         "5Y": null
       },
+      "rsMomentum": -0.67,
       "lead": {
         "rangePos": 28.6,
         "nearHighPct": null,
@@ -71766,6 +71841,7 @@
         "3Y": 64.16,
         "5Y": 72.06
       },
+      "rsMomentum": -3.14,
       "lead": {
         "rangePos": 46.1,
         "nearHighPct": 8,
@@ -72017,6 +72093,7 @@
         "3Y": 31.04,
         "5Y": 58.15
       },
+      "rsMomentum": -0.03,
       "lead": {
         "rangePos": 64.3,
         "nearHighPct": 10,
@@ -72547,6 +72624,7 @@
         "3Y": null,
         "5Y": null
       },
+      "rsMomentum": -0.91,
       "lead": {
         "rangePos": 86.1,
         "nearHighPct": null,
@@ -72605,6 +72683,7 @@
         "3Y": 45.11,
         "5Y": 172.79
       },
+      "rsMomentum": -3.23,
       "lead": {
         "rangePos": 45.0,
         "nearHighPct": 0,
@@ -72924,6 +73003,7 @@
         "3Y": null,
         "5Y": null
       },
+      "rsMomentum": 1.29,
       "lead": {
         "rangePos": 77.0,
         "nearHighPct": null,
@@ -72971,6 +73051,7 @@
         "3Y": 0.18,
         "5Y": -13.58
       },
+      "rsMomentum": -1.38,
       "lead": {
         "rangePos": 38.8,
         "nearHighPct": 10,
@@ -73493,6 +73574,7 @@
         "3Y": null,
         "5Y": null
       },
+      "rsMomentum": 2.33,
       "lead": {
         "rangePos": 6.5,
         "nearHighPct": null,
@@ -73540,6 +73622,7 @@
         "3Y": 15.99,
         "5Y": 19.86
       },
+      "rsMomentum": 0.09,
       "lead": {
         "rangePos": 32.0,
         "nearHighPct": 7,
@@ -73845,6 +73928,7 @@
         "3Y": 33.11,
         "5Y": 35.81
       },
+      "rsMomentum": 0.94,
       "lead": {
         "rangePos": 59.5,
         "nearHighPct": 10,
@@ -74375,6 +74459,7 @@
         "3Y": 16.1,
         "5Y": null
       },
+      "rsMomentum": -0.8,
       "lead": {
         "rangePos": 79.3,
         "nearHighPct": null,
@@ -74422,6 +74507,7 @@
         "3Y": 8.84,
         "5Y": 5.28
       },
+      "rsMomentum": -1.81,
       "lead": {
         "rangePos": 50.9,
         "nearHighPct": 10,
@@ -74794,6 +74880,7 @@
         "3Y": -4.43,
         "5Y": 2.69
       },
+      "rsMomentum": -2.61,
       "lead": {
         "rangePos": 56.1,
         "nearHighPct": 30,
@@ -75024,6 +75111,7 @@
         "3Y": 17.81,
         "5Y": 17.97
       },
+      "rsMomentum": -1.98,
       "lead": {
         "rangePos": null,
         "nearHighPct": null,
@@ -75071,6 +75159,7 @@
         "3Y": 44.18,
         "5Y": 85.89
       },
+      "rsMomentum": -6.74,
       "lead": {
         "rangePos": 76.4,
         "nearHighPct": 0,
@@ -75301,6 +75390,7 @@
         "3Y": 56.79,
         "5Y": 127.19
       },
+      "rsMomentum": 0.51,
       "lead": {
         "rangePos": 34.9,
         "nearHighPct": 5,
@@ -75681,6 +75771,7 @@
         "3Y": -32.44,
         "5Y": -19.52
       },
+      "rsMomentum": 0.01,
       "lead": {
         "rangePos": 16.3,
         "nearHighPct": 20,
@@ -75986,6 +76077,7 @@
         "3Y": null,
         "5Y": null
       },
+      "rsMomentum": -2.67,
       "lead": {
         "rangePos": 28.1,
         "nearHighPct": null,
@@ -76033,6 +76125,7 @@
         "3Y": 20.26,
         "5Y": 48.35
       },
+      "rsMomentum": -0.94,
       "lead": {
         "rangePos": 58.6,
         "nearHighPct": 2,
@@ -76713,6 +76806,7 @@
         "3Y": 61.84,
         "5Y": 173.49
       },
+      "rsMomentum": 0.85,
       "lead": {
         "rangePos": 20.3,
         "nearHighPct": 0,
@@ -76969,6 +77063,7 @@
         "3Y": 34.05,
         "5Y": 13.92
       },
+      "rsMomentum": -4.67,
       "lead": {
         "rangePos": 47.1,
         "nearHighPct": 0,
@@ -77081,6 +77176,7 @@
         "3Y": -14.22,
         "5Y": -24.21
       },
+      "rsMomentum": -3.08,
       "lead": {
         "rangePos": 21.2,
         "nearHighPct": 6,
@@ -77388,6 +77484,7 @@
         "3Y": 25.6,
         "5Y": 177.65
       },
+      "rsMomentum": -3.8,
       "lead": {
         "rangePos": 30.0,
         "nearHighPct": 0,
@@ -77815,6 +77912,7 @@
         "3Y": 69.45,
         "5Y": 319.65
       },
+      "rsMomentum": -2.68,
       "lead": {
         "rangePos": 30.5,
         "nearHighPct": 5,
@@ -78205,6 +78303,7 @@
         "3Y": 103.61,
         "5Y": 746.47
       },
+      "rsMomentum": -12.79,
       "lead": {
         "rangePos": 50.9,
         "nearHighPct": 0,
