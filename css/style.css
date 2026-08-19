@@ -7,6 +7,12 @@
   --border: rgba(255, 255, 255, 0.09);
   --accent: #4b9fff;
   --font: 'Inter', system-ui, sans-serif;
+
+  /* Space Grotesk carries the headings and the figures: its wider counters and
+     squared terminals give numbers a deliberate, instrument-panel look, while
+     Inter stays on the small print where nothing beats its legibility. */
+  --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+
   --t: 0.22s ease;
 }
 
@@ -1568,4 +1574,61 @@ main { max-width: 1240px; margin: 0 auto; padding: 2rem; }
 @media (max-width: 720px) {
   .rrg-board { grid-template-columns: 1fr; }
   .board-row { grid-template-columns: minmax(80px, 1.4fr) 1fr 56px 70px; font-size: 0.78rem; }
+}
+
+/* ------------------------------------------------------------- typography
+ * Display face on anything that is read as a headline or a figure; Inter on
+ * everything else. Lining, tabular numerals throughout, so a column of
+ * percentages stays a column rather than drifting with the digits in it.
+ */
+
+.brand-title,
+.regime-verdict,
+.regime-label,
+.group-header h2,
+.board-title,
+.compare-heading,
+.compare-subheading,
+.watch-stocks-head h3,
+.detail-head h2,
+.sector-name,
+.rrg-read-title {
+  font-family: var(--font-display);
+}
+
+.sector-value,
+.sector-change,
+.bm-return,
+.stat-value,
+.board-x,
+.board-y,
+.score,
+.pchange,
+.period-table,
+.stock-table td,
+.compare-table td,
+.overlap-matrix td,
+.scale-chip,
+.freshness {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+}
+
+.chart-svg .axis,
+.chart-svg .end-label,
+.rrg-svg .rrg-name,
+.rrg-svg .rrg-quad {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Company names and prose stay on Inter -- long strings read better in it. */
+.stock-table td:nth-child(3),
+.rrg-read p,
+.rrg-headline,
+.bm-sub,
+.compare-hint,
+.group-blurb {
+  font-family: var(--font);
 }
