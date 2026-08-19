@@ -972,6 +972,13 @@ function restoreFromUrl() {
 el('refreshBtn').addEventListener('click', refreshData);
 document.querySelectorAll('[data-back]').forEach(b => b.addEventListener('click', goBack));
 
+// The logo doubles as the way home from a sector or the comparison.
+el('brandHome').addEventListener('click', (e) => {
+  e.preventDefault();
+  if (el('overviewView').classList.contains('hidden')) goBack();
+  else window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
 el('sectorSearch').addEventListener('input', (e) => {
   state.search = e.target.value.trim().toLowerCase();
   renderSections();

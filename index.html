@@ -4,17 +4,32 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sector Rotation Analysis</title>
-<link rel="stylesheet" href="css/style.css?v=2">
+<link rel="stylesheet" href="css/style.css?v=3">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <header class="topbar">
-  <div class="brand">
-    <h1>Sector Rotation Analysis</h1>
-    <span class="byline">by Pradip</span>
-  </div>
+  <a class="brand" id="brandHome" href="#" aria-label="Sector Rotation Analysis — back to all sectors">
+    <span class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 48 48" class="brand-svg">
+        <g class="brand-ring">
+          <!-- Four quarters in the momentum scale: deep red through to deep green -->
+          <circle cx="24" cy="24" r="17" stroke="#d32029" transform="rotate(-88 24 24)"/>
+          <circle cx="24" cy="24" r="17" stroke="#f0b90b" transform="rotate(2 24 24)"/>
+          <circle cx="24" cy="24" r="17" stroke="#5fd68a" transform="rotate(92 24 24)"/>
+          <circle cx="24" cy="24" r="17" stroke="#00a35c" transform="rotate(182 24 24)"/>
+        </g>
+        <path class="brand-arrow" d="M24 4.5 L29.5 9 L24 13.5 Z"/>
+        <circle class="brand-core" cx="24" cy="24" r="5"/>
+      </svg>
+    </span>
+    <span class="brand-text">
+      <h1 class="brand-title">Sector Rotation Analysis</h1>
+      <span class="byline">by <b>Pradip</b></span>
+    </span>
+  </a>
   <div id="regimeBox" class="regime" title="NIFTY Composite G-Sec / NIFTY 50, against its 30-day average. Money moving into government bonds lifts this ratio, so above the average is risk-off.">
     <span class="regime-label">Market</span>
     <span class="regime-verdict" id="regimeVerdict">—</span>
@@ -218,6 +233,6 @@
   <p>Data sourced from public NSE India endpoints. For research/educational use only — not investment advice.</p>
 </footer>
 
-<script src="js/app.js?v=2"></script>
+<script src="js/app.js?v=3"></script>
 </body>
 </html>
