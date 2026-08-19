@@ -471,13 +471,21 @@ function renderSections() {
   const visible = visibleSectors();
   el('resultCount').textContent = `${visible.length} of ${state.data.sectors.length}`;
 
+  const narrowing = Boolean(state.search) || state.filter !== 'all' || state.watchOnly;
+
   const html = GROUP_ORDER.map(group => {
     const list = sortSectors(visible.filter(s => s.group === group));
     if (!list.length) return '';
-    const shut = collapsed.has(group);
+    // A narrowed list has to be visible to be a result. Searching found three
+    // matches across three sections and showed one, because the other two were
+    // folded -- which reads as the search being broken. Any active narrowing
+    // opens the sections without disturbing what was collapsed by choice.
+    const shut = collapsed.has(group) && !narrowing;
     return `
       <section class="group-section ${shut ? 'collapsed' : ''}">
-        <button class="group-header" data-group="${group}" aria-expanded="${!shut}">
+        <button class="group-header" data-group="${group}" aria-expanded="${!shut}"
+                title="${narrowing && collapsed.has(group)
+                  ? 'Opened to show matches; clears when you reset the filters' : ''}">
           <span class="group-caret">▾</span>
           <h2>${group}</h2>
           <span class="group-count">${list.length}</span>
