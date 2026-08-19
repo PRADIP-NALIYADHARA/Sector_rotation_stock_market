@@ -418,6 +418,19 @@ function renderBenchmarkStrip() {
     : `· ${bm.name} is ${rp}% up its own 52-week range (${signedPct(bm.fromHigh)} from its high)`;
 }
 
+
+/**
+ * Every typed word has to appear somewhere in the name or the index name.
+ *
+ * Word-by-word rather than one substring, so order and spacing stop mattering:
+ * "defence india", "india  defence" and "nifty defence" all find the same
+ * sector, which a plain includes() would not.
+ */
+function matchesSearch(sector, query) {
+  const haystack = `${sector.name} ${sector.indexName} ${sector.group}`.toLowerCase();
+  return query.split(/\s+/).filter(Boolean).every(word => haystack.includes(word));
+}
+
 function visibleSectors() {
   if (!state.data) return [];
   return state.data.sectors.filter(s => {
@@ -426,10 +439,7 @@ function visibleSectors() {
     if (state.filter === 'bear' && !(rs < 0)) return false;
     if (state.filter === 'breakout' && !(s.lead && s.lead.breakingOut)) return false;
     if (state.watchOnly && !inWatchlist('sector', s.indexName)) return false;
-    if (state.search) {
-      const q = state.search;
-      if (!s.name.toLowerCase().includes(q) && !s.indexName.toLowerCase().includes(q)) return false;
-    }
+    if (state.search && !matchesSearch(s, state.search)) return false;
     return true;
   });
 }
