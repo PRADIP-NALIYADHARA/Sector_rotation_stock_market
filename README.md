@@ -254,6 +254,27 @@ number and crossing in the app. NSE adjusts an index's divisor when a constituen
 splits, so index series are continuous by construction. The 52-week highs and lows also
 arrive pre-adjusted from NSE. Only stock-level multi-period returns ever needed this.
 
+## Chart resolution
+
+The comparison chart is not one fixed interval — it is denser where crossings are
+decided and sparser where only the shape matters:
+
+| Stretch | Interval |
+|---------|----------|
+| last ~220 days | daily |
+| out to 3 years | weekly |
+| beyond that | monthly (indices) / weekly (stocks) |
+
+So a 1M or 3M window is drawn entirely from daily closes and a crossing there is
+dated to the day. On 1Y and longer the older part is weekly, and a crossing date is
+good to within a few days. That is deliberate: at those horizons a single day's
+whipsaw is noise, and smoothing it out is the point.
+
+Stocks and indices use the same ~220-day daily window on purpose. When the stock
+window was three months, a 6M chart drew sector lines daily and stock lines weekly
+over the same stretch, so a crossing between the two could only be dated to the
+nearest week on one side and the day on the other.
+
 ## Price history
 
 The chart and crossings need a real series, not endpoints, so `build_history.py` caches

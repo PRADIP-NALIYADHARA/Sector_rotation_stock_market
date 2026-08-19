@@ -32,9 +32,13 @@ except ImportError:                                   # optional dependency
 
 BATCH = 120
 
-# Daily for the recent stretch, weekly further out -- the same trade-off the
-# index history makes, and enough for returns measured to the nearest few days.
-DAILY_PERIOD = "3mo"
+# Daily for the recent stretch, weekly further out.
+#
+# The daily window matches the index history's 220 days deliberately. When it was
+# three months, a 6M chart drew sector lines daily and stock lines weekly over the
+# same stretch, so a crossing between them could only be dated to the nearest week
+# on one side and the day on the other.
+DAILY_PERIOD = "8mo"
 WEEKLY_PERIOD = "6y"
 
 

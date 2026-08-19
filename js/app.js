@@ -1001,20 +1001,31 @@ function selections() {
 }
 
 /**
- * A series aligned to the index calendar.
+ * A stock series aligned to the index calendar, as an as-of join.
  *
- * Stock history is keyed by date while index history is a positional array, so
- * stock closes are looked up per index date -- carrying the last known price
- * forward across a gap rather than breaking the line.
+ * Index history is a positional array sampled on its own dates; stock history is
+ * keyed by Yahoo's. Outside the daily stretch the two almost never land on the
+ * same day, so matching dates exactly finds nothing and whatever was last matched
+ * gets carried for years -- which is how TVSMOTOR came to be charted from its
+ * 2021 price and read +240% over one year instead of +33%.
+ *
+ * Both sides are sorted, so a single walk takes the latest stock close at or
+ * before each index date.
  */
 function seriesFor(item) {
   if (item.kind === 'sector') return chartableSeries(item.key);
   const byDate = stockHistory[item.key];
   if (!byDate || !priceHistory) return null;
 
+  const days = Object.keys(byDate).sort();
+  let cursor = 0;
   let carried = null;
+
   return priceHistory.dates.map(date => {
-    if (byDate[date] !== undefined) carried = byDate[date];
+    while (cursor < days.length && days[cursor] <= date) {
+      carried = byDate[days[cursor]];
+      cursor++;
+    }
     return carried;
   });
 }
