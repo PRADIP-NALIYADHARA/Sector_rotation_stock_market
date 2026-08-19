@@ -1030,26 +1030,40 @@ function seriesFor(item) {
   });
 }
 
+/** Monday of the week containing a date (weeks run Monday to Sunday). */
+function mondayOf(d) {
+  const day = d.getUTCDay();                 // 0 = Sunday
+  const back = day === 0 ? 6 : day - 1;
+  const m = new Date(d);
+  m.setUTCDate(d.getUTCDate() - back);
+  return m;
+}
+
 /**
- * Where a window of `days` starts in the index date array.
+ * Where a window of `days` starts, aligned the way TradingView aligns it.
  *
- * Takes the last date at or *before* the cutoff, not the first one after it.
- * Picking the first date after meant a window always began late -- and where the
- * sampling is weekly it began up to a week late, which is how a one-year chart
- * came to start on 21 August instead of 11 August and reported TVSMOTOR at +33%
- * where TradingView said +47%.
+ * TradingView measures from the start of the newest weekly bar, steps back the
+ * period, and begins at the bar containing wherever that lands. Counting a plain
+ * 365 days instead landed on 19 August 2025 where TradingView began on the 11th
+ * -- a week and a bit of difference, which had TVSMOTOR reading +34.6% against
+ * its +46.7% for what both called "1Y".
+ *
+ * Matching matters more than being independently precise here: the figures are
+ * checked against TradingView, and two defensible answers to the same question
+ * are worse than one shared one.
  */
 function windowSlice(days) {
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - days);
-  const iso = cutoff.toISOString().slice(0, 10);
-
   const dates = priceHistory.dates;
-  let from = -1;
-  for (let i = 0; i < dates.length; i++) {
-    if (dates[i] <= iso) from = i; else break;
-  }
-  if (from < 0) from = 0;                       // window predates the history
+  const last = new Date(dates[dates.length - 1] + 'T00:00:00Z');
+
+  const anchor = mondayOf(last);
+  const target = new Date(anchor);
+  target.setUTCDate(anchor.getUTCDate() - days);
+  const iso = mondayOf(target).toISOString().slice(0, 10);
+
+  // First trading day of that week -- the Monday itself may be a holiday.
+  const from = dates.findIndex(d => d >= iso);
+  if (from < 0) return Math.max(0, dates.length - 2);
   return Math.min(from, dates.length - 2);
 }
 

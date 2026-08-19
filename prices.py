@@ -7,8 +7,9 @@ source for stock prices. Its bhavcopy only reaches back six years, carries raw
 traded prices that a split turns into a fake collapse, and is only published once
 the session has closed.
 
-Yahoo answers all three: adjusted closes going back decades (RELIANCE to 1996),
-and today's price while the market is still open.
+Yahoo answers all three: split-adjusted closes going back decades (RELIANCE to
+1996), and today's price while the market is still open. Dividends are left out,
+matching what a price chart shows.
 
 It is unofficial, though, so nothing here is allowed to be load-bearing. Every
 lookup can come back empty and the caller falls back to the bhavcopy it already
@@ -47,8 +48,12 @@ def ticker(symbol):
 
 
 def _download(tickers, period, interval):
+    # auto_adjust=False keeps splits corrected but leaves dividends out, which is
+    # what every price chart shows. Adjusting for dividends made this read
+    # systematically higher than TradingView for anything paying one -- SONACOMS
+    # +1.40 and EICHERMOT +1.77 over a year, and far more over five.
     frame = yf.download(tickers, period=period, interval=interval,
-                        progress=False, auto_adjust=True, threads=True)
+                        progress=False, auto_adjust=False, threads=True)
     if frame is None or frame.empty:
         return {}
     close = frame["Close"] if "Close" in frame else frame

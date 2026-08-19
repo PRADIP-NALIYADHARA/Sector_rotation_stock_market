@@ -34,16 +34,23 @@ EXPECTED_BENCHMARK = -1.29
 TOLERANCE = 3.0        # points; beyond this it is not just the start-bar choice
 
 
+def monday_of(d):
+    return d - timedelta(days=d.weekday())
+
+
 def window_start(dates, days):
-    """The chart's rule: last sampled date at or before the cutoff."""
-    cutoff = (date.today() - timedelta(days=days)).isoformat()
-    start = 0
+    """
+    The chart's rule, which is TradingView's: step back from the start of the
+    newest weekly bar and begin at the bar containing wherever that lands.
+    """
+    last = date.fromisoformat(dates[-1])
+    target = monday_of(last) - timedelta(days=days)
+    wanted = monday_of(target).isoformat()
+
     for i, d in enumerate(dates):
-        if d <= cutoff:
-            start = i
-        else:
-            break
-    return start
+        if d >= wanted:
+            return i
+    return max(0, len(dates) - 2)
 
 
 def as_of(series, upto):
