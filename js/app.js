@@ -1304,13 +1304,25 @@ function renderRrgReading(points) {
     });
   }
 
+  // Spelling out the actual levels, because "45% up its range" can be misread as
+  // "45% above the low" -- which it is not.
+  const bmSector = state.data.sectors.find(s => s.isBenchmark);
+  const yearReturn = bm.returns['1Y'];
+
+  const wherePart = !bmSector || bmSector.low52 == null || bmSector.high52 == null
+    ? `${bm.name} is <b>${regime}%</b> of the way up its 52-week range`
+    : `${bm.name} is at <b>${fmt(bmSector.last, 0)}</b>, between its 52-week low of `
+      + `${fmt(bmSector.low52, 0)} and high of ${fmt(bmSector.high52, 0)} — `
+      + `<b>${regime}% of the way up</b>, and ${signedPct(bm.fromHigh)} from the high`;
+
+  const meaning = regime < 60
+    ? `The index has gone <b>${signedPct(yearReturn)}</b> in a year, so anything leading here `
+      + `is doing it on its own rather than being carried by the market.`
+    : `The index is near the top of its own range, so most of these are rising `
+      + `<em>with</em> it rather than despite it — being ahead counts for less.`;
+
   const headline = regime === null ? '' : `
-    <p class="rrg-headline">
-      ${bm.name} sits <b>${regime}%</b> up its own 52-week range.
-      ${regime < 50
-        ? 'With the index itself going nowhere, what leads here is leading on its own strength rather than being carried.'
-        : 'The index is near the top of its own range, so most of these are rising with it rather than despite it.'}
-    </p>`;
+    <p class="rrg-headline">${wherePart}.<br><span class="dim">${meaning}</span></p>`;
 
   box.innerHTML = headline + `<div class="rrg-reading-grid">` + cards.map(c => `
     <div class="rrg-read ${c.key}">
