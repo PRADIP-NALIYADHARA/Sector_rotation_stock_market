@@ -9,6 +9,7 @@ the Update Data button won't work in it. Run app.py for the live version.
     python build_snapshot.py [output.html]
 """
 import json
+import re
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -40,10 +41,12 @@ def main():
         print("No index history cached - the comparison chart will be unavailable "
               "in this snapshot. Run build_history.py first.", file=sys.stderr)
 
-    html = html.replace(
-        '<link rel="stylesheet" href="css/style.css">',
-        f"<style>\n{css}\n</style>",
-    )
+    # The tags carry a cache-busting ?v=N, so match them by pattern rather than
+    # by an exact string that goes stale every time the version is bumped.
+    html, n = re.subn(r'<link rel="stylesheet" href="css/style\.css[^"]*">',
+                      lambda _: f"<style>\n{css}\n</style>", html, count=1)
+    if not n:
+        sys.exit("Could not find the stylesheet tag in index.html")
     # </script> inside the JSON would end the tag early.
     def embed(obj):
         return json.dumps(obj).replace("</", "<\\/")
@@ -52,10 +55,11 @@ def main():
     if history:
         preamble += f"\nwindow.EMBEDDED_HISTORY = {embed(history)};"
 
-    html = html.replace(
-        '<script src="js/app.js"></script>',
-        f"<script>{preamble}</script>\n<script>\n{js}\n</script>",
-    )
+    html, n = re.subn(r'<script src="js/app\.js[^"]*"></script>',
+                      lambda _: f"<script>{preamble}</script>\n<script>\n{js}\n</script>",
+                      html, count=1)
+    if not n:
+        sys.exit("Could not find the app script tag in index.html")
 
     built = datetime.now().strftime("%d %b %Y %H:%M")
     html = html.replace(
