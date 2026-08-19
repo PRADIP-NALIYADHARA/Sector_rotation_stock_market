@@ -16,20 +16,21 @@ baseline rather than firing an alert for everything at once.
 Setup, once:
 
   1. Message @BotFather on Telegram, /newbot, and copy the token it gives you.
-  2. Message your new bot anything, then open
-     https://api.telegram.org/bot<TOKEN>/getUpdates to find your chat id.
-  3. Put both in telegram_config.json next to this file:
+  2. Copy telegram_config.example.json to telegram_config.json and paste the
+     token in. Leave chatId as it is for the moment.
+  3. Open your new bot in Telegram and send it any message.
+  4. Run `python telegram_alerts.py --chat-id` and put the number it prints into
+     the same file as "chatId".
 
-         {"token": "123456:ABC...", "chatId": "987654321"}
-
-     or set TELEGRAM_TOKEN and TELEGRAM_CHAT_ID in the environment.
+TELEGRAM_TOKEN and TELEGRAM_CHAT_ID environment variables work instead.
 
 The config file is gitignored. Never commit the token -- anyone holding it can
 post as your bot.
 
-    python telegram_alerts.py            send alerts if anything changed
-    python telegram_alerts.py --digest   send the full digest regardless
+    python telegram_alerts.py --chat-id  look up your chat id
     python telegram_alerts.py --dry-run  print what would be sent
+    python telegram_alerts.py --digest   send the full digest regardless
+    python telegram_alerts.py            send alerts only if something changed
 """
 import json
 import os
@@ -61,6 +62,41 @@ def load_config():
         return cfg.get("token"), str(cfg.get("chatId", ""))
 
     return None, None
+
+
+def show_chat_ids():
+    """
+    Print the chat ids that have messaged this bot.
+
+    Needed once during setup, and it is a chicken-and-egg problem: the config
+    file wants a chat id that only Telegram can tell you, and only after the bot
+    has been spoken to. So this reads just the token and asks.
+    """
+    token, _ = load_config()
+    if not token or token.startswith("PASTE_"):
+        sys.exit("Put your BotFather token in telegram_config.json first "
+                 "(chatId can stay as the placeholder for now).")
+
+    r = requests.get(f"https://api.telegram.org/bot{token}/getUpdates", timeout=30)
+    if r.status_code != 200:
+        sys.exit(f"Telegram refused the token: {r.status_code} {r.text[:160]}")
+
+    results = r.json().get("result", [])
+    if not results:
+        sys.exit("Telegram has no messages for this bot yet.\n"
+                 "Open your bot in Telegram, send it any message, then run this again.")
+
+    seen = {}
+    for update in results:
+        chat = (update.get("message") or update.get("channel_post") or {}).get("chat", {})
+        if chat.get("id"):
+            name = chat.get("username") or chat.get("first_name") or chat.get("title") or ""
+            seen[str(chat["id"])] = name
+
+    print("Chat ids that have messaged this bot:\n")
+    for chat_id, name in seen.items():
+        print(f"  {chat_id}   {name}")
+    print('\nPut the one you want into telegram_config.json as "chatId".')
 
 
 def send(text, dry_run=False):
@@ -176,6 +212,10 @@ def build_alerts(data, previous):
 
 
 def main():
+    if "--chat-id" in sys.argv:
+        show_chat_ids()
+        return
+
     dry_run = "--dry-run" in sys.argv
     force_digest = "--digest" in sys.argv
 

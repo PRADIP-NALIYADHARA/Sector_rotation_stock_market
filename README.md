@@ -306,12 +306,17 @@ every sector at once.
 Setup, once:
 
 1. Message **@BotFather** on Telegram, `/newbot`, copy the token.
-2. Message your new bot, then open `https://api.telegram.org/bot<TOKEN>/getUpdates`
-   to find your chat id.
-3. Create `telegram_config.json`:
+2. Copy the example config and paste the token in, leaving `chatId` for now:
 
-```json
-{"token": "123456:ABC...", "chatId": "987654321"}
+```bash
+cp telegram_config.example.json telegram_config.json
+```
+
+3. Open your new bot in Telegram and send it any message.
+4. Ask it who you are, and put the number into the same file as `chatId`:
+
+```bash
+python telegram_alerts.py --chat-id
 ```
 
 `TELEGRAM_TOKEN` and `TELEGRAM_CHAT_ID` environment variables work too. The config
