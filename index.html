@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sector Rotation Analysis</title>
-<link rel="stylesheet" href="css/style.css?v=11">
+<link rel="stylesheet" href="css/style.css?v=12">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -109,6 +109,34 @@
         </select>
       </label>
       <span class="dim" id="resultCount"></span>
+    </div>
+
+    <div class="rrg-strip">
+      <button id="rrgToggle" class="chip rrg-btn" aria-expanded="false">
+        Rotation map <span class="rrg-caret">▾</span>
+      </button>
+      <span class="dim rrg-hint">
+        Where each sector sits against the benchmark, and which way it is heading.
+      </span>
+    </div>
+
+    <div id="rrgPanel" class="rrg-panel hidden">
+      <div class="rrg-controls">
+        <label class="sort-control">
+          Show
+          <select id="rrgGroup">
+            <option value="Sectoral">Sectoral</option>
+            <option value="Thematic">Thematic</option>
+            <option value="Industry">Industry</option>
+            <option value="Broad">Broad market</option>
+          </select>
+        </label>
+        <span class="dim rrg-legend-note">
+          Clockwise: <b>Improving → Leading → Weakening → Lagging</b>
+        </span>
+      </div>
+      <div id="rrgHost" class="rrg-host"></div>
+      <div id="rrgLists" class="rrg-lists"></div>
     </div>
 
     <div id="sectionsContainer"></div>
@@ -274,6 +302,6 @@
   <p>Data sourced from public NSE India endpoints. For research/educational use only — not investment advice.</p>
 </footer>
 
-<script src="js/app.js?v=11"></script>
+<script src="js/app.js?v=12"></script>
 </body>
 </html>

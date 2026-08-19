@@ -258,6 +258,7 @@ function applyData(data) {
 /* -------------------------------------------------------------- rendering */
 
 function render() {
+  renderRrg();
   renderBenchmarkStrip();
   renderScaleLegend();
   renderSections();
@@ -917,6 +918,119 @@ function renderRegime() {
   box.style.background = colour.bg;
 }
 
+/* ------------------------------------------------------------- rotation map
+ * A Relative Rotation Graph. Two questions at once: is a sector ahead of the
+ * benchmark, and is that lead growing or shrinking. Sectors travel clockwise --
+ * Improving, then Leading, then Weakening, then Lagging.
+ *
+ * The dashboard's ranking only answers the first, which is why a sector can sit
+ * second on the list while quietly losing its lead. This shows both, so a leader
+ * running out of steam and a laggard turning up are visible before either shows
+ * in the ranking.
+ *
+ * Kept behind a toggle: it is a considered read, not something wanted on screen
+ * every time the page opens.
+ */
+
+const RRG_QUADRANTS = [
+  { key: 'leading',   label: 'Leading',   note: 'ahead and pulling away' },
+  { key: 'weakening', label: 'Weakening', note: 'still ahead, losing ground' },
+  { key: 'lagging',   label: 'Lagging',   note: 'behind and falling further' },
+  { key: 'improving', label: 'Improving', note: 'behind, but turning up' },
+];
+
+function rrgPoints(group) {
+  if (!state.data) return [];
+  return state.data.sectors
+    .filter(s => s.group === group && !s.isBenchmark)
+    .map(s => {
+      const x = (s.rs || {})['3M'];
+      const y = s.rsMomentum;
+      if (x === null || x === undefined || y === null || y === undefined) return null;
+      const quadrant = x >= 0
+        ? (y >= 0 ? 'leading' : 'weakening')
+        : (y >= 0 ? 'improving' : 'lagging');
+      return { name: s.name, indexName: s.indexName, x, y, quadrant };
+    })
+    .filter(Boolean);
+}
+
+function renderRrg() {
+  const panel = el('rrgPanel');
+  if (panel.classList.contains('hidden')) return;
+
+  const points = rrgPoints(el('rrgGroup').value);
+  const host = el('rrgHost');
+
+  if (!points.length) {
+    host.innerHTML = '<div class="chart-empty">Nothing to plot for this group.</div>';
+    el('rrgLists').innerHTML = '';
+    return;
+  }
+
+  // Symmetric bounds so the axes cross in the middle and quadrants read evenly.
+  const spanX = Math.max(...points.map(p => Math.abs(p.x))) * 1.15 || 1;
+  const spanY = Math.max(...points.map(p => Math.abs(p.y))) * 1.15 || 1;
+
+  const W = 1000, H = 460, M = 40;
+  const x = v => M + ((v + spanX) / (2 * spanX)) * (W - 2 * M);
+  const y = v => M + (1 - (v + spanY) / (2 * spanY)) * (H - 2 * M);
+  const midX = x(0), midY = y(0);
+
+  const tint = {
+    leading:   'rgba(22, 199, 132, 0.07)',
+    weakening: 'rgba(240, 185, 11, 0.07)',
+    lagging:   'rgba(234, 57, 67, 0.07)',
+    improving: 'rgba(75, 159, 255, 0.07)',
+  };
+
+  host.innerHTML = `
+    <svg viewBox="0 0 ${W} ${H}" class="rrg-svg" role="img" aria-label="Rotation map">
+      <rect x="${midX}" y="${M}" width="${W - M - midX}" height="${midY - M}" fill="${tint.leading}"/>
+      <rect x="${midX}" y="${midY}" width="${W - M - midX}" height="${H - M - midY}" fill="${tint.weakening}"/>
+      <rect x="${M}" y="${midY}" width="${midX - M}" height="${H - M - midY}" fill="${tint.lagging}"/>
+      <rect x="${M}" y="${M}" width="${midX - M}" height="${midY - M}" fill="${tint.improving}"/>
+
+      <line x1="${M}" x2="${W - M}" y1="${midY}" y2="${midY}" class="rrg-axis"/>
+      <line x1="${midX}" x2="${midX}" y1="${M}" y2="${H - M}" class="rrg-axis"/>
+
+      <text x="${W - M - 8}" y="${M + 16}" class="rrg-quad" text-anchor="end">LEADING</text>
+      <text x="${W - M - 8}" y="${H - M - 8}" class="rrg-quad" text-anchor="end">WEAKENING</text>
+      <text x="${M + 8}" y="${H - M - 8}" class="rrg-quad">LAGGING</text>
+      <text x="${M + 8}" y="${M + 16}" class="rrg-quad">IMPROVING</text>
+
+      <text x="${W - M}" y="${midY - 8}" class="rrg-axis-label" text-anchor="end">ahead of benchmark →</text>
+      <text x="${midX + 8}" y="${M + 4}" class="rrg-axis-label">↑ lead growing</text>
+
+      ${points.map(p => `
+        <g class="rrg-point" data-sector="${p.indexName}">
+          <circle cx="${x(p.x).toFixed(1)}" cy="${y(p.y).toFixed(1)}" r="5"
+                  class="rrg-dot ${p.quadrant}"/>
+          <text x="${(x(p.x) + 9).toFixed(1)}" y="${(y(p.y) + 4).toFixed(1)}"
+                class="rrg-name">${p.name}</text>
+        </g>`).join('')}
+    </svg>`;
+
+  el('rrgLists').innerHTML = RRG_QUADRANTS.map(q => {
+    const inQuad = points.filter(p => p.quadrant === q.key)
+      .sort((a, b) => b.x - a.x);
+    if (!inQuad.length) return '';
+    return `
+      <div class="rrg-list ${q.key}">
+        <div class="rrg-list-head">${q.label} <span class="dim">${q.note}</span></div>
+        ${inQuad.map(p => `
+          <button class="rrg-item" data-sector="${p.indexName}">
+            ${p.name}<b>${signedPct(p.x)}</b>
+          </button>`).join('')}
+      </div>`;
+  }).join('');
+
+  host.querySelectorAll('.rrg-point').forEach(g =>
+    g.addEventListener('click', () => openSector(g.dataset.sector)));
+  el('rrgLists').querySelectorAll('.rrg-item').forEach(b =>
+    b.addEventListener('click', () => openSector(b.dataset.sector)));
+}
+
 /* ------------------------------------------------- same-% chart + crossings
  * The chart is the point of the whole exercise: rebase every series to 0% at
  * the left edge and the vertical distance between two lines *is* their relative
@@ -1402,6 +1516,20 @@ el('sortBy').addEventListener('change', (e) => {
   renderSections();
 });
 
+el('rrgToggle').addEventListener('click', () => {
+  const panel = el('rrgPanel');
+  const open = panel.classList.toggle('hidden') === false;
+  el('rrgToggle').setAttribute('aria-expanded', String(open));
+  el('rrgToggle').classList.toggle('active', open);
+  localStorage.setItem('rrgOpen', open ? '1' : '0');
+  if (open) renderRrg();
+});
+
+el('rrgGroup').addEventListener('change', () => {
+  localStorage.setItem('rrgGroup', el('rrgGroup').value);
+  renderRrg();
+});
+
 el('periodSelect').addEventListener('change', (e) => {
   state.period = e.target.value;
   localStorage.setItem('period', e.target.value);
@@ -1463,6 +1591,16 @@ if (savedStep) {
 
 const savedPeriod = localStorage.getItem('period');
 if (savedPeriod) state.period = savedPeriod;
+
+// The rotation map stays where it was left -- open for whoever uses it, out of
+// the way for whoever doesn't.
+const savedGroup = localStorage.getItem('rrgGroup');
+if (savedGroup) el('rrgGroup').value = savedGroup;
+if (localStorage.getItem('rrgOpen') === '1') {
+  el('rrgPanel').classList.remove('hidden');
+  el('rrgToggle').classList.add('active');
+  el('rrgToggle').setAttribute('aria-expanded', 'true');
+}
 
 // Anchor the stack so the first back press has somewhere to land.
 try { history.replaceState({ view: 'overview', indexName: null }, ''); } catch (e) { /* ignore */ }
