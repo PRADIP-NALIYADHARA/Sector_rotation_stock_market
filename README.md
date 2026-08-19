@@ -273,13 +273,55 @@ minutes, after which only missing dates are fetched. Add `--rebuild` to start ov
 
 All data comes from public NSE India endpoints — no API key or login:
 
+Stock prices come from Yahoo, which is the better source for them: closes adjusted
+for splits and bonuses going back decades, and today's price while the session is
+still open. NSE stays the source for indices, because it publishes all 84 sectoral
+and thematic ones that Yahoo has never heard of.
+
+Yahoo is unofficial, so nothing depends on it. Every lookup can come back empty and
+the bhavcopy takes over — and because Yahoo's closes are already adjusted, the
+corporate-action factors are applied only to NSE's, never on top of Yahoo's.
+`priceCoverage` in the output records the split.
+
 | Data | Source |
 |------|--------|
 | Index level & % change (today, 30d, 1y) | `nseindia.com/api/allIndices` |
 | Which indices are Sectoral / Thematic | `nseindia.com/api/equity-master` |
 | Constituent stock lists | `nsearchives.nseindia.com/content/indices/*.csv` |
 | Industry classification | `nsearchives.nseindia.com/content/indices/ind_nifty500list.csv` |
-| Per-stock close / prev close | `nsearchives.nseindia.com/products/content/sec_bhavdata_full_DDMMYYYY.csv` (daily bhavcopy) |
+| Per-stock prices and history | Yahoo via `yfinance` (adjusted, intraday) |
+| Per-stock prices, fallback | `nsearchives.nseindia.com/products/content/sec_bhavdata_full_DDMMYYYY.csv` (daily bhavcopy) |
+
+## Telegram alerts
+
+The dashboard only speaks when you open it, and rotation rarely waits for that.
+`telegram_alerts.py` watches for the things worth an interruption — a sector clearing
+its own 52-week high while the index is still range-bound, and sectors crossing above
+or below the benchmark — and sends a daily digest of what is leading and lagging.
+
+State lives in `data/alert_state.json`, so the same event is never sent twice. The
+first run records a baseline and sends the digest rather than firing an alert for
+every sector at once.
+
+Setup, once:
+
+1. Message **@BotFather** on Telegram, `/newbot`, copy the token.
+2. Message your new bot, then open `https://api.telegram.org/bot<TOKEN>/getUpdates`
+   to find your chat id.
+3. Create `telegram_config.json`:
+
+```json
+{"token": "123456:ABC...", "chatId": "987654321"}
+```
+
+`TELEGRAM_TOKEN` and `TELEGRAM_CHAT_ID` environment variables work too. The config
+file is gitignored — anyone holding that token can post as your bot.
+
+```bash
+python telegram_alerts.py --dry-run   # print, don't send
+python telegram_alerts.py --digest    # full digest regardless of changes
+python telegram_alerts.py             # alert only if something changed
+```
 
 Stock prices come from the daily bhavcopy, so stock-level figures reflect the **last completed
 trading session**. Sector index figures are live during market hours.

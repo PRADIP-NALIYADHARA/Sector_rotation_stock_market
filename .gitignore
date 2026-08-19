@@ -6,3 +6,6 @@ node_modules/
 sector_rotation_snapshot.html
 __pycache__/
 *.pyc
+
+# never commit the bot token
+telegram_config.json

@@ -3713,6 +3713,13 @@
         "factor": 3.0,
         "kind": "bonus"
       }
+    ],
+    "CORDELIA": [
+      {
+        "exDate": "2026-08-25",
+        "factor": 10.0,
+        "kind": "split"
+      }
     ]
   },
   "unreliable": {
@@ -4977,5 +4984,5 @@
       }
     ]
   },
-  "refreshedAt": "2026-08-19T10:56:41"
+  "refreshedAt": "2026-08-19T12:35:09"
 }

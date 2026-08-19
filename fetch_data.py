@@ -22,7 +22,13 @@ Data sources (all public, no login):
   /api/equity-master                       -> which indices are Sectoral / Thematic
   /content/indices/*.csv                   -> constituent stock lists
   /content/indices/ind_close_all_*.csv     -> every index's close on a given day
-  /products/content/sec_bhavdata_full_*.csv -> every stock's close on a given day
+  /content/CM_52_wk_High_low_*.csv         -> adjusted 52-week highs and lows
+  Yahoo (via prices.py)                    -> stock prices, adjusted and intraday
+  /products/content/sec_bhavdata_full_*.csv -> stock prices when Yahoo is unavailable
+
+NSE stays the source for indices because it publishes all 84 sectoral and thematic
+ones, which Yahoo does not carry. Yahoo is the better source for stocks: adjusted
+closes going back decades, and today's price while the session is still open.
 
 Run: python fetch_data.py
 """
@@ -38,6 +44,7 @@ from pathlib import Path
 import requests
 
 import corporate_actions
+import prices
 
 BASE_DIR = Path(__file__).parent
 DATA_FILE = BASE_DIR / "data" / "sectors_data.json"
@@ -304,11 +311,11 @@ def fetch_universe():
 
 # ------------------------------------------------------------------- assembly
 
-def build_stocks(members, closes, prev_closes, week52, today):
+def build_stocks(members, close_of, prev_of, week52, today):
     stocks = []
     for m in members:
-        close = closes.get(m["symbol"])
-        prev = prev_closes.get(m["symbol"])
+        close = close_of(m["symbol"])
+        prev = prev_of(m["symbol"])
         levels = week52.get(m["symbol"], {})
         high, low = levels.get("high"), levels.get("low")
         high_date = levels.get("highDate")
@@ -500,20 +507,52 @@ def main():
 
     adjusted_count = defaultdict(int)
     dropped = defaultdict(int)
+    sourced = defaultdict(int)
     hist_dates = {label: today - timedelta(days=days) for label, days in LOOKBACKS}
 
+    # Filled in once the constituent lists are known; empty means Yahoo is
+    # unavailable and everything falls back to the bhavcopy.
+    yahoo = {}
+
+    def price_now(symbol):
+        last, _ = prices.latest_two(yahoo.get(symbol, {}))
+        return last if last is not None else stock_now.get(symbol)
+
+    def price_prev(symbol):
+        _, prev = prices.latest_two(yahoo.get(symbol, {}))
+        return prev if prev is not None else stock_prev.get(symbol)
+
     def stock_returns(symbol):
-        """Returns per window, on a split-adjusted basis."""
-        now = stock_now.get(symbol)
+        """
+        Returns per window, always on a split-adjusted basis.
+
+        Yahoo's closes arrive already adjusted, so they are used as they are.
+        Only the bhavcopy fallback gets the corporate-action factors applied --
+        adjusting Yahoo's numbers again would divide the split out twice.
+        """
+        series = yahoo.get(symbol, {})
+        now = price_now(symbol)
         out = {}
+
         for label, _ in LOOKBACKS:
-            raw = stock_hist[label].get(symbol)
-            old = adjusted_price(symbol, raw, hist_dates[label].date(), actions)
-            if raw is not None and old != raw:
-                adjusted_count[label] += 1
+            old = prices.close_on_or_before(series, hist_dates[label].date()) if series else None
+            from_yahoo = old is not None
+
+            if from_yahoo:
+                sourced["yahoo"] += 1
+            else:
+                raw = stock_hist[label].get(symbol)
+                old = adjusted_price(symbol, raw, hist_dates[label].date(), actions)
+                if raw is not None:
+                    sourced["nse"] += 1
+                    if old != raw:
+                        adjusted_count[label] += 1
 
             ret = pct_change(now, old)
-            if not survives_sanity_check(symbol, ret, unreliable):
+            # Rights issues are only unreadable in the raw bhavcopy; Yahoo's
+            # series already accounts for them, so withholding those symbols
+            # applies to the fallback alone.
+            if not survives_sanity_check(symbol, ret, {} if from_yahoo else unreliable):
                 out[label] = None
                 dropped[label] += 1
                 continue
@@ -565,9 +604,21 @@ def main():
     with ThreadPoolExecutor(max_workers=8) as pool:
         members_by_index = dict(pool.map(load_members, wanted))
 
+    # Every symbol the dashboard will show, so Yahoo is asked once rather than
+    # per sector -- constituent lists overlap heavily.
+    needed = {s for members in members_by_index.values() for s in
+              (m["symbol"] for m in members)}
+    needed |= set(universe)
+    print(f"Fetching adjusted prices for {len(needed)} symbols from Yahoo...", file=sys.stderr)
+    yahoo = prices.fetch(needed)
+    if yahoo:
+        print(f"  Yahoo covered {len(yahoo)}/{len(needed)} symbols", file=sys.stderr)
+    else:
+        print("  Yahoo unavailable - falling back to the NSE bhavcopy", file=sys.stderr)
+
     for index_name, entry in wanted:
         idx = indices[index_name]
-        stocks = build_stocks(members_by_index.get(index_name, []), stock_now, stock_prev,
+        stocks = build_stocks(members_by_index.get(index_name, []), price_now, price_prev,
                               week52, today)
         adv, dec, unch = breadth(stocks)
         returns = index_returns(index_name)
@@ -604,7 +655,7 @@ def main():
             continue
         idx = indices[index_name]
         members = [m for ind in industries for m in by_industry.get(ind, [])]
-        stocks = build_stocks(members, stock_now, stock_prev, week52, today)
+        stocks = build_stocks(members, price_now, price_prev, week52, today)
         adv, dec, unch = breadth(stocks)
         returns = index_returns(index_name)
         range_pos = range_position(idx.get("last"), idx.get("yearHigh"), idx.get("yearLow"))
@@ -631,7 +682,7 @@ def main():
 
     # --- 2. Industry groups -------------------------------------------------
     for industry, members in sorted(by_industry.items()):
-        stocks = build_stocks(members, stock_now, stock_prev, week52, today)
+        stocks = build_stocks(members, price_now, price_prev, week52, today)
         adv, dec, unch = breadth(stocks)
 
         per_stock = {m["symbol"]: stock_returns(m["symbol"]) for m in members}
@@ -670,9 +721,14 @@ def main():
             "stocks": stocks,
         })
 
+    if sourced:
+        total = sum(sourced.values()) or 1
+        print(f"Price lookups: {sourced['yahoo']} from Yahoo "
+              f"({sourced['yahoo'] * 100 // total}%), {sourced['nse']} from NSE",
+              file=sys.stderr)
     if adjusted_count:
         summary = ", ".join(f"{label} {n}" for label, n in sorted(adjusted_count.items()))
-        print(f"Split/bonus adjusted prices: {summary}", file=sys.stderr)
+        print(f"Split/bonus adjusted (NSE fallback only): {summary}", file=sys.stderr)
     if dropped:
         summary = ", ".join(f"{label} {n}" for label, n in sorted(dropped.items()))
         print(f"Withheld (rights issue, not adjustable): {summary}", file=sys.stderr)
@@ -687,6 +743,8 @@ def main():
         "bhavDate": bhav_date.strftime("%d-%b-%Y") if bhav_date else None,
         "indexDate": index_date.strftime("%d-%b-%Y") if index_date else None,
         "week52Date": wk52_date.strftime("%d-%b-%Y") if wk52_date else None,
+        "priceSource": "yahoo" if sourced.get("yahoo") else "nse",
+        "priceCoverage": {"yahoo": sourced.get("yahoo", 0), "nse": sourced.get("nse", 0)},
         "benchmark": {
             "indexName": BENCHMARK,
             "name": pretty_name(BENCHMARK),
