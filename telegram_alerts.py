@@ -41,6 +41,8 @@ from pathlib import Path
 import requests
 
 BASE_DIR = Path(__file__).parent
+import market_ticker
+
 DATA_FILE = BASE_DIR / "data" / "sectors_data.json"
 STATE_FILE = BASE_DIR / "data" / "alert_state.json"
 CONFIG_FILE = BASE_DIR / "telegram_config.json"
@@ -137,6 +139,12 @@ def save_state(state):
     STATE_FILE.write_text(json.dumps(state, indent=2), encoding="utf-8")
 
 
+# Deepest first in market_ticker, so the rank counts down from there. Reading it
+# off that list keeps the two files from drifting apart on the wording.
+LEVEL_RANK = {label: len(market_ticker.DRAWDOWN_LEVELS) - i
+              for i, (_, label) in enumerate(market_ticker.DRAWDOWN_LEVELS)}
+
+
 def snapshot(data):
     """The few facts an alert can be raised against."""
     return {
@@ -145,6 +153,8 @@ def snapshot(data):
         "above": sorted(s["indexName"] for s in data["sectors"]
                         if (s.get("rs") or {}).get(DIGEST_PERIOD) is not None
                         and s["rs"][DIGEST_PERIOD] > 0),
+        "metals": {r["name"]: (r.get("drawdown") or "")
+                   for r in data.get("ticker", []) if r.get("kind") == "metal"},
         "bhavDate": data.get("bhavDate"),
     }
 
@@ -178,6 +188,17 @@ def build_digest(data):
         lines += ["", f"<b>⚡ At their own 52-week high</b> ({len(breakouts)})",
                   "  " + ", ".join(s["name"] for s in breakouts[:8])]
 
+    # Where the metals stand, stated every day rather than only when a band is
+    # crossed -- the alert says something changed, the digest says where things are.
+    metals = [r for r in data.get("ticker", []) if r.get("kind") == "metal"]
+    if metals:
+        lines.append("")
+        lines.append("<b>Metals</b>")
+        for r in metals:
+            band = f" · {r['drawdown']}" if r.get("drawdown") else ""
+            lines.append(f"  {r['name']}  {r['last']:,.2f}  {pct(r['pChange'])}"
+                         f"  ({pct(r['fromHigh'])} from high{band})")
+
     return "\n".join(lines)
 
 
@@ -207,6 +228,24 @@ def build_alerts(data, previous):
         alerts.append("📈 <b>Now beating the benchmark</b>: " + ", ".join(named(crossed_up)))
     if crossed_down:
         alerts.append("📉 <b>Fallen behind the benchmark</b>: " + ", ".join(named(crossed_down)))
+
+    # Gold and silver, but only when the fall deepens past a band it was not in
+    # before -- otherwise a metal sitting at -12% would say so every morning.
+    was = previous.get("metals", {})
+    for row in data.get("ticker", []):
+        if row.get("kind") != "metal":
+            continue
+        level = row.get("drawdown") or ""
+        before = was.get(row["name"], "")
+        if LEVEL_RANK.get(level, 0) > LEVEL_RANK.get(before, 0):
+            alerts.append(
+                f"🪙 <b>{row['name']} — {level}</b>\n"
+                f"{pct(row['fromHigh'])} from its 52-week high of {row['high52']:,.2f}, "
+                f"now {row['last']:,.2f}.")
+        elif before and not level:
+            alerts.append(
+                f"🪙 <b>{row['name']} back within 5% of its high</b>\n"
+                f"{pct(row['fromHigh'])} from {row['high52']:,.2f}.")
 
     return alerts, now
 
