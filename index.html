@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sector Rotation Analysis</title>
-<link rel="stylesheet" href="css/style.css?v=21">
+<link rel="stylesheet" href="css/style.css?v=22">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -131,10 +131,11 @@
     </div>
 
     <div id="watchStocks" class="watch-stocks hidden">
-      <div class="watch-stocks-head">
+      <button class="watch-stocks-head" id="watchStocksToggle" aria-expanded="true">
+        <span class="group-caret">&#9662;</span>
         <h3>Stocks in <span id="watchStocksName">this list</span></h3>
         <span class="dim" id="watchStocksCount"></span>
-      </div>
+      </button>
       <div class="table-wrap">
         <table class="stock-table">
           <thead>
@@ -367,6 +368,6 @@
   <p>Data sourced from public NSE India endpoints. For research/educational use only — not investment advice.</p>
 </footer>
 
-<script src="js/app.js?v=22"></script>
+<script src="js/app.js?v=23"></script>
 </body>
 </html>

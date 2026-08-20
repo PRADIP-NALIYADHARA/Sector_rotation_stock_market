@@ -25,6 +25,8 @@ from pathlib import Path
 
 import requests
 
+from fetch_data import EXCLUDED_INDICES
+
 BASE_DIR = Path(__file__).parent
 HISTORY_FILE = BASE_DIR / "data" / "index_history.json"
 
@@ -109,8 +111,10 @@ def main():
     # Holidays and weekends leave gaps; drop dates that returned nothing.
     dates = sorted(d for d, closes in by_date.items() if closes)
 
-    # Pivot to one series per index so the browser doesn't have to.
-    names = sorted({name for d in dates for name in by_date[d]})
+    # Pivot to one series per index so the browser doesn't have to. Indices the
+    # dashboard retired are dropped here rather than shipped and never drawn;
+    # by_date keeps them so the incremental cache never has to refetch a day.
+    names = sorted({name for d in dates for name in by_date[d]} - EXCLUDED_INDICES)
     series = {name: [by_date[d].get(name) for d in dates] for name in names}
 
     HISTORY_FILE.parent.mkdir(exist_ok=True)

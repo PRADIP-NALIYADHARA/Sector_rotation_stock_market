@@ -529,10 +529,23 @@ main { max-width: 1240px; margin: 0 auto; padding: 2rem; }
   gap: 0.7rem;
   flex-wrap: wrap;
   margin-bottom: 0.7rem;
+  width: 100%;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
 }
 
+.watch-stocks-head:hover h3 { color: var(--accent); }
 .watch-stocks-head h3 { font-size: 1rem; font-weight: 700; }
 .watch-stocks .table-wrap { margin-bottom: 0; }
+
+.watch-stocks.collapsed .group-caret { transform: rotate(-90deg); }
+.watch-stocks.collapsed .watch-stocks-head { margin-bottom: 0; }
+.watch-stocks.collapsed .table-wrap { display: none; }
 
 /* ---------------------------------------------------------- rotation map */
 

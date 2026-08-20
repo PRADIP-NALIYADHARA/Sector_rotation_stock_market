@@ -107,6 +107,30 @@ EXCLUDED_INDICES = {
     "NIFTY SHARIAH 25",
     "NIFTY50 SHARIAH",
     "NIFTY500 SHARIAH",
+
+    # A weighting rule or a corporate-group screen, not a sector. The same
+    # stocks already appear elsewhere; only the weighting formula differs, so
+    # these say nothing about rotation and NSE publishes no constituent list.
+    "NIFTY INDIA CORPORATE GROUP INDEX - TATA GROUP 25% CAP",
+    "NIFTY INDIA SELECT 5 CORPORATE GROUPS (MAATR)",
+    "NIFTY CONGLOMERATE 50",
+    "NIFTY500 MULTICAP INDIA MANUFACTURING 50:30:20",
+    "NIFTY500 MULTICAP INFRASTRUCTURE 50:30:20",
+    "NIFTY500 MULTICAP 50:25:25",
+    "NIFTY500 LARGEMIDSMALL EQUAL-CAP WEIGHTED",
+    "NIFTY MIDSMALLCAP400 50:50",
+    "NIFTY INDIA FPI 150",
+    "NIFTY100 ESG",
+    "NIFTY100 ENHANCED ESG",
+
+    # A narrower cut of an index whose constituents are already on the board,
+    # named in the comment beside each.
+    "NIFTY500 HEALTHCARE",              # NIFTY HEALTHCARE INDEX, NIFTY PHARMA
+    "NIFTY MIDSMALL FINANCIAL SERVICES",  # NIFTY FINANCIAL SERVICES
+    "NIFTY FINANCIAL SERVICES 25/50",   # NIFTY FINANCIAL SERVICES, capped
+    "NIFTY MIDSMALL IT & TELECOM",      # NIFTY IT
+    "NIFTY REITS & REALTY",             # NIFTY REALTY
+    "NIFTY SMALLCAP 500",               # NIFTY SMALLCAP 250 / 100
 }
 
 HEADERS = {
@@ -153,10 +177,17 @@ def make_session():
     return session
 
 
-def fetch_csv_rows(filename):
-    r = requests.get(ARCHIVE.format(filename), headers=HEADERS, timeout=25)
+def fetch_csv_rows(source):
+    """Constituent rows from a bare NSE archive filename or a full URL.
+
+    NSE's archive covers most indices, but a good many thematic ones are only
+    published by NSE Indices themselves, on a different host under a different
+    path -- hence the full-URL form.
+    """
+    url = source if source.startswith("http") else ARCHIVE.format(source)
+    r = requests.get(url, headers=HEADERS, timeout=25)
     if r.status_code != 200 or "Symbol" not in r.text[:300]:
-        raise RuntimeError(f"{filename} unavailable (HTTP {r.status_code})")
+        raise RuntimeError(f"{source} unavailable (HTTP {r.status_code})")
     return list(csv.DictReader(io.StringIO(r.text)))
 
 
@@ -697,18 +728,21 @@ def main(live=False):
 
     def load_members(item):
         name, entry = item
-        if not entry.get("csv"):
+        source = entry.get("csv") or entry.get("altCsv")
+        if not source:
             return name, []
         try:
-            rows = fetch_csv_rows(entry["csv"])
+            rows = fetch_csv_rows(source)
         except RuntimeError as e:
             print(f"  warning: {name}: {e}", file=sys.stderr)
             return name, []
+        # The provider's files head the name column "Company Name" -- except for
+        # the odd one that just says "Company".
         return name, [
             {"symbol": r["Symbol"].strip(),
-             "company": r["Company Name"].strip(),
-             "industry": r["Industry"].strip()}
-            for r in rows
+             "company": (r.get("Company Name") or r.get("Company") or "").strip(),
+             "industry": (r.get("Industry") or "").strip()}
+            for r in rows if r.get("Symbol")
         ]
 
     cached_members = {}
@@ -794,15 +828,41 @@ def main(live=False):
             "unchanged": unch,
             "stocks": stocks,
         }
-        if not entry.get("csv"):
-            sector["note"] = "NSE does not publish a constituent list for this index, " \
-                             "so only index-level figures are available."
+        if not stocks:
+            sector["note"] = ("No constituent list is published for this "
+                              "index, so only index-level figures are available.")
         sectors.append(sector)
 
     # Indices with no constituent CSV but a sensible industry stand-in.
-    covered = {s["indexName"] for s in sectors}
+    #
+    # These are already in `sectors` -- carrying index-level figures and an empty
+    # stock list -- so the fallback fills them in place. It used to skip anything
+    # already present, which silently meant it never ran at all once indices
+    # without a CSV started being included.
+    existing = {s["indexName"]: s for s in sectors}
     for index_name, industries in INDUSTRY_FALLBACK.items():
-        if index_name in covered or index_name not in indices:
+        if index_name not in indices:
+            continue
+
+        current = existing.get(index_name)
+        if current is not None and current["stocks"]:
+            continue                      # a real constituent list turned up
+
+        members = [m for ind in industries for m in by_industry.get(ind, [])]
+        if not members:
+            continue
+
+        stocks = build_stocks(members, price_now, price_prev, week52, today)
+        adv, dec, unch = breadth(stocks)
+        note = f"Constituents shown are the {'/'.join(industries)} industry group."
+
+        if current is not None:
+            current.update({
+                "stocks": stocks,
+                "advances": adv, "declines": dec, "unchanged": unch,
+                "lead": leadership(current["lead"]["rangePos"], stocks, benchmark_range_pos),
+                "note": note,
+            })
             continue
         idx = indices[index_name]
         members = [m for ind in industries for m in by_industry.get(ind, [])]

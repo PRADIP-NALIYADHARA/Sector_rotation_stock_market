@@ -13,7 +13,8 @@
       "csv": "ind_niftymidcapselect_list.csv"
     },
     "NIFTY INDIA FPI 150": {
-      "group": "Broad"
+      "group": "Broad",
+      "altCsv": "https://www.niftyindices.com/IndexConstituent/ind_niftyIndiaFPI150_list.csv"
     },
     "NIFTY BANK": {
       "group": "Sectoral",
@@ -56,14 +57,16 @@
       "csv": "ind_niftymidcap50list.csv"
     },
     "NIFTY MIDSMALLCAP400 50:50": {
-      "group": "Broad"
+      "group": "Broad",
+      "altCsv": "https://www.niftyindices.com/IndexConstituent/ind_niftyMidSmallcap4005050_list.csv"
     },
     "NIFTY MIDSMALLCAP 400": {
       "group": "Broad",
       "csv": "ind_niftymidsmallcap400list.csv"
     },
     "NIFTY SMALLCAP 500": {
-      "group": "Broad"
+      "group": "Broad",
+      "altCsv": "https://www.niftyindices.com/IndexConstituent/ind_NiftySmallcap500_list.csv"
     },
     "NIFTY SMALLCAP 100": {
       "group": "Broad",
@@ -82,20 +85,24 @@
       "csv": "ind_niftytotalmarket_list.csv"
     },
     "NIFTY500 LARGEMIDSMALL EQUAL-CAP WEIGHTED": {
-      "group": "Broad"
+      "group": "Broad",
+      "altCsv": "https://www.niftyindices.com/IndexConstituent/ind_nifty500LargeMidSmallEqualCapWeighted_list.csv"
     },
     "NIFTY500 MULTICAP 50:25:25": {
-      "group": "Broad"
+      "group": "Broad",
+      "altCsv": "https://www.niftyindices.com/IndexConstituent/ind_nifty500Multicap502525_list.csv"
     },
     "NIFTY AUTO": {
       "group": "Sectoral",
       "csv": "ind_niftyautolist.csv"
     },
     "NIFTY CEMENT": {
-      "group": "Sectoral"
+      "group": "Sectoral",
+      "altCsv": "https://www.niftyindices.com/IndexConstituent/ind_NiftyCement_list.csv"
     },
     "NIFTY CHEMICALS": {
-      "group": "Sectoral"
+      "group": "Sectoral",
+      "altCsv": "https://www.niftyindices.com/IndexConstituent/ind_niftyChemicals_list.csv"
     },
     "NIFTY CONSUMER DURABLES": {
       "group": "Sectoral",
@@ -133,10 +140,12 @@
       "csv": "ind_niftymidsmallhealthcare_list.csv"
     },
     "NIFTY MIDSMALL FINANCIAL SERVICES": {
-      "group": "Sectoral"
+      "group": "Sectoral",
+      "altCsv": "https://www.niftyindices.com/IndexConstituent/ind_niftymidsmallfinancailservice_list.csv"
     },
     "NIFTY MIDSMALL IT & TELECOM": {
-      "group": "Sectoral"
+      "group": "Sectoral",
+      "altCsv": "https://www.niftyindices.com/IndexConstituent/ind_niftymidsmallitAndtelecom_list.csv"
     },
     "NIFTY OIL & GAS": {
       "group": "Sectoral",
@@ -159,13 +168,16 @@
       "csv": "ind_niftyrealtylist.csv"
     },
     "NIFTY REITS & REALTY": {
-      "group": "Sectoral"
+      "group": "Sectoral",
+      "altCsv": "https://www.niftyindices.com/IndexConstituent/ind_niftyREITsRealty_list.csv"
     },
     "NIFTY500 HEALTHCARE": {
-      "group": "Sectoral"
+      "group": "Sectoral",
+      "altCsv": "https://www.niftyindices.com/IndexConstituent/ind_nifty500Healthcare_list.csv"
     },
     "NIFTY CAPITAL MARKETS": {
-      "group": "Thematic"
+      "group": "Thematic",
+      "altCsv": "https://www.niftyindices.com/IndexConstituent/ind_niftyCapitalMarkets_list.csv"
     },
     "NIFTY COMMODITIES": {
       "group": "Thematic",
@@ -180,7 +192,8 @@
       "csv": "ind_niftycorehousing_list.csv"
     },
     "NIFTY INDIA SELECT 5 CORPORATE GROUPS (MAATR)": {
-      "group": "Thematic"
+      "group": "Thematic",
+      "altCsv": "https://www.niftyindices.com/IndexConstituent/ind_niftyIndiaSelect5CorporateGroupsMAATR_list.csv"
     },
     "NIFTY CPSE": {
       "group": "Thematic",
@@ -191,10 +204,12 @@
       "csv": "ind_niftyenergylist.csv"
     },
     "NIFTY EV & NEW AGE AUTOMOTIVE": {
-      "group": "Thematic"
+      "group": "Thematic",
+      "altCsv": "https://www.niftyindices.com/Index_Statistics/ind_niftyEv_NewAgeAutomotive_list.csv"
     },
     "NIFTY HOUSING": {
-      "group": "Thematic"
+      "group": "Thematic",
+      "altCsv": "https://www.niftyindices.com/IndexConstituent/ind_niftyhousing_list.csv"
     },
     "NIFTY INDIA DEFENCE": {
       "group": "Thematic",
@@ -217,13 +232,16 @@
       "csv": "ind_niftyinfralist.csv"
     },
     "NIFTY INDIA INFRASTRUCTURE & LOGISTICS": {
-      "group": "Thematic"
+      "group": "Thematic",
+      "altCsv": "https://www.niftyindices.com/IndexConstituent/ind_niftyIndiaInfrastructure_Logistics_list.csv"
     },
     "NIFTY INDIA INTERNET": {
-      "group": "Thematic"
+      "group": "Thematic",
+      "altCsv": "https://www.niftyindices.com/IndexConstituent/ind_niftyIndiaInternet_list.csv"
     },
     "NIFTY IPO": {
-      "group": "Thematic"
+      "group": "Thematic",
+      "altCsv": "https://www.niftyindices.com/IndexConstituent/ind_niftyIPO_list.csv"
     },
     "NIFTY MIDCAP LIQUID 15": {
       "group": "Thematic"
@@ -241,26 +259,32 @@
       "csv": "ind_niftymidsmallindiaconsumption_list.csv"
     },
     "NIFTY500 MULTICAP INFRASTRUCTURE 50:30:20": {
-      "group": "Thematic"
+      "group": "Thematic",
+      "altCsv": "https://www.niftyindices.com/IndexConstituent/ind_nifty500MulticapInfrastructure503020_list.csv"
     },
     "NIFTY500 MULTICAP INDIA MANUFACTURING 50:30:20": {
-      "group": "Thematic"
+      "group": "Thematic",
+      "altCsv": "https://www.niftyindices.com/IndexConstituent/ind_nifty500MulticapIndiaManufacturing503020_list.csv"
     },
     "NIFTY INDIA NEW AGE CONSUMPTION": {
-      "group": "Thematic"
+      "group": "Thematic",
+      "altCsv": "https://www.niftyindices.com/IndexConstituent/ind_niftyIndiaNewAgeConsumption_list.csv"
     },
     "NIFTY NON-CYCLICAL CONSUMER": {
-      "group": "Thematic"
+      "group": "Thematic",
+      "altCsv": "https://www.niftyindices.com/IndexConstituent/ind_niftynon-cyclicalconsumer_list.csv"
     },
     "NIFTY PSE": {
       "group": "Thematic",
       "csv": "ind_niftypselist.csv"
     },
     "NIFTY INDIA RAILWAYS PSU": {
-      "group": "Thematic"
+      "group": "Thematic",
+      "altCsv": "https://www.niftyindices.com/IndexConstituent/ind_niftyIndiaRailwaysPSU_list.csv"
     },
     "NIFTY RURAL": {
-      "group": "Thematic"
+      "group": "Thematic",
+      "altCsv": "https://www.niftyindices.com/IndexConstituent/ind_niftyRural_list.csv"
     },
     "NIFTY SERVICES SECTOR": {
       "group": "Thematic",
@@ -280,7 +304,8 @@
       "csv": "ind_niftytransportationandlogistics_list.csv"
     },
     "NIFTY WAVES": {
-      "group": "Thematic"
+      "group": "Thematic",
+      "altCsv": "https://www.niftyindices.com/IndexConstituent/ind_niftyWaves_list.csv"
     },
     "NIFTY100 ENHANCED ESG": {
       "group": "Thematic"
@@ -298,7 +323,8 @@
       "group": "Thematic"
     },
     "NIFTY CONGLOMERATE 50": {
-      "group": "Thematic"
+      "group": "Thematic",
+      "altCsv": "https://www.niftyindices.com/IndexConstituent/ind_niftyConglomerate50_list.csv"
     }
   }
 }

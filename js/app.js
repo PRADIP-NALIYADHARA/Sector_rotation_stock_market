@@ -296,6 +296,18 @@ function applyData(data) {
   // Drop selections that no longer exist.
   state.selected = state.selected.filter(sectorBy);
 
+  // Same for starred sectors, so a retired index stops inflating the watchlist
+  // count. Guarded on a full payload -- a partial fetch must not empty a list.
+  if (data.sectors && data.sectors.length > 50) {
+    const live = new Set(data.sectors.map(s => s.indexName));
+    let pruned = false;
+    for (const l of watchlists.lists) {
+      const kept = l.sectors.filter(n => live.has(n));
+      if (kept.length !== l.sectors.length) { l.sectors = kept; pruned = true; }
+    }
+    if (pruned) { saveWatchlists(); renderWatchBar(); }
+  }
+
   render();
   if (state.activeSector) {
     const fresh = sectorBy(state.activeSector.indexName);
@@ -314,12 +326,25 @@ function applyData(data) {
  * filter only trimmed the sector grid, so a starred name was only visible if you
  * happened to open the sector it belongs to.
  */
+let watchShut = localStorage.getItem('watchCollapsed') === '1';
+
+function toggleWatchStocks() {
+  watchShut = !watchShut;
+  localStorage.setItem('watchCollapsed', watchShut ? '1' : '0');
+  renderWatchStocks();
+}
+
 function renderWatchStocks() {
   const box = el('watchStocks');
   const list = activeList();
 
   if (!list.stocks.length) { box.classList.add('hidden'); return; }
   box.classList.remove('hidden');
+
+  // The table can run long enough to bury the sector grid, so it folds away
+  // like the grid's own sections do, and remembers the choice.
+  box.classList.toggle('collapsed', watchShut);
+  el('watchStocksToggle').setAttribute('aria-expanded', String(!watchShut));
 
   el('watchStocksName').textContent = list.name;
   el('watchRetHead').textContent = `${state.period} return`;
@@ -1983,6 +2008,8 @@ el('watchSelect').addEventListener('change', (e) => {
   saveWatchlists();
   render();
 });
+
+el('watchStocksToggle').addEventListener('click', toggleWatchStocks);
 
 el('watchNew').addEventListener('click', () => {
   const name = prompt('Name for the new watchlist:', `List ${watchlists.lists.length + 1}`);
