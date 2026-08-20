@@ -55,11 +55,43 @@ The most commonly quoted trend check. Above both and the 50 above the 200 is the
 classic uptrend structure. Cheap to add as two columns and a filter.
 
 ### 1.6 What changed since last week
-**Status:** not started · **Effort:** medium · **Data:** needs snapshot history
+**Status:** done · **Effort:** medium · **Data:** the cached index history
 
-Keep a weekly snapshot of the rankings and show the movers: who entered the top
-ten, who fell out, which sectors crossed the benchmark. Rotation is a change
-story, and nothing currently remembers last week.
+Who entered the top ten, who fell out, who crossed the benchmark, against a week
+ago and a month ago.
+
+No snapshots are kept. Past rankings are recomputed from the cached closes with
+the same relative-strength arithmetic anchored to an older date, so it worked
+from the first run instead of after a month of accumulating, and losing the
+state file costs nothing.
+
+### 1.7 Does the signal work?
+**Status:** done · **Effort:** medium · **Data:** the cached index history
+
+`backtest.py`. Replays the history, ranks sectors exactly as the board does,
+holds the top few for a month, repeats -- and sweeps every lookback window
+against every basket size, which is how you find out which window carries
+information rather than assuming it.
+
+The answer so far, on long-established indices only (`--core`): a 6-month
+window holding three to five sectors beat the benchmark by roughly 8-13% a year
+over five years, winning about two months in three. Holding a **single** sector
+on a 1-month window -- closest to what the board's default view suggests --
+**lost** to the benchmark, with a 35% drawdown.
+
+Read the caveats in the file before trusting any of it. On the full board every
+configuration wins, which is the shape a result takes when several of the
+indices were launched recently and back-computed: the theme is in the ranking
+years before anyone could have bought it.
+
+### 1.8 Is the data still sane?
+**Status:** done · **Effort:** small · **Data:** what the last refresh produced
+
+`health_check.py`, run after every refresh. Three times this pipeline kept
+running while quietly producing something wrong and it was found by hand days
+later. It now flags sectors that lost their stocks, indices that lost their
+level, stale data, and counts that shrank against the last good run -- once, to
+Telegram.
 
 ---
 
@@ -85,7 +117,7 @@ symbol, about sixteen minutes for the universe. Worth doing weekly for a watchli
 not on every refresh.
 
 ### 2.1 Valuation
-**Status:** not started · **Effort:** medium
+**Status:** done (index level) · **Effort:** medium
 
 P/E (trailing and forward), P/B, dividend yield, market cap. Index-level P/E, P/B
 and yield also come free with the NSE index feed already in use, so a sector can
@@ -111,11 +143,13 @@ Next earnings date per stock, plus the ex-dividend date. Knowing a name reports 
 three days changes whether you take the breakout now or wait.
 
 ### 2.5 Sector valuation vs its own history
-**Status:** not started · **Effort:** medium · **Data:** NSE index P/E, needs history
+**Status:** done · **Effort:** medium · **Data:** NSE index P/E, five years of it
 
-The index feed carries P/E per sector. Storing it daily builds a picture of
-whether a sector is expensive *for itself*, which is the context missing when a
-sector has run 40%.
+The index feed carries P/E per sector, and so does the daily archive file
+`build_history.py` was already downloading -- so five years of it came free
+rather than needing to be accumulated. Each sector now shows where its P/E sits
+in its own range: Auto leads on price at the 95th percentile of its own history,
+IT leads at the 10th.
 
 ---
 
@@ -172,8 +206,13 @@ something that cannot place a trade.
 
 If it were me:
 
-1. **1.2** (RS slope) and **1.5** (moving averages) — small, and immediately useful
-2. **3.1** (watchlist) — unlocks the fundamentals and alerts below it
-3. **1.1** (RRG) — the biggest single addition to the research
-4. **2.1** and **2.4** (valuation, earnings dates) — scoped to the watchlist
-5. **1.6** (weekly change log) — most valuable once there is history to look back on
+Everything above the line is done. What is left, in the order I would take it:
+
+1. **3.1 server-side watchlist** — it lives in browser storage, so it is per-device
+   and invisible to the alerting layer. Moving it unlocks watchlist stock alerts,
+   including the 3% rule that is deliberately off for the full universe.
+2. **1.4 delivery percentage** — India-specific, and the bhavcopy carrying it is
+   already downloaded every morning and discarded.
+3. **1.3 volume confirmation** — the same archive file carries index volume and
+   turnover, so the sector-level version is nearly free.
+4. **2.4 earnings dates** — cheap, and changes whether you take a breakout now.
