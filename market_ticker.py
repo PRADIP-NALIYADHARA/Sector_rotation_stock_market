@@ -53,10 +53,26 @@ def _level(from_high, kind):
     return None, None
 
 
-def build(quiet=False):
-    """One row per instrument, ready to hand to the browser."""
+def build(quiet=False, official=None):
+    """
+    One row per instrument, ready to hand to the browser.
+
+    `official` supplies figures NSE publishes itself, keyed by Yahoo ticker, as
+    {"last", "high52", "low52"}. Where they exist they win.
+
+    They have to. NSE's 52-week high is the highest level actually *traded*,
+    while the best this module can do on its own is the highest daily *close* --
+    and a close can never exceed the intraday high, so the two disagree by a few
+    points and the drawdown comes out shallower. Nifty was reading -7.96% up
+    here and -8.12% everywhere else on the same page, for the same instrument,
+    which is the kind of discrepancy that makes a reader distrust both numbers.
+    Sensex has no NSE figure to borrow, being a BSE index, and appears nowhere
+    else on the board -- so nothing contradicts it.
+    """
     if not AVAILABLE:
         return []
+
+    official = official or {}
 
     tickers = [t for _, t, _ in SYMBOLS]
     try:
@@ -81,6 +97,12 @@ def build(quiet=False):
 
         last, prev = float(series.iloc[-1]), float(series.iloc[-2])
         high52, low52 = float(series.max()), float(series.min())
+
+        published = official.get(symbol) or {}
+        last = published.get("last") or last
+        high52 = published.get("high52") or high52
+        low52 = published.get("low52") or low52
+
         from_high = round(100 * (last / high52 - 1), 2) if high52 else None
 
         row = {

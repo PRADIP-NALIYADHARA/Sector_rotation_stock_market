@@ -1110,7 +1110,15 @@ def main(live=False):
     # Runs on live refreshes too: the strip is the one part of the page that is
     # meant to be current, and it is four symbols, not a universe.
     print("Building the ticker strip...", file=sys.stderr)
-    ticker_rows = market_ticker.build()
+    # Hand the strip NSE's own figures for the benchmark, so the drawdown it
+    # shows is the one the rest of the page shows rather than a close-basis
+    # approximation of it.
+    bm = indices.get(BENCHMARK, {})
+    ticker_rows = market_ticker.build(official={
+        "^NSEI": {"last": bm.get("last"),
+                  "high52": bm.get("yearHigh"),
+                  "low52": bm.get("yearLow")},
+    })
 
     # What moved in the rankings. Recomputed from the cached history rather than
     # recorded as we go, so it works from the first run rather than after a

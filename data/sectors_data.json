@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-20T18:03:15",
+  "updatedAt": "2026-08-20T18:32:17",
   "bhavDate": "20-Aug-2026",
   "refreshMode": "full",
   "indexDate": "20-Aug-2026",
@@ -50,9 +50,9 @@
       "kind": "index",
       "last": 24231.85,
       "pChange": 0.64,
-      "high52": 26328.55,
-      "low52": 22331.4,
-      "fromHigh": -7.96,
+      "high52": 26373.2,
+      "low52": 22182.55,
+      "fromHigh": -8.12,
       "asOf": "2026-08-20",
       "drawdown": "pullback",
       "drawdownLevel": "mild"
