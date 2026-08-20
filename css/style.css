@@ -325,6 +325,86 @@ body {
 
 .icon-btn:hover { border-color: var(--accent); }
 
+/* -------------------------------------------------------------- change log */
+
+.changes-panel {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  margin-bottom: 1.4rem;
+}
+
+.changes-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  width: 100%;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  margin-bottom: 0.8rem;
+}
+
+.changes-head h3 { font-size: 1rem; font-weight: 700; }
+.changes-head:hover h3 { color: var(--accent); }
+
+.changes-panel.collapsed .group-caret { transform: rotate(-90deg); }
+.changes-panel.collapsed .changes-head { margin-bottom: 0; }
+.changes-panel.collapsed .changes-body { display: none; }
+
+.changes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.9rem;
+  margin-top: 0.9rem;
+}
+
+.change-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.7rem 0.8rem;
+  background: var(--bg-elev2);
+}
+
+.change-card h4 {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 0.5rem;
+}
+
+.change-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.22rem 0;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.change-row:hover { background: var(--bg-elev); }
+.change-row span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.change-rank {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums lining-nums;
+  color: var(--text-dim);
+  flex-shrink: 0;
+  font-size: 0.8rem;
+}
+
+.change-empty { font-size: 0.85rem; color: var(--text-dim); }
+
 /* ------------------------------------------------------------ ticker strip */
 
 .ticker-strip {

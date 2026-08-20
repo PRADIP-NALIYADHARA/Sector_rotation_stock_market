@@ -43,6 +43,7 @@ from pathlib import Path
 
 import requests
 
+import change_log
 import corporate_actions
 import market_ticker
 import prices
@@ -52,6 +53,7 @@ DATA_FILE = BASE_DIR / "data" / "sectors_data.json"
 STOCKS_FILE = BASE_DIR / "data" / "stocks.json"
 MAP_FILE = BASE_DIR / "index_map.json"
 VALUATION_FILE = BASE_DIR / "data" / "valuation_history.json"
+HISTORY_FILE = BASE_DIR / "data" / "index_history.json"
 
 # Written by a full refresh, reused by the live one. Constituent lists change a
 # few times a year and long price history only changes when a day closes, so an
@@ -1110,6 +1112,22 @@ def main(live=False):
     print("Building the ticker strip...", file=sys.stderr)
     ticker_rows = market_ticker.build()
 
+    # What moved in the rankings. Recomputed from the cached history rather than
+    # recorded as we go, so it works from the first run rather than after a
+    # month of accumulating snapshots.
+    changes = None
+    if HISTORY_FILE.exists():
+        try:
+            changes = change_log.build(
+                json.loads(HISTORY_FILE.read_text(encoding="utf-8")),
+                sectors, BENCHMARK)
+            if changes:
+                moved = sum(len(v[k]) for v in changes["since"].values()
+                            for k in ("entered", "left"))
+                print(f"  change log: {moved} entries and exits", file=sys.stderr)
+        except Exception as e:
+            print(f"  change log unavailable: {e}", file=sys.stderr)
+
     output = {
         "updatedAt": datetime.now().isoformat(timespec="seconds"),
         "bhavDate": (bhav_date.strftime("%d-%b-%Y") if bhav_date
@@ -1136,6 +1154,7 @@ def main(live=False):
         "periods": [label for label, _ in LOOKBACKS],
         "defaultPeriod": DEFAULT_PERIOD,
         "ticker": ticker_rows,
+        "changes": changes,
         "sectors": sectors,
     }
 

@@ -292,6 +292,7 @@ function applyData(data) {
     .join('');
   if (data.benchmark) el('bmName').textContent = data.benchmark.name;
   renderTicker();
+  renderChanges();
   renderFreshness();
 
   // Drop selections that no longer exist.
@@ -1075,6 +1076,79 @@ function ageText(minutes) {
  * makes the loop seamless; the copy is hidden from screen readers so the
  * figures are not announced twice.
  */
+/* ------------------------------------------------------------- change log */
+
+let changesSince = localStorage.getItem('changesSince') || 'week';
+let changesShut = localStorage.getItem('changesCollapsed') === '1';
+
+const CHANGE_CARDS = [
+  ['entered', 'Entered the top 10'],
+  ['left', 'Fell out of the top 10'],
+  ['crossedUp', 'Started beating the benchmark'],
+  ['crossedDown', 'Fell behind the benchmark'],
+  ['climbed', 'Climbing'],
+  ['slipped', 'Slipping'],
+];
+
+/**
+ * Who moved in the rankings.
+ *
+ * The rest of the board is a still photograph -- it says who leads today and
+ * nothing about who led last week, which is a strange gap in a tool about
+ * rotation. The interesting moment is rarely "X is ahead", it is "X was
+ * fourteenth a fortnight ago".
+ */
+function renderChanges() {
+  const panel = el('changesPanel');
+  const changes = state.data && state.data.changes;
+  const block = changes && changes.since && changes.since[changesSince];
+
+  if (!block) { panel.classList.add('hidden'); return; }
+  panel.classList.remove('hidden');
+  panel.classList.toggle('collapsed', changesShut);
+  el('changesToggle').setAttribute('aria-expanded', String(!changesShut));
+
+  el('changesSub').textContent =
+    `ranked on ${changes.window} relative strength · against ${block.date}`;
+
+  [...el('changesSince').children].forEach(b =>
+    b.classList.toggle('active', b.dataset.since === changesSince));
+
+  const rows = (list) => list.length
+    ? list.map(r => `
+        <div class="change-row" data-open="${r.indexName}" title="${r.name}: ${r.from} → ${r.to}">
+          <span>${r.name}</span>
+          <span class="change-rank">${r.from} → ${r.to}</span>
+        </div>`).join('')
+    : '<div class="change-empty">Nothing.</div>';
+
+  el('changesGrid').innerHTML = CHANGE_CARDS
+    .filter(([key]) => (block[key] || []).length)
+    .map(([key, title]) => `
+      <div class="change-card">
+        <h4>${title}</h4>
+        ${rows(block[key] || [])}
+      </div>`).join('')
+    || '<div class="change-empty">Nothing moved enough to report.</div>';
+
+  el('changesGrid').querySelectorAll('.change-row').forEach(row =>
+    row.addEventListener('click', () => openSector(row.dataset.open)));
+}
+
+el('changesToggle').addEventListener('click', () => {
+  changesShut = !changesShut;
+  localStorage.setItem('changesCollapsed', changesShut ? '1' : '0');
+  renderChanges();
+});
+
+el('changesSince').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-since]');
+  if (!btn) return;
+  changesSince = btn.dataset.since;
+  localStorage.setItem('changesSince', changesSince);
+  renderChanges();
+});
+
 function renderTicker() {
   const strip = el('tickerStrip');
   const rows = (state.data && state.data.ticker) || [];
