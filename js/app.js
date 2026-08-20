@@ -679,6 +679,42 @@ function renderDetail() {
 
   el('detailAdvDec').textContent = `${s.advances || 0} / ${s.declines || 0}`;
 
+  // Advances and declines describe today; this describes the trend today sits
+  // inside, which is the more honest read on whether a sector is healthy.
+  const trend = s.trend || {};
+  const trendBox = el('detailTrendBox');
+  if (trend.above200Pct === null || trend.above200Pct === undefined) {
+    trendBox.classList.add('hidden');
+  } else {
+    trendBox.classList.remove('hidden');
+    const node = el('detailTrend');
+    node.textContent = `${trend.above200Pct}% of ${trend.rated}`;
+    node.style.color = colourFor(trend.above200Pct - 50).fg;
+  }
+
+  // Where the multiple sits against the sector's own five-year range. Leading
+  // at the bottom of that range is a different trade from leading at the top.
+  const val = s.valuation || {};
+  const peBox = el('detailPeBox');
+  if (!val.pe) {
+    peBox.classList.add('hidden');
+  } else {
+    peBox.classList.remove('hidden');
+    const node = el('detailPe');
+    if (val.pePercentile === null || val.pePercentile === undefined) {
+      node.textContent = fmt(val.pe, 1);
+      node.style.color = '';
+      node.title = 'Not enough history to place it.';
+    } else {
+      node.textContent = `${fmt(val.pe, 1)} · ${val.pePercentile}th pctl`;
+      // Expensive for itself reads as risk, so the scale runs the other way.
+      node.style.color = colourFor(50 - val.pePercentile).fg;
+      node.title = `Median ${fmt(val.peMedian, 1)}, range ${fmt(val.peLow, 1)}–`
+                 + `${fmt(val.peHigh, 1)} over ${val.years} years. `
+                 + `Dearer than ${val.pePercentile}% of that history.`;
+    }
+  }
+
   renderPeriodTable(s);
   renderOverlaps(s);
 

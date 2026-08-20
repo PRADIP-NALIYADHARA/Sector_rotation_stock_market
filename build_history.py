@@ -29,6 +29,7 @@ from fetch_data import EXCLUDED_INDICES
 
 BASE_DIR = Path(__file__).parent
 HISTORY_FILE = BASE_DIR / "data" / "index_history.json"
+VALUATION_FILE = BASE_DIR / "data" / "valuation_history.json"
 
 # (days back from today, spacing in days)
 # The daily stretch has to be long enough to carry a 30-day moving average with
@@ -60,8 +61,21 @@ def wanted_dates(today):
     return sorted(dates, reverse=True)
 
 
+def _number(value):
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
 def fetch_day(day):
-    """Closes for every index on `day`; None if the market was shut."""
+    """
+    Closes and valuation for every index on `day`; None if the market was shut.
+
+    The same file carries P/E, P/B and dividend yield, which is what makes a
+    sector's valuation history free: it is already being downloaded for the
+    closes, and NSE publishes no separate archive of it.
+    """
     url = URL.format(day.strftime("%d%m%Y"))
     try:
         r = requests.get(url, headers=HEADERS, timeout=20)
@@ -72,10 +86,14 @@ def fetch_day(day):
 
     closes = {}
     for row in csv.DictReader(io.StringIO(r.text)):
-        try:
-            closes[row["Index Name"].strip().upper()] = float(row["Closing Index Value"])
-        except (ValueError, KeyError):
-            pass
+        name = row.get("Index Name", "").strip().upper()
+        close = _number(row.get("Closing Index Value"))
+        if not name or close is None:
+            continue
+        # [close, pe, pb, dy] -- a list rather than a dict, because this is
+        # written once per index per day and the key names would outweigh it.
+        closes[name] = [close, _number(row.get("P/E")),
+                        _number(row.get("P/B")), _number(row.get("Div Yield"))]
     return day, closes
 
 
@@ -89,6 +107,16 @@ def load_cache():
 def main():
     rebuild = "--rebuild" in sys.argv
     by_date = {} if rebuild else load_cache()
+
+    # Days cached before valuation was captured hold a bare close. They cannot be
+    # upgraded in place, so they are dropped and refetched once.
+    stale = [d for d, row in by_date.items()
+             if row and not isinstance(next(iter(row.values())), list)]
+    if stale:
+        print(f"{len(stale)} cached days predate the valuation columns - refetching",
+              file=sys.stderr)
+        for d in stale:
+            del by_date[d]
 
     today = datetime.now()
     targets = wanted_dates(today)
@@ -115,7 +143,12 @@ def main():
     # dashboard retired are dropped here rather than shipped and never drawn;
     # by_date keeps them so the incremental cache never has to refetch a day.
     names = sorted({name for d in dates for name in by_date[d]} - EXCLUDED_INDICES)
-    series = {name: [by_date[d].get(name) for d in dates] for name in names}
+
+    def field(day, name, i):
+        row = by_date[day].get(name)
+        return row[i] if row else None
+
+    series = {name: [field(d, name, 0) for d in dates] for name in names}
 
     HISTORY_FILE.parent.mkdir(exist_ok=True)
     HISTORY_FILE.write_text(json.dumps({
@@ -125,9 +158,27 @@ def main():
         "byDate": by_date,
     }), encoding="utf-8")
 
+    # Valuation goes to its own file. The browser is never handed the whole
+    # thing -- fetch_data reads it and ships one line per sector -- so keeping it
+    # out of the served payload costs nothing and saves a megabyte on the wire.
+    valuation = {
+        name: {"pe": [field(d, name, 1) for d in dates],
+               "pb": [field(d, name, 2) for d in dates],
+               "dy": [field(d, name, 3) for d in dates]}
+        for name in names
+    }
+    rated = sum(1 for v in valuation.values() if any(x is not None for x in v["pe"]))
+    VALUATION_FILE.write_text(json.dumps({
+        "builtAt": datetime.now().isoformat(timespec="seconds"),
+        "dates": dates,
+        "indices": valuation,
+    }), encoding="utf-8")
+
     size = HISTORY_FILE.stat().st_size / 1_048_576
     print(f"Cached {len(dates)} trading days for {len(names)} indices "
           f"({dates[0]} to {dates[-1]}, {size:.1f} MB)", file=sys.stderr)
+    print(f"Valuation history for {rated} indices -> {VALUATION_FILE.name} "
+          f"({VALUATION_FILE.stat().st_size / 1_048_576:.1f} MB)", file=sys.stderr)
 
 
 if __name__ == "__main__":

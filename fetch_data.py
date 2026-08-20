@@ -38,7 +38,7 @@ import json
 import sys
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from pathlib import Path
 
 import requests
@@ -51,6 +51,7 @@ BASE_DIR = Path(__file__).parent
 DATA_FILE = BASE_DIR / "data" / "sectors_data.json"
 STOCKS_FILE = BASE_DIR / "data" / "stocks.json"
 MAP_FILE = BASE_DIR / "index_map.json"
+VALUATION_FILE = BASE_DIR / "data" / "valuation_history.json"
 
 # Written by a full refresh, reused by the live one. Constituent lists change a
 # few times a year and long price history only changes when a day closes, so an
@@ -388,6 +389,85 @@ def build_stocks(members, close_of, prev_of, week52, today):
     return stocks
 
 
+def load_valuation():
+    """
+    Index P/E, P/B and yield through time, keyed by index name, with the span
+    the readings cover.
+
+    The span is taken from the dates rather than counted off the readings: the
+    history is sampled daily near the present and monthly at the far end, so
+    the number of points says nothing about how far back they reach.
+    """
+    if not VALUATION_FILE.exists():
+        print("  note: valuation_history.json missing - run build_history.py",
+              file=sys.stderr)
+        return {}, None
+    raw = json.loads(VALUATION_FILE.read_text(encoding="utf-8"))
+    dates = raw.get("dates") or []
+    years = None
+    if len(dates) >= 2:
+        first = date.fromisoformat(dates[0])
+        last = date.fromisoformat(dates[-1])
+        years = round((last - first).days / 365.25, 1)
+    return raw.get("indices", {}), years
+
+
+def valuation(index_name, idx, history, span_years):
+    """
+    Today's multiples, and where the P/E sits in the index's own past.
+
+    A sector leading on price at the top of its own valuation range is a very
+    different proposition from one leading at the bottom of it, and that is a
+    question no amount of price history can answer.
+    """
+    # The live feed hands these back as strings, the archive as numbers.
+    def number(v):
+        try:
+            return float(v)
+        except (TypeError, ValueError):
+            return None
+
+    pe, pb, dy = number(idx.get("pe")), number(idx.get("pb")), number(idx.get("dy"))
+    out = {"pe": pe, "pb": pb, "dy": dy,
+           "pePercentile": None, "peMedian": None, "peLow": None, "peHigh": None,
+           "years": None}
+
+    past = [v for v in (history.get(index_name, {}).get("pe") or []) if v]
+    if pe and len(past) >= 60:
+        below = sum(1 for v in past if v < pe)
+        out.update({
+            "pePercentile": round(100 * below / len(past)),
+            "peMedian": round(sorted(past)[len(past) // 2], 2),
+            "peLow": round(min(past), 2),
+            "peHigh": round(max(past), 2),
+            "years": span_years,
+        })
+    return out
+
+
+def trend_breadth(stocks, ma_of):
+    """
+    How much of a sector is actually in an uptrend.
+
+    Advances and declines describe one session; the share of a sector trading
+    above its 200-day average describes the trend the session sits inside.
+    """
+    above50 = above200 = rated50 = rated200 = 0
+    for s in stocks:
+        ma = ma_of(s["symbol"])
+        if ma.get("fromMa50") is not None:
+            rated50 += 1
+            above50 += ma["fromMa50"] > 0
+        if ma.get("fromMa200") is not None:
+            rated200 += 1
+            above200 += ma["fromMa200"] > 0
+    return {
+        "above50Pct": round(100 * above50 / rated50) if rated50 else None,
+        "above200Pct": round(100 * above200 / rated200) if rated200 else None,
+        "rated": rated200,
+    }
+
+
 def breadth(stocks):
     adv = sum(1 for s in stocks if (s["pChange"] or 0) > 0)
     dec = sum(1 for s in stocks if (s["pChange"] or 0) < 0)
@@ -712,6 +792,8 @@ def main(live=False):
     print(f"  52-week range position: {benchmark_range_pos}% "
           f"({len(week52)} stocks have 52-week levels)", file=sys.stderr)
 
+    valuation_history, valuation_years = load_valuation()
+
     index_map = {}
     if MAP_FILE.exists():
         index_map = json.loads(MAP_FILE.read_text(encoding="utf-8")).get("indices", {})
@@ -827,6 +909,8 @@ def main(live=False):
             "advances": adv,
             "declines": dec,
             "unchanged": unch,
+            "valuation": valuation(index_name, idx, valuation_history,
+                                   valuation_years),
             "stocks": stocks,
         }
         if not stocks:
@@ -991,6 +1075,20 @@ def main(live=False):
             entry["indices"].append(sector["indexName"])
             if sector["group"] != "Broad":
                 entry["sectors"].append(sector["indexName"])
+
+    # Trend breadth needs the moving averages, which only exist once the stock
+    # detail above has been built -- hence the second pass over the sectors.
+    def ma_of(symbol):
+        return stock_detail.get(symbol, {})
+
+    for sector in sectors:
+        sector["trend"] = trend_breadth(sector["stocks"], ma_of)
+        # The synthesised industry groups have no NSE index behind them, so no
+        # multiples either. They still carry the key, so nothing downstream has
+        # to ask whether it is there.
+        sector.setdefault("valuation", {"pe": None, "pb": None, "dy": None,
+                                        "pePercentile": None, "peMedian": None,
+                                        "peLow": None, "peHigh": None, "years": None})
 
     STOCKS_FILE.parent.mkdir(exist_ok=True)
     STOCKS_FILE.write_text(json.dumps({
