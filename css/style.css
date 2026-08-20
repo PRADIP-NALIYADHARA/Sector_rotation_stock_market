@@ -487,9 +487,9 @@ body {
   border: 1px solid currentColor;
 }
 
-.ticker-dip.dip { color: #f0b90b; }
+.ticker-dip.mild { color: #f0b90b; }
 .ticker-dip.correction { color: #ff8a3d; }
-.ticker-dip.deep { color: #ea3943; }
+.ticker-dip.severe { color: #ea3943; }
 
 @media (max-width: 720px) {
   .ticker-item { padding: 0.5rem 1.1rem; font-size: 0.8rem; }

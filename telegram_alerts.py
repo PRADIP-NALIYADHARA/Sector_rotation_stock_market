@@ -146,10 +146,9 @@ def save_state(state):
     STATE_FILE.write_text(json.dumps(state, indent=2), encoding="utf-8")
 
 
-# Deepest first in market_ticker, so the rank counts down from there. Reading it
-# off that list keeps the two files from drifting apart on the wording.
-LEVEL_RANK = {label: len(market_ticker.DRAWDOWN_LEVELS) - i
-              for i, (_, label) in enumerate(market_ticker.DRAWDOWN_LEVELS)}
+# Ranked on severity rather than wording, because the wording differs by
+# instrument -- a market down a fifth is a bear market, a metal is not.
+LEVEL_RANK = market_ticker.LEVEL_RANK
 
 
 def snapshot(data):
@@ -160,8 +159,8 @@ def snapshot(data):
         "above": sorted(s["indexName"] for s in data["sectors"]
                         if (s.get("rs") or {}).get(DIGEST_PERIOD) is not None
                         and s["rs"][DIGEST_PERIOD] > 0),
-        "metals": {r["name"]: (r.get("drawdown") or "")
-                   for r in data.get("ticker", []) if r.get("kind") == "metal"},
+        "drawdowns": {r["name"]: (r.get("drawdownLevel") or "")
+                      for r in data.get("ticker", [])},
         "bhavDate": data.get("bhavDate"),
     }
 
@@ -236,22 +235,27 @@ def build_alerts(data, previous):
     if crossed_down:
         alerts.append("📉 <b>Fallen behind the benchmark</b>: " + ", ".join(named(crossed_down)))
 
-    # Gold and silver, but only when the fall deepens past a band it was not in
-    # before -- otherwise a metal sitting at -12% would say so every morning.
-    was = previous.get("metals", {})
+    # Metals only, and only when the fall deepens past a band it was not in
+    # before -- otherwise one sitting at -12% would say so every morning.
+    #
+    # Nifty and Sensex carry the same band on the ticker strip but are
+    # deliberately not alerted on: the whole board already describes the market,
+    # so a message saying it has fallen tells you nothing you did not open the
+    # page to see. The metals are the part nothing else here covers.
+    was = previous.get("drawdowns", {})
     for row in data.get("ticker", []):
         if row.get("kind") != "metal":
             continue
-        level = row.get("drawdown") or ""
+        level = row.get("drawdownLevel") or ""
         before = was.get(row["name"], "")
         if LEVEL_RANK.get(level, 0) > LEVEL_RANK.get(before, 0):
             alerts.append(
-                f"🪙 <b>{row['name']} — {level}</b>\n"
+                f"📉 <b>{row['name']} — {row['drawdown']}</b>\n"
                 f"{pct(row['fromHigh'])} from its 52-week high of {row['high52']:,.2f}, "
                 f"now {row['last']:,.2f}.")
         elif before and not level:
             alerts.append(
-                f"🪙 <b>{row['name']} back within 5% of its high</b>\n"
+                f"📈 <b>{row['name']} back within 5% of its high</b>\n"
                 f"{pct(row['fromHigh'])} from {row['high52']:,.2f}.")
 
     # --- a big move today ---------------------------------------------------
@@ -262,8 +266,11 @@ def build_alerts(data, previous):
     today = data.get("bhavDate")
     seen = set(previous.get("fastAlerted", [])) if previous.get("fastDay") == today else set()
 
+    # Gold and silver from the strip, and the sectors -- never Nifty or Sensex.
+    # A message that the market moved is not an opportunity, it is the weather,
+    # and the board is already about which part of it to be in.
     movers = [("ticker:" + r["name"], r["name"], r.get("pChange"))
-              for r in data.get("ticker", [])]
+              for r in data.get("ticker", []) if r.get("kind") == "metal"]
     movers += [("sector:" + s["indexName"], s["name"], s.get("pChange"))
                for s in data["sectors"] if s["group"] != "Broad"]
 

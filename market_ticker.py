@@ -19,8 +19,7 @@ try:
 except ImportError:                                          # pragma: no cover
     AVAILABLE = False
 
-# (label, Yahoo ticker, kind). Only metals get a drawdown flag: an index sitting
-# below its high is the ordinary state of a market, not news.
+# (label, Yahoo ticker, kind).
 SYMBOLS = [
     ("Nifty 50", "^NSEI", "index"),
     ("Sensex", "^BSESN", "index"),
@@ -29,21 +28,29 @@ SYMBOLS = [
 ]
 
 # How far below the 52-week high before it is worth saying so, deepest first.
-DRAWDOWN_LEVELS = [
-    (20.0, "deep correction"),
-    (10.0, "correction"),
-    (5.0, "dip"),
+#
+# The severity is shared so everything can be coloured and ranked the same way,
+# but the wording is not: a market down a fifth is a bear market, which is the
+# term everyone actually uses, while the same fall in a metal is not.
+DRAWDOWN_BANDS = [
+    (20.0, "severe", {"index": "bear market", "metal": "deep correction"}),
+    (10.0, "correction", {"index": "correction", "metal": "correction"}),
+    (5.0, "mild", {"index": "pullback", "metal": "dip"}),
 ]
 
+# Deepest first above, so the rank counts down from the length.
+LEVEL_RANK = {level: len(DRAWDOWN_BANDS) - i
+              for i, (_, level, _) in enumerate(DRAWDOWN_BANDS)}
 
-def _level(from_high):
-    """The label for a drawdown, or None if it is not far enough to matter."""
+
+def _level(from_high, kind):
+    """(severity, wording) for a drawdown, or (None, None) if it is shallow."""
     if from_high is None:
-        return None
-    for depth, label in DRAWDOWN_LEVELS:
+        return None, None
+    for depth, level, wording in DRAWDOWN_BANDS:
         if from_high <= -depth:
-            return label
-    return None
+            return level, wording.get(kind, wording["index"])
+    return None, None
 
 
 def build(quiet=False):
@@ -87,8 +94,9 @@ def build(quiet=False):
             "fromHigh": from_high,
             "asOf": series.index[-1].date().isoformat(),
         }
-        if kind == "metal":
-            row["drawdown"] = _level(from_high)
+        level, wording = _level(from_high, kind)
+        row["drawdown"] = wording
+        row["drawdownLevel"] = level
         rows.append(row)
 
     if not quiet:

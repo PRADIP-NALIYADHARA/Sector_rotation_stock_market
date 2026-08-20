@@ -1181,8 +1181,7 @@ function renderTicker() {
     const dir = r.pChange > 0 ? 'up' : r.pChange < 0 ? 'down' : 'flat';
     // Metals only, and only once the fall is deep enough to be worth a word.
     const dip = r.drawdown
-      ? `<span class="ticker-dip ${r.drawdown === 'deep correction' ? 'deep'
-           : r.drawdown === 'correction' ? 'correction' : 'dip'}"
+      ? `<span class="ticker-dip ${r.drawdownLevel || 'mild'}"
                title="${r.name} is ${signedPct(r.fromHigh)} from its 52-week high of ${fmt(r.high52)}">
            ${r.drawdown} ${signedPct(r.fromHigh)}
          </span>`
