@@ -291,6 +291,7 @@ function applyData(data) {
     .map(p => `<option value="${p}" ${p === state.period ? 'selected' : ''}>${p}</option>`)
     .join('');
   if (data.benchmark) el('bmName').textContent = data.benchmark.name;
+  renderTicker();
   renderFreshness();
 
   // Drop selections that no longer exist.
@@ -1029,6 +1030,45 @@ function ageText(minutes) {
   const hours = minutes / 60;
   if (hours < 24) return `${Math.round(hours)}h ago`;
   return `${Math.round(hours / 24)}d ago`;
+}
+
+/**
+ * The strip under the header.
+ *
+ * The row is rendered twice and the track slid by half its width, which is what
+ * makes the loop seamless; the copy is hidden from screen readers so the
+ * figures are not announced twice.
+ */
+function renderTicker() {
+  const strip = el('tickerStrip');
+  const rows = (state.data && state.data.ticker) || [];
+
+  if (!rows.length) { strip.classList.add('hidden'); return; }
+  strip.classList.remove('hidden');
+
+  const item = (r) => {
+    const dir = r.pChange > 0 ? 'up' : r.pChange < 0 ? 'down' : 'flat';
+    // Metals only, and only once the fall is deep enough to be worth a word.
+    const dip = r.drawdown
+      ? `<span class="ticker-dip ${r.drawdown === 'deep correction' ? 'deep'
+           : r.drawdown === 'correction' ? 'correction' : 'dip'}"
+               title="${r.name} is ${signedPct(r.fromHigh)} from its 52-week high of ${fmt(r.high52)}">
+           ${r.drawdown} ${signedPct(r.fromHigh)}
+         </span>`
+      : '';
+    return `
+      <span class="ticker-item">
+        <span class="ticker-name">${r.name}</span>
+        <span class="ticker-last">${fmt(r.last)}</span>
+        <span class="ticker-change ${dir}">${signedPct(r.pChange)}</span>
+        ${dip}
+      </span>`;
+  };
+
+  const once = rows.map(item).join('');
+  el('tickerTrack').innerHTML =
+    once + `<span class="ticker-copy" aria-hidden="true">${once}</span>`;
+
 }
 
 function renderFreshness() {

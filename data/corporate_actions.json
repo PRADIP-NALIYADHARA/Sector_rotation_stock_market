@@ -4982,7 +4982,13 @@
         "exDate": "2021-07-12",
         "kind": "rights"
       }
+    ],
+    "SIYSIL": [
+      {
+        "exDate": "2026-08-21",
+        "kind": "bonus"
+      }
     ]
   },
-  "refreshedAt": "2026-08-20T12:00:42"
+  "refreshedAt": "2026-08-20T12:21:13"
 }

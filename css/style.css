@@ -43,10 +43,15 @@ body {
 
 /* ----------------------------------------------------------------- topbar */
 
-.topbar {
+/* The topbar and the ticker travel together: sticking them as one stack means
+   nothing has to measure the topbar, which wraps and so changes height. */
+.topbar-stack {
   position: sticky;
   top: 0;
   z-index: 50;
+}
+
+.topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -319,6 +324,97 @@ body {
 }
 
 .icon-btn:hover { border-color: var(--accent); }
+
+/* ------------------------------------------------------------ ticker strip */
+
+.ticker-strip {
+  background: var(--bg-elev2);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+  /* The track is duplicated and slid by exactly half its width, so the seam
+     lands where the copy begins and the loop reads as continuous. */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+}
+
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ticker-roll 42s linear infinite;
+}
+
+.ticker-strip:hover .ticker-track { animation-play-state: paused; }
+
+/* The duplicate has to dissolve into the flex row, or the two halves
+   measure differently and translateX(-50%) lands off the seam. */
+.ticker-copy { display: contents; }
+
+@keyframes ticker-roll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.ticker-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.55rem 1.6rem;
+  white-space: nowrap;
+  border-right: 1px solid var(--border);
+  font-size: 0.85rem;
+}
+
+.ticker-name {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+
+.ticker-last {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-weight: 600;
+}
+
+.ticker-change {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-weight: 600;
+}
+
+.ticker-change.up { color: #16c784; }
+.ticker-change.down { color: #ea3943; }
+.ticker-change.flat { color: var(--text-dim); }
+
+/* How far the metal sits below its own 52-week high. Stated as the fact it is,
+   with the depth attached -- the platform reports, it does not instruct. */
+.ticker-dip {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+}
+
+.ticker-dip.dip { color: #f0b90b; }
+.ticker-dip.correction { color: #ff8a3d; }
+.ticker-dip.deep { color: #ea3943; }
+
+@media (max-width: 720px) {
+  .ticker-item { padding: 0.5rem 1.1rem; font-size: 0.8rem; }
+  .ticker-track { animation-duration: 28s; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Standing still, the strip becomes a row you scroll yourself. */
+  .ticker-track { animation: none; width: auto; }
+  .ticker-strip { overflow-x: auto; }
+  .ticker-track .ticker-copy { display: none; }
+}
 
 .status-bar {
   padding: 0.7rem 2rem;

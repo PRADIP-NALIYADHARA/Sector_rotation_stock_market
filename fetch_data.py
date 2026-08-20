@@ -44,6 +44,7 @@ from pathlib import Path
 import requests
 
 import corporate_actions
+import market_ticker
 import prices
 
 BASE_DIR = Path(__file__).parent
@@ -1006,6 +1007,11 @@ def main(live=False):
 
     sectors.sort(key=lambda s: -(s["rs"].get(DEFAULT_PERIOD) if s["rs"].get(DEFAULT_PERIOD) is not None else -9999))
 
+    # Runs on live refreshes too: the strip is the one part of the page that is
+    # meant to be current, and it is four symbols, not a universe.
+    print("Building the ticker strip...", file=sys.stderr)
+    ticker_rows = market_ticker.build()
+
     output = {
         "updatedAt": datetime.now().isoformat(timespec="seconds"),
         "bhavDate": (bhav_date.strftime("%d-%b-%Y") if bhav_date
@@ -1031,6 +1037,7 @@ def main(live=False):
         },
         "periods": [label for label, _ in LOOKBACKS],
         "defaultPeriod": DEFAULT_PERIOD,
+        "ticker": ticker_rows,
         "sectors": sectors,
     }
 
