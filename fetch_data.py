@@ -1122,9 +1122,12 @@ def main(live=False):
                 json.loads(HISTORY_FILE.read_text(encoding="utf-8")),
                 sectors, BENCHMARK)
             if changes:
-                moved = sum(len(v[k]) for v in changes["since"].values()
+                moved = sum(len(period[k])
+                            for scope in changes["scopes"].values()
+                            for period in scope["since"].values()
                             for k in ("entered", "left"))
-                print(f"  change log: {moved} entries and exits", file=sys.stderr)
+                print(f"  change log: {len(changes['scopes'])} groups, "
+                      f"{moved} entries and exits", file=sys.stderr)
         except Exception as e:
             print(f"  change log unavailable: {e}", file=sys.stderr)
 

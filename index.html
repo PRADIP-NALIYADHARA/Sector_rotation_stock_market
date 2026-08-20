@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sector Rotation Analysis</title>
-<link rel="stylesheet" href="css/style.css?v=27">
+<link rel="stylesheet" href="css/style.css?v=28">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -171,9 +171,12 @@
         <span class="dim" id="changesSub"></span>
       </button>
       <div class="changes-body" id="changesBody">
-        <div class="filter-group" id="changesSince">
-          <button class="chip active" data-since="week">Since last week</button>
-          <button class="chip" data-since="month">Since last month</button>
+        <div class="changes-filters">
+          <div class="filter-group" id="changesSince">
+            <button class="chip active" data-since="week">Since last week</button>
+            <button class="chip" data-since="month">Since last month</button>
+          </div>
+          <div class="filter-group" id="changesScope"></div>
         </div>
         <div id="changesGrid" class="changes-grid"></div>
       </div>
@@ -391,6 +394,6 @@
   <p>Data sourced from public NSE India endpoints. For research/educational use only — not investment advice.</p>
 </footer>
 
-<script src="js/app.js?v=30"></script>
+<script src="js/app.js?v=31"></script>
 </body>
 </html>

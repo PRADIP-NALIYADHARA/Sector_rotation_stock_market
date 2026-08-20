@@ -24,6 +24,11 @@ TOP_N = 10
 # How far back to look, and what to call it.
 SINCE = [(7, "week"), (30, "month")]
 
+# The universes worth ranking separately. Sectors and themes overlap heavily --
+# Auto, Mobility and EV hold many of the same names -- so seeing one list
+# without the other is often the clearer read.
+SCOPES = [("all", "All"), ("Sectoral", "Sectoral"), ("Thematic", "Thematic")]
+
 # A rank change smaller than this is shuffling, not rotation.
 NOTABLE_RANK_MOVE = 5
 
@@ -75,26 +80,18 @@ def ranking(history, names, benchmark, at_i, window_days):
     return {name: (i + 1, rs) for i, (name, rs) in enumerate(scored)}
 
 
-def build(history, sectors, benchmark, window_days=30, window_label="1M"):
-    """The movers, versus a week ago and versus a month ago."""
-    dates = history.get("dates") or []
-    if len(dates) < 2:
-        return None
-
-    label_of = {s["indexName"]: s["name"] for s in sectors}
-    names = [s["indexName"] for s in sectors
-             if s.get("source") == "index" and s["group"] != "Broad"
-             and s["indexName"] != benchmark]
-
+def _movers(history, names, label_of, benchmark, window_days):
+    """Entries, exits and crossings for one universe, versus each SINCE date."""
+    dates = history["dates"]
     now_i = len(dates) - 1
     now = ranking(history, names, benchmark, now_i, window_days)
     if not now:
-        return None
+        return {}
 
-    out = {"window": window_label, "asOf": dates[now_i], "since": {}}
-
+    since = {}
     for days, key in SINCE:
-        then_i = _as_of(dates, (date.fromisoformat(dates[now_i]) - timedelta(days=days)).isoformat())
+        then_i = _as_of(dates, (date.fromisoformat(dates[now_i])
+                                - timedelta(days=days)).isoformat())
         if then_i is None or then_i >= now_i:
             continue
         before = ranking(history, names, benchmark, then_i, window_days)
@@ -116,19 +113,47 @@ def build(history, sectors, benchmark, window_days=30, window_label="1M"):
         slipped = [n for n in shared
                    if now[n][0] - before[n][0] >= NOTABLE_RANK_MOVE and n not in top_before]
 
-        out["since"][key] = {
+        since[key] = {
             "date": dates[then_i],
             "days": days,
             "entered": described(top_now - top_before),
             "left": described(top_before - top_now),
             # Crossing the benchmark is the moment a sector stops lagging it,
             # which the rank alone does not show.
-            "crossedUp": described({n for n in shared
-                                    if now[n][1] > 0 >= before[n][1]}),
-            "crossedDown": described({n for n in shared
-                                      if now[n][1] <= 0 < before[n][1]}),
+            "crossedUp": described({n for n in shared if now[n][1] > 0 >= before[n][1]}),
+            "crossedDown": described({n for n in shared if now[n][1] <= 0 < before[n][1]}),
             "climbed": described(sorted(climbed, key=lambda n: now[n][0] - before[n][0])[:5]),
             "slipped": described(sorted(slipped, key=lambda n: before[n][0] - now[n][0])[:5]),
         }
+    return since
 
-    return out if out["since"] else None
+
+def build(history, sectors, benchmark, window_days=30, window_label="1M"):
+    """
+    The movers, versus a week ago and versus a month ago, for each universe.
+
+    Each scope is ranked within itself rather than filtered out of a combined
+    table. Ranking sectors and themes together and then hiding the themes would
+    leave gaps in the numbering and make "the top ten" mean something different
+    from what is on screen.
+    """
+    dates = history.get("dates") or []
+    if len(dates) < 2:
+        return None
+
+    label_of = {s["indexName"]: s["name"] for s in sectors}
+    eligible = [s for s in sectors
+                if s.get("source") == "index" and s["group"] != "Broad"
+                and s["indexName"] != benchmark]
+
+    out = {"window": window_label, "asOf": dates[-1], "scopes": {}}
+    for key, label in SCOPES:
+        names = [s["indexName"] for s in eligible
+                 if key == "all" or s["group"] == key]
+        if len(names) < TOP_N:
+            continue
+        since = _movers(history, names, label_of, benchmark, window_days)
+        if since:
+            out["scopes"][key] = {"label": label, "count": len(names), "since": since}
+
+    return out if out["scopes"] else None

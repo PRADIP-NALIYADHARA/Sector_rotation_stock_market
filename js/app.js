@@ -1079,6 +1079,7 @@ function ageText(minutes) {
 /* ------------------------------------------------------------- change log */
 
 let changesSince = localStorage.getItem('changesSince') || 'week';
+let changesScope = localStorage.getItem('changesScope') || 'all';
 let changesShut = localStorage.getItem('changesCollapsed') === '1';
 
 const CHANGE_CARDS = [
@@ -1097,28 +1098,41 @@ const CHANGE_CARDS = [
  * nothing about who led last week, which is a strange gap in a tool about
  * rotation. The interesting moment is rarely "X is ahead", it is "X was
  * fourteenth a fortnight ago".
+ *
+ * Each scope is ranked within itself, so switching to Sectoral renumbers from
+ * 1 rather than showing gaps where the themes were.
  */
 function renderChanges() {
   const panel = el('changesPanel');
   const changes = state.data && state.data.changes;
-  const block = changes && changes.since && changes.since[changesSince];
+  const scopes = changes && changes.scopes;
+  if (!scopes) { panel.classList.add('hidden'); return; }
 
+  if (!scopes[changesScope]) changesScope = 'all';
+  const scope = scopes[changesScope];
+  const block = scope && scope.since && scope.since[changesSince];
   if (!block) { panel.classList.add('hidden'); return; }
+
   panel.classList.remove('hidden');
   panel.classList.toggle('collapsed', changesShut);
   el('changesToggle').setAttribute('aria-expanded', String(!changesShut));
 
   el('changesSub').textContent =
-    `ranked on ${changes.window} relative strength · against ${block.date}`;
+    `rank out of ${scope.count}, on ${changes.window} relative strength · against ${block.date}`;
+
+  el('changesScope').innerHTML = Object.entries(scopes)
+    .map(([key, s]) => `<button class="chip ${key === changesScope ? 'active' : ''}"
+            data-scope="${key}">${s.label} (${s.count})</button>`)
+    .join('');
 
   [...el('changesSince').children].forEach(b =>
     b.classList.toggle('active', b.dataset.since === changesSince));
 
   const rows = (list) => list.length
     ? list.map(r => `
-        <div class="change-row" data-open="${r.indexName}" title="${r.name}: ${r.from} → ${r.to}">
+        <div class="change-row" data-open="${r.indexName}" title="${r.name}: rank ${r.from} → ${r.to} of ${scope.count}">
           <span>${r.name}</span>
-          <span class="change-rank">${r.from} → ${r.to}</span>
+          <span class="change-rank">${r.from} &rarr; ${r.to}</span>
         </div>`).join('')
     : '<div class="change-empty">Nothing.</div>';
 
@@ -1129,10 +1143,17 @@ function renderChanges() {
         <h4>${title}</h4>
         ${rows(block[key] || [])}
       </div>`).join('')
-    || '<div class="change-empty">Nothing moved enough to report.</div>';
+    || '<div class="change-empty">Nothing moved enough to report in this group.</div>';
 
   el('changesGrid').querySelectorAll('.change-row').forEach(row =>
     row.addEventListener('click', () => openSector(row.dataset.open)));
+
+  el('changesScope').querySelectorAll('[data-scope]').forEach(btn =>
+    btn.addEventListener('click', () => {
+      changesScope = btn.dataset.scope;
+      localStorage.setItem('changesScope', changesScope);
+      renderChanges();
+    }));
 }
 
 el('changesToggle').addEventListener('click', () => {

@@ -358,6 +358,13 @@ body {
 .changes-panel.collapsed .changes-head { margin-bottom: 0; }
 .changes-panel.collapsed .changes-body { display: none; }
 
+.changes-filters {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+
 .changes-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
