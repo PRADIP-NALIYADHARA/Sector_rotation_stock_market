@@ -40,8 +40,9 @@ from pathlib import Path
 
 import requests
 
-BASE_DIR = Path(__file__).parent
 import market_ticker
+
+BASE_DIR = Path(__file__).parent
 
 DATA_FILE = BASE_DIR / "data" / "sectors_data.json"
 STATE_FILE = BASE_DIR / "data" / "alert_state.json"
@@ -51,6 +52,12 @@ API = "https://api.telegram.org/bot{token}/sendMessage"
 
 TOP_N = 6
 DIGEST_PERIOD = "1M"
+
+# A day's move big enough to be worth interrupting someone for. Applies to the
+# ticker instruments and to sectors -- not to individual stocks, where on any
+# lively day dozens clear 3% and the message would be a wall rather than a
+# signal.
+FAST_MOVE_PCT = 3.0
 
 
 def load_config():
@@ -247,16 +254,52 @@ def build_alerts(data, previous):
                 f"🪙 <b>{row['name']} back within 5% of its high</b>\n"
                 f"{pct(row['fromHigh'])} from {row['high52']:,.2f}.")
 
+    # --- a big move today ---------------------------------------------------
+    #
+    # Intraday runs mean the same name would otherwise be reported again every
+    # five minutes for the rest of the session, so each one is announced once
+    # and the list resets when the market date rolls over.
+    today = data.get("bhavDate")
+    seen = set(previous.get("fastAlerted", [])) if previous.get("fastDay") == today else set()
+
+    movers = [("ticker:" + r["name"], r["name"], r.get("pChange"))
+              for r in data.get("ticker", [])]
+    movers += [("sector:" + s["indexName"], s["name"], s.get("pChange"))
+               for s in data["sectors"] if s["group"] != "Broad"]
+
+    fresh = []
+    for key, name, change in movers:
+        if change is None or abs(change) < FAST_MOVE_PCT or key in seen:
+            continue
+        seen.add(key)
+        fresh.append((name, change))
+
+    if fresh:
+        fresh.sort(key=lambda x: -abs(x[1]))
+        lines = [f"  {'▲' if c > 0 else '▼'} {n}  {pct(c)}" for n, c in fresh]
+        alerts.append(f"⚡ <b>Moving more than {FAST_MOVE_PCT:g}% today</b>\n"
+                      + "\n".join(lines))
+
+    now["fastDay"] = today
+    now["fastAlerted"] = sorted(seen)
+
     return alerts, now
 
 
-def main():
-    if "--chat-id" in sys.argv:
+def main(argv=None, daily=False):
+    """
+    `daily` asks for the digest once per market date and alerts on every run
+    after that -- what an intraday caller wants, since the first run of the
+    session should summarise and the rest should only report what changed.
+    """
+    argv = sys.argv if argv is None else argv
+
+    if "--chat-id" in argv:
         show_chat_ids()
         return
 
-    dry_run = "--dry-run" in sys.argv
-    force_digest = "--digest" in sys.argv
+    dry_run = "--dry-run" in argv
+    force_digest = "--digest" in argv
 
     if not DATA_FILE.exists():
         sys.exit("No data yet - run fetch_data.py first.")
@@ -267,10 +310,13 @@ def main():
 
     alerts, current = build_alerts(data, previous)
     first_run = not previous
+    digest_due = daily and state.get("digestDay") != data.get("bhavDate")
 
-    if first_run:
-        print("First run - sending the digest and recording a baseline.", file=sys.stderr)
+    if first_run or digest_due:
+        print("Sending the digest for this session.", file=sys.stderr)
         sent = send(build_digest(data), dry_run)
+        if sent and not dry_run:
+            state["digestDay"] = data.get("bhavDate")
     elif force_digest:
         sent = send(build_digest(data), dry_run)
     elif alerts:

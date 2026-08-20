@@ -5,12 +5,13 @@ Three jobs: one to serve the dashboard, two to keep its data current.
 
   Sector Rotation - Morning   08:15 on weekdays. A full rebuild: NSE archives,
                               constituent lists, 52-week levels, corporate
-                              actions and price history, then the Telegram
-                              digest. Takes a few minutes.
+                              actions and price history. Takes a few minutes.
 
   Sector Rotation - Live      every 5 minutes from 09:15 to 15:45 on weekdays.
                               Reuses what the morning job cached and re-reads
-                              only what moves -- index levels and prices.
+                              only what moves -- index levels and prices. Also
+                              carries the Telegram digest and alerts, so they
+                              describe the session rather than yesterday.
 
   Sector Rotation - Server    a Startup-folder shortcut, so the web server comes
                               back at logon. Without it the dashboard is only up

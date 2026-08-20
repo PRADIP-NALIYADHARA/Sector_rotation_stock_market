@@ -10,8 +10,8 @@ and called in-process, so no child ever gets a console of its own. pythonw
 discards stdout and stderr, so both are redirected to logs/refresh.log, which is
 the only record of what these runs did.
 
-    pythonw run_refresh.py --live       intraday refresh
-    pythonw run_refresh.py --morning    full rebuild, then the Telegram digest
+    pythonw run_refresh.py --live       intraday refresh, and the Telegram alerts
+    pythonw run_refresh.py --morning    full rebuild, before the bell
 """
 import sys
 import traceback
@@ -51,12 +51,16 @@ def main():
             import fetch_data
             fetch_data.main(live=live)
 
-            if morning:
-                # Alerts run only after a full rebuild, so a notification arrives
-                # once a day rather than every five minutes.
+            if live:
+                # Alerts ride the intraday runs rather than the 08:15 rebuild.
+                # Sent pre-open they could only describe yesterday's close; sent
+                # after the bell they carry the session that is actually
+                # tradeable. The digest goes once per market date and the rest
+                # of the session reports only what changed, so this is not five
+                # minutes of noise.
                 try:
                     import telegram_alerts
-                    telegram_alerts.main()
+                    telegram_alerts.main(argv=[], daily=True)
                 except SystemExit:
                     pass                       # no data or no credentials: already logged
                 except Exception:
