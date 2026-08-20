@@ -51,6 +51,28 @@ def main():
             import fetch_data
             fetch_data.main(live=live)
 
+            # Whatever the mode, look at what was just produced. This is the
+            # only thing standing between a broken pipeline and days of
+            # confident-looking wrong numbers.
+            try:
+                import health_check
+                problems, counts = health_check.check()
+                if problems:
+                    log.write("health: " + "; ".join(problems) + "\n")
+                    fresh, _ = health_check.since_last(problems)
+                    if fresh:
+                        import telegram_alerts
+                        telegram_alerts.send("<b>⚠️ Data health</b>\n"
+                                             + "\n".join("• " + p for p in fresh))
+                else:
+                    health_check.remember(counts)
+                    _, recovered = health_check.since_last([])
+                    if recovered:
+                        import telegram_alerts
+                        telegram_alerts.send("<b>✅ Data health back to normal</b>")
+            except Exception:
+                log.write("health check failed:\n" + traceback.format_exc())
+
             if live:
                 # Alerts ride the intraday runs rather than the 08:15 rebuild.
                 # Sent pre-open they could only describe yesterday's close; sent
