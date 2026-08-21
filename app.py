@@ -149,12 +149,17 @@ class Handler(SimpleHTTPRequestHandler):
             self.send_json({"error": "busy", "message": "A refresh is already running."}, 409)
             return
 
+        # ?mode=quick skips the 750-symbol price fetch, which is most of the
+        # wait. ?mode=live keeps the cached history and refreshes today only.
+        mode = parse_qs(urlparse(self.path).query).get("mode", [""])[0]
+        argv = {"quick": ["--quick"], "live": ["--live"]}.get(mode, [])
+
         try:
             result = subprocess.run(
-                [sys.executable, str(BASE_DIR / "fetch_data.py")],
+                [sys.executable, str(BASE_DIR / "fetch_data.py")] + argv,
                 capture_output=True,
                 text=True,
-                timeout=300,
+                timeout=600,
                 cwd=str(BASE_DIR),
             )
             if result.returncode != 0:
@@ -166,7 +171,7 @@ class Handler(SimpleHTTPRequestHandler):
                 "data": json.loads(DATA_FILE.read_text(encoding="utf-8")),
             })
         except subprocess.TimeoutExpired:
-            self.send_json({"error": "timeout", "message": "NSE fetch took too long (>5 min)."}, 504)
+            self.send_json({"error": "timeout", "message": "The refresh took too long (>10 min)."}, 504)
         finally:
             refresh_lock.release()
 

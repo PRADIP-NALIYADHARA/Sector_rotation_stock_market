@@ -254,6 +254,66 @@ async function loadCached() {
   }
 }
 
+// How old the data may be before opening the page kicks off a refresh of its
+// own. Five minutes matches the scheduled cadence, so a board kept current by
+// the running task never triggers one.
+const STALE_MINUTES = 5;
+
+function dataAgeMinutes() {
+  if (!state.data || !state.data.updatedAt) return Infinity;
+  return (Date.now() - new Date(state.data.updatedAt).getTime()) / 60000;
+}
+
+/**
+ * Bring a stale board up to date the moment it is opened.
+ *
+ * In two stages, because they cost very different amounts. Every index level --
+ * and so every sector's colour, its relative strength, the ticker -- comes from
+ * one NSE request and lands in about twenty seconds. The 750 stock prices take
+ * a few minutes and only move the stock tables. Waiting for the second before
+ * showing the first would leave the page reading yesterday for no reason.
+ *
+ * The scheduled task usually gets there first; this is for the mornings the
+ * machine spent asleep.
+ */
+async function refreshIfStale() {
+  if (window.EMBEDDED_DATA) return;
+
+  const age = dataAgeMinutes();
+  if (age <= STALE_MINUTES) return;
+
+  const ageText = age > 90 ? `${Math.round(age / 60)} hours` : `${Math.round(age)} minutes`;
+  showStatus(`Data is ${ageText} old — refreshing index levels…`, null);
+
+  const quick = await runRefresh('quick');
+  if (!quick) return;
+
+  showStatus('Index levels updated. Fetching stock prices in the background…', null);
+  if (await runRefresh('live')) {
+    showStatus('Up to date, stock prices included.', 'success');
+  }
+}
+
+/** POST a refresh of the given mode, apply it, and say whether it worked. */
+async function runRefresh(mode) {
+  const btn = el('refreshBtn');
+  btn.disabled = true;
+  btn.classList.add('loading');
+  try {
+    const res = await fetch('/api/refresh?mode=' + mode, { method: 'POST' });
+    const body = await res.json();
+    if (!res.ok) throw new Error(body.message || body.error || 'Refresh failed');
+    applyData(body.data);
+    return true;
+  } catch (e) {
+    showStatus('Update failed: ' + e.message, 'error');
+    return false;
+  } finally {
+    btn.disabled = false;
+    btn.classList.remove('loading');
+  }
+}
+
 async function refreshData() {
   const btn = el('refreshBtn');
   if (window.EMBEDDED_DATA) {
@@ -314,8 +374,6 @@ function applyData(data) {
   if (state.activeSector) {
     const fresh = sectorBy(state.activeSector.indexName);
     if (fresh) { state.activeSector = fresh; renderDetail(); }
-  } else {
-    restoreFromUrl();
   }
 }
 
@@ -2124,16 +2182,24 @@ window.addEventListener('popstate', (e) => {
   if (entry.view === 'compare') { showView('compare'); renderCompare(); }
 });
 
-/** Reopen whatever the URL points at, once the data is actually loaded. */
-function restoreFromUrl() {
-  const hash = decodeURIComponent(location.hash || '');
-  if (hash.startsWith('#sector/')) {
-    const name = hash.slice('#sector/'.length);
-    if (sectorBy(name)) { openSector(name, false); return; }
-  }
-  if (hash === '#compare' && state.selected.length >= 2) {
-    showView('compare');
-    renderCompare();
+/**
+ * Start every load on the overview, whatever the address bar says.
+ *
+ * The hash is written as you navigate so that Back works, and reloading used to
+ * honour it -- open a sector, reload, and you were back inside that sector
+ * rather than at the board. Reloading is how you ask for a fresh look at the
+ * whole market, so it should give you the whole market.
+ *
+ * In-session navigation is untouched: Back still walks the stack, because those
+ * entries carry their own state and never consult the hash.
+ */
+function startAtOverview() {
+  if (!location.hash || !location.protocol.startsWith('http')) return;
+  try {
+    history.replaceState({ view: 'overview', indexName: null }, '',
+                         location.pathname + location.search);
+  } catch (e) {
+    /* history blocked (sandboxed file view) - the view is already the overview */
   }
 }
 
@@ -2322,8 +2388,10 @@ if (localStorage.getItem('rrgOpen') === '1') {
   el('rrgToggle').setAttribute('aria-expanded', 'true');
 }
 
-// Anchor the stack so the first back press has somewhere to land.
+// Anchor the stack so the first back press has somewhere to land, and drop any
+// #sector/... left in the address bar by the visit before this one.
 try { history.replaceState({ view: 'overview', indexName: null }, ''); } catch (e) { /* ignore */ }
+startAtOverview();
 
 async function loadStocks() {
   if (window.EMBEDDED_STOCKS) { stockBook = window.EMBEDDED_STOCKS; return; }
@@ -2341,6 +2409,6 @@ async function loadStocks() {
   if (state.activeSector) renderDetail();
 }
 
-loadCached();
+loadCached().then(refreshIfStale);
 loadHistory();
 loadStocks();

@@ -3,11 +3,12 @@ Registers the Windows scheduled tasks that keep the dashboard current.
 
 Three jobs: one to serve the dashboard, two to keep its data current.
 
-  Sector Rotation - Morning   08:15 on weekdays. A full rebuild: NSE archives,
+  Sector Rotation - Morning   09:16 on weekdays, a minute after the open. A full
+                              rebuild: NSE archives,
                               constituent lists, 52-week levels, corporate
                               actions and price history. Takes a few minutes.
 
-  Sector Rotation - Live      every 5 minutes from 09:15 to 15:45 on weekdays.
+  Sector Rotation - Live      every 5 minutes from 09:25 to 15:45 on weekdays.
                               Reuses what the morning job cached and re-reads
                               only what moves -- index levels and prices. Also
                               carries the Telegram digest and alerts, so they
@@ -47,12 +48,23 @@ MORNING = "Sector Rotation - Morning"
 LIVE = "Sector Rotation - Live"
 SERVER = "Sector Rotation - Server"
 
-MORNING_AT = "08:15"
-LIVE_START = "09:15"
+# Just after the 09:15 open, not before it.
+#
+# Run at 08:15 the rebuild could only ever describe yesterday's close, since
+# nothing has traded yet -- so the board opened the day showing the previous
+# session and waited for the live runs to correct it. A minute after the bell
+# every index has a live level, and the day's figures are right from the first
+# build rather than the fifth.
+MORNING_AT = "09:16"
+
+# After the rebuild has finished rather than alongside it. Both firing at once
+# had them fetching the same prices in parallel and racing to write the same
+# file, which is how a rebuild got silently clobbered once before.
+LIVE_START = "09:25"
 LIVE_EVERY_MIN = 5
-# 09:15 -> 15:45, past the 15:30 close. Given in minutes because New-TimeSpan
+# 09:25 -> 15:45, past the 15:30 close. Given in minutes because New-TimeSpan
 # truncates fractional -Hours, which quietly cut the last half hour off.
-LIVE_MINUTES = 390
+LIVE_MINUTES = 380
 
 
 def powershell(script):

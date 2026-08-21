@@ -628,7 +628,17 @@ def annotate_overlaps(sectors, max_related=4, min_share=0.30):
 
 # ----------------------------------------------------------------------- main
 
-def main(live=False):
+def main(live=False, quick=False):
+    """
+    quick: a live refresh that skips the 750-symbol Yahoo call.
+
+    That call is 60 of the 150-odd seconds a live run takes, and it only moves
+    the stock tables -- every index level, and so every sector's colour, its
+    relative strength and the ticker, comes from one NSE request that answers in
+    a fraction of a second. So the page can be made current in a few seconds
+    while the stock prices catch up on the next scheduled run.
+    """
+    live = live or quick
     """
     live=False rebuilds everything from NSE's archives -- the daily job.
     live=True reuses the cached constituent lists and price history and only
@@ -704,7 +714,9 @@ def main(live=False):
     # any return spanning it is computed, or the number is quietly wrong.
     print("Refreshing corporate actions...", file=sys.stderr)
     try:
-        ca, added = corporate_actions.ensure_fresh(session=session)
+        # A quick run reads the cache rather than the wire: a split going ex
+        # today matters to the long returns, and those are not being refetched.
+        ca, added = (corporate_actions.load(), 0) if quick else             corporate_actions.ensure_fresh(session=session)
         if added:
             print(f"  {added} new split/bonus events picked up", file=sys.stderr)
     except Exception as e:
@@ -853,9 +865,13 @@ def main(live=False):
     if live and CACHE_PRICES.exists():
         # Long history is settled once a day has closed; only today moves.
         yahoo = json.loads(CACHE_PRICES.read_text(encoding="utf-8"))
-        print(f"Refreshing today's prices for {len(needed)} symbols...", file=sys.stderr)
-
-        recent_all = prices.fetch_live(needed)
+        if quick:
+            print("Reusing the cached price book (quick refresh)", file=sys.stderr)
+            recent_all = {}
+        else:
+            print(f"Refreshing today's prices for {len(needed)} symbols...",
+                  file=sys.stderr)
+            recent_all = prices.fetch_live(needed)
         for symbol, recent in recent_all.items():
             yahoo.setdefault(symbol, {}).update(recent)
         print(f"  Yahoo covered {len(yahoo)}/{len(needed)} symbols", file=sys.stderr)
@@ -1143,7 +1159,7 @@ def main(live=False):
         "updatedAt": datetime.now().isoformat(timespec="seconds"),
         "bhavDate": (bhav_date.strftime("%d-%b-%Y") if bhav_date
                      else (index_date.strftime("%d-%b-%Y") if index_date else None)),
-        "refreshMode": "live" if live else "full",
+        "refreshMode": "quick" if quick else ("live" if live else "full"),
         "indexDate": index_date.strftime("%d-%b-%Y") if index_date else None,
         "week52Date": wk52_date.strftime("%d-%b-%Y") if wk52_date else None,
         "priceSource": "yahoo" if sourced.get("yahoo") else "nse",
@@ -1181,4 +1197,4 @@ def main(live=False):
 
 
 if __name__ == "__main__":
-    main(live="--live" in sys.argv)
+    main(live="--live" in sys.argv, quick="--quick" in sys.argv)
