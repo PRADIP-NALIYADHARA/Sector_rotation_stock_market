@@ -53,12 +53,32 @@ def _level(from_high, kind):
     return None, None
 
 
+def _quote(symbol):
+    """
+    (last price, previous close) from Yahoo's quote endpoint, or (None, None).
+
+    Worth a separate request per symbol because the daily bars cannot be trusted
+    for a day's move. Yahoo simply had no 20 August bar for either metal, so the
+    strip compared the 21st against the 19th and called a two-day rise the day's
+    change -- gold read +4.5% against the +2.0% every broker showed. The quote
+    endpoint carries the previous close as a field, so no gap can be mistaken
+    for a flat day.
+    """
+    try:
+        fi = yf.Ticker(symbol).fast_info
+        last = fi.get("lastPrice") or fi.get("last_price")
+        prev = fi.get("previousClose") or fi.get("previous_close")
+        return (float(last) if last else None), (float(prev) if prev else None)
+    except Exception:
+        return None, None
+
+
 def build(quiet=False, official=None):
     """
     One row per instrument, ready to hand to the browser.
 
     `official` supplies figures NSE publishes itself, keyed by Yahoo ticker, as
-    {"last", "high52", "low52"}. Where they exist they win.
+    {"last", "high52", "low52", "pChange"}. Where they exist they win.
 
     They have to. NSE's 52-week high is the highest level actually *traded*,
     while the best this module can do on its own is the highest daily *close* --
@@ -95,13 +115,21 @@ def build(quiet=False, official=None):
         if len(series) < 2:
             continue
 
-        last, prev = float(series.iloc[-1]), float(series.iloc[-2])
         high52, low52 = float(series.max()), float(series.min())
+
+        # The quote first, the bars only as a fallback -- see _quote.
+        quoted_last, quoted_prev = _quote(symbol)
+        last = quoted_last if quoted_last else float(series.iloc[-1])
+        prev = quoted_prev if quoted_prev else float(series.iloc[-2])
 
         published = official.get(symbol) or {}
         last = published.get("last") or last
         high52 = published.get("high52") or high52
         low52 = published.get("low52") or low52
+
+        change = published.get("pChange")
+        if change is None:
+            change = round(100 * (last / prev - 1), 2) if prev else None
 
         from_high = round(100 * (last / high52 - 1), 2) if high52 else None
 
@@ -110,7 +138,7 @@ def build(quiet=False, official=None):
             "symbol": symbol,
             "kind": kind,
             "last": round(last, 2),
-            "pChange": round(100 * (last / prev - 1), 2) if prev else None,
+            "pChange": change,
             "high52": round(high52, 2),
             "low52": round(low52, 2),
             "fromHigh": from_high,

@@ -1133,7 +1133,8 @@ def main(live=False, quick=False):
     ticker_rows = market_ticker.build(official={
         "^NSEI": {"last": bm.get("last"),
                   "high52": bm.get("yearHigh"),
-                  "low52": bm.get("yearLow")},
+                  "low52": bm.get("yearLow"),
+                  "pChange": bm.get("percentChange")},
     })
 
     # What moved in the rankings. Recomputed from the cached history rather than
